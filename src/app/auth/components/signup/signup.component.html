@@ -1,0 +1,51 @@
+<section>
+  <form 
+  [formGroup]="signUpForm"
+  (ngSubmit)="onSubmit()"
+  fxLayout="column"
+  fxLayoutAlign="center center"
+  fxLayoutGap="10px"
+  >
+
+    <!-- Name -->
+    <mat-form-field>
+      <input formControlName="name" matInput placeholder="Your name">
+      <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.name">
+        <mat-error *ngIf="name.hasError(validation.type) && name.invalid && (name.dirty || name.touched)">{{ validation.message }}</mat-error>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field>
+      <input formControlName="email" matInput placeholder="Your email">
+      <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.email">
+        <mat-error *ngIf="email.hasError(validation.type) && email.invalid && (email.dirty || email.touched)">{{ validation.message }}</mat-error>
+      </mat-error>
+    </mat-form-field>
+    
+    <!-- Password -->
+    <mat-form-field>
+      <input formControlName="password" matInput type="password" placeholder="Your password">
+      <mat-hint>Must be at least 6 characters</mat-hint>
+      <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.password">
+        <mat-error *ngIf="password.hasError(validation.type) && password.invalid && (password.dirty || password.touched)">{{ validation.message }} <span style="float: right;">{{ password.value.length }} / 6</span> </mat-error>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Terms and Conditions -->
+    <mat-checkbox 
+      formControlName="acceptTerms"
+      color="primary">
+        Agree to <a href="/signup">Terms and Conditions</a>
+    </mat-checkbox>
+
+    <button
+      [disabled]="signUpForm.invalid"
+      class="submit-button" 
+      type="submit" 
+      mat-raised-button 
+      color="primary">
+        Submit
+    </button>
+  </form>
+  </section>
