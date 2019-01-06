@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ProfileModule } from './profile/profile.module';
 
 
 @NgModule({
@@ -26,8 +27,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     MaterialModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AuthModule,
     AngularFirestoreModule,
+    AuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

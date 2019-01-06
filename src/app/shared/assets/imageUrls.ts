@@ -1,4 +1,8 @@
 export enum imageUrls {
   // tslint:disable-next-line:max-line-length
-  ZEN_TIMER_LOGO = 'https://firebasestorage.googleapis.com/v0/b/gorgant-zentime.appspot.com/o/zen_time_logo_2.svg?alt=media&token=4140bde1-f054-4449-93e8-828bc64985b0'
+  ZEN_TIMER_LOGO = 'https://firebasestorage.googleapis.com/v0/b/gorgant-zentime.appspot.com/o/graphics%2Fzen_time_logo_2.svg?alt=media&token=7749b804-1e59-473e-b113-97b4d75324ee',
+  // tslint:disable-next-line:max-line-length
+  // PROFILE_DEFAULT_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/gorgant-zentime.appspot.com/o/graphics%2Fbaseline-person-24px.svg?alt=media&token=a4d6fbb7-b000-41ce-98da-190b03839bd4',
+  // tslint:disable-next-line:max-line-length
+  PROFILE_DEFAULT_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/gorgant-zentime.appspot.com/o/graphics%2Fsample_profile_photo.jpg?alt=media&token=f0ffc14e-1963-4bae-9bfb-30bc54c34f4c'
 }

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
 import { loginValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -32,7 +34,7 @@ export class LoginComponent implements OnInit {
       email: this.email.value,
       password: this.password.value
     };
-    console.log(userAuthData);
+    this.authService.login(userAuthData);
   }
 
   // Getters for easy access to form fields

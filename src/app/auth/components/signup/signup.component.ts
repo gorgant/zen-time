@@ -3,6 +3,7 @@ import { signUpValidationMessages } from 'src/app/shared/models/validation-messa
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -17,6 +18,7 @@ export class SignupComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -35,7 +37,7 @@ export class SignupComponent implements OnInit {
       password: this.password.value,
       name: this.name.value
     };
-    console.log(newUserData);
+    this.authService.registerUser(newUserData);
   }
 
   // Getters for easy access to form fields

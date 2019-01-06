@@ -1,0 +1,41 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+  <button mat-icon-button [routerLink]="['/']">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</mat-toolbar>
+<section 
+  fxLayout="column" 
+  fxLayoutAlign="center center" 
+  fxLayoutGap="16px">
+  
+  <img [src]="defaultProfileImage" class="avatar">
+  <div id="username" class="mat-display-1">
+    Greg
+  </div>
+  <div id="email" class="mat-subheading-1">
+    iskhtar@gmail.com
+  </div>
+  <button
+    class="action-button" 
+    type="button" 
+    mat-raised-button 
+    color="primary">
+      Edit Details
+  </button>
+  <button 
+    class="action-button" 
+    type="button" 
+    mat-stroked-button 
+    color="primary">
+      Change Password
+  </button>
+  <button 
+    class="action-button" 
+    (click)="onLogout()"
+    type="button" 
+    mat-button 
+    color="primary">
+      Logout
+  </button>
+
+</section>
