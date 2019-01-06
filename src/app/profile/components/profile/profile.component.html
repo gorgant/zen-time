@@ -4,16 +4,17 @@
   </button>
 </mat-toolbar>
 <section 
+  *ngIf="(appUser$ | async) as user"
   fxLayout="column" 
   fxLayoutAlign="center center" 
   fxLayoutGap="16px">
   
   <img [src]="defaultProfileImage" class="avatar">
   <div id="username" class="mat-display-1">
-    Greg
+    {{ user.displayName }}
   </div>
   <div id="email" class="mat-subheading-1">
-    iskhtar@gmail.com
+    {{ user.email }}
   </div>
   <button
     class="action-button" 

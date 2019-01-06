@@ -2,7 +2,7 @@
   <div>
     <button [routerLink]="['/profile']" mat-icon-button>
       <mat-icon id="profile-icon">person</mat-icon>
-      <span id="profile-name">Greg</span>
+      <span *ngIf="(appUser$ | async) as user" id="profile-name">{{ user.displayName }}</span>
     </button>
   </div>
   <button mat-icon-button>

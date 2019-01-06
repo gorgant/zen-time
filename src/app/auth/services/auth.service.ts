@@ -5,6 +5,9 @@ import { AuthData } from '../models/auth-data.model';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AppUser } from 'src/app/shared/models/app-user.model';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +19,14 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private uiService: UiService,
     private store$: Store<RootStoreState.State>,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService: UserService
   ) { }
 
   initAuthListener(): void {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        this.authSuccess();
+        this.authSuccess(user);
       } else {
         this.postLogoutActions();
       }
@@ -33,8 +37,14 @@ export class AuthService {
     this.afAuth.auth.createUserWithEmailAndPassword(
       authData.email,
       authData.password
-    ).then(result => {
-      this.authSuccess();
+    ).then(creds => {
+      const appUser: AppUser = {
+        displayName: authData.name,
+        email: authData.email,
+      };
+      const userId = creds.user.uid;
+      this.userService.storeUserData(appUser, userId);
+      this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
@@ -45,8 +55,8 @@ export class AuthService {
     this.afAuth.auth.signInWithEmailAndPassword(
       authData.email,
       authData.password
-    ).then(result => {
-      this.authSuccess();
+    ).then(creds => {
+      // Actions managed in the authSuccess via AuthListener
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
@@ -58,7 +68,13 @@ export class AuthService {
     this.afAuth.auth.signOut();
   }
 
-  private authSuccess(): void {
+  private authSuccess(user: firebase.User): void {
+    this.userService.fetchUserData(user.uid)
+      .pipe(
+        take(1)
+      ).subscribe( appUser => {
+        this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
+      });
     this.store$.dispatch(new AuthStoreActions.SetAuthenticated());
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
     if (returnUrl && returnUrl !== '/') {
