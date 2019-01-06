@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthData } from '../models/auth-data.model';
 import { UiService } from 'src/app/shared/services/ui.service';
@@ -15,7 +15,8 @@ export class AuthService {
     private router: Router,
     private afAuth: AngularFireAuth,
     private uiService: UiService,
-    private store$: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>,
+    private route: ActivatedRoute
   ) { }
 
   initAuthListener(): void {
@@ -59,7 +60,12 @@ export class AuthService {
 
   private authSuccess(): void {
     this.store$.dispatch(new AuthStoreActions.SetAuthenticated());
-    this.router.navigate(['']);
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+    if (returnUrl && returnUrl !== '/') {
+      this.router.navigate([returnUrl]);
+    } else {
+      this.router.navigate(['']);
+    }
   }
 
   private postLogoutActions(): void {
