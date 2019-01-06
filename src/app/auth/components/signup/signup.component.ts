@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { signUpValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
+import { imageUrls } from 'src/app/shared/assets/imageUrls';
 
 @Component({
   selector: 'app-signup',
@@ -11,6 +12,7 @@ import { AuthData } from '../../models/auth-data.model';
 export class SignupComponent implements OnInit {
 
   SIGN_UP_FORM_VALIDATION_MESSAGES = signUpValidationMessages;
+  LOGO_URL = imageUrls.ZEN_TIMER_LOGO;
   signUpForm: FormGroup;
 
   constructor(

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
 import { loginValidationMessages } from 'src/app/shared/models/validation-messages.model';
+import { imageUrls } from 'src/app/shared/assets/imageUrls';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,7 @@ import { loginValidationMessages } from 'src/app/shared/models/validation-messag
 export class LoginComponent implements OnInit {
 
   LOGIN_FORM_VALIDATION_MESSAGES = loginValidationMessages;
+  LOGO_URL = imageUrls.ZEN_TIMER_LOGO;
   loginForm: FormGroup;
 
   constructor(
