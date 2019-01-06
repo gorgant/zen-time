@@ -10,6 +10,7 @@
     <!-- Name -->
     <mat-form-field>
       <input formControlName="name" matInput placeholder="Your name">
+      <mat-icon class="input-icon" matPrefix>face</mat-icon>
       <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.name">
         <mat-error *ngIf="name.hasError(validation.type) && name.invalid && (name.dirty || name.touched)">{{ validation.message }}</mat-error>
       </mat-error>
@@ -18,6 +19,7 @@
     <!-- Email -->
     <mat-form-field>
       <input formControlName="email" matInput placeholder="Your email">
+      <mat-icon class="input-icon" matPrefix>email</mat-icon>
       <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.email">
         <mat-error *ngIf="email.hasError(validation.type) && email.invalid && (email.dirty || email.touched)">{{ validation.message }}</mat-error>
       </mat-error>
@@ -26,6 +28,7 @@
     <!-- Password -->
     <mat-form-field>
       <input formControlName="password" matInput type="password" placeholder="Your password">
+      <mat-icon class="input-icon" matPrefix>lock</mat-icon>
       <mat-hint>Must be at least 6 characters</mat-hint>
       <mat-error *ngFor="let validation of SIGN_UP_FORM_VALIDATION_MESSAGES.password">
         <mat-error *ngIf="password.hasError(validation.type) && password.invalid && (password.dirty || password.touched)">{{ validation.message }} <span style="float: right;">{{ password.value.length }} / 6</span> </mat-error>
