@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
-import { startWith, switchMap, map, catchError, withLatestFrom, filter, take } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, take } from 'rxjs/operators';
 import { RootStoreState } from '..';
 
 @Injectable()
@@ -42,7 +42,6 @@ export class TimerStoreEffects {
             )
           );
       }
-    }
-     )
+    })
   );
 }

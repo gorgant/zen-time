@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { AppUser } from 'src/app/shared/models/app-user.model';
+import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
 
 @Component({
   selector: 'app-timers',
@@ -22,6 +23,7 @@ export class TimersComponent implements OnInit {
 
   constructor(
     private store$: Store<RootStoreState.State>,
+    private timerImporterService: TimerImporterService
   ) { }
 
   ngOnInit() {
@@ -44,6 +46,10 @@ export class TimersComponent implements OnInit {
     this.store$.dispatch(
       new TimerStoreActions.AllTimersRequested()
     );
+  }
+
+  onImport() {
+    this.timerImporterService.launchImport();
   }
 
 }
