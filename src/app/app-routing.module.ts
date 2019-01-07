@@ -5,9 +5,9 @@ import { AuthGuard } from './auth/route-guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuard]
+    path: 'timers',
+    loadChildren: './timers/timers.module#TimersModule',
+    canLoad: [AuthGuard]
   },
   {
     path: 'profile',
@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'timers',
     pathMatch: 'full'
   },
 ];
