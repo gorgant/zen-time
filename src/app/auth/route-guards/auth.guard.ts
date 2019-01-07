@@ -34,7 +34,6 @@ export class AuthGuard implements CanActivate, CanLoad {
       take(1),
       tap(authStatus => {
         if (!authStatus) {
-          console.log(segments);
           this.router.navigate(['/login'], { queryParams: { returnUrl: segments[0].path }});
         }
       })

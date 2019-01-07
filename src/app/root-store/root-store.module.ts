@@ -7,12 +7,14 @@ import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { CustomSerializer } from '../shared/utils/utils';
+import { TimersStoreModule } from './timer-store';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
     AuthStoreModule,
+    TimersStoreModule,
     StoreModule.forRoot({}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),
