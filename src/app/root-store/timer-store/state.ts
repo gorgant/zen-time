@@ -11,11 +11,13 @@ export const featureAdapter: EntityAdapter<Timer>
 export interface State extends EntityState<Timer> {
   isLoading?: boolean;
   error?: any;
+  timersLoaded?: boolean;
 }
 
 export const initialState: State = featureAdapter.getInitialState(
   {
     isLoading: false,
-    error: null
+    error: null,
+    timersLoaded: false,
   }
 );

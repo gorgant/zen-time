@@ -14,7 +14,8 @@ export function featureReducer(state = initialState, action: Actions): State {
       return featureAdapter.addAll(action.payload.items, {
         ...state,
         isLoading: false,
-        error: null
+        error: null,
+        timersLoaded: true,
       });
     }
     case ActionTypes.TIMER_LOAD_FAILURE: {

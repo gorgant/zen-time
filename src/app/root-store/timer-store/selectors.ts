@@ -4,8 +4,8 @@ import { Timer } from 'src/app/timers/models/timer.model';
 import * as fromTimers from './reducer';
 
 export const getError = (state: State): any => state.error;
-
 export const getIsLoading = (state: State): boolean => state.isLoading;
+export const getTimersLoaded = (state: State): boolean => state.timersLoaded;
 
 export const selectTimerState: MemoizedSelector<object, State>
 = createFeatureSelector<State>('timer');
@@ -28,3 +28,6 @@ export const selectTimerError: MemoizedSelector<object, any> = createSelector(
 
 export const selectTimerIsLoading: MemoizedSelector<object, boolean>
 = createSelector(selectTimerState, getIsLoading);
+
+export const selectTimersLoaded: MemoizedSelector<object, boolean>
+= createSelector(selectTimerState, getTimersLoaded);
