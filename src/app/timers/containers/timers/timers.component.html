@@ -9,8 +9,8 @@
       <mat-icon>search</mat-icon>
     </button>
 </mat-toolbar>
-<ul>
-  <li *ngFor="let timer of timers$ | async">
-    {{ timer.title }}
-  </li>
-</ul>
+<app-timer-card-list 
+  [timers]="timers$ | async" 
+  [loading]="isLoading$ | async" 
+  [error]="(error$ | async)">
+</app-timer-card-list>
