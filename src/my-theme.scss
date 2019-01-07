@@ -1,0 +1,23 @@
+@import '~@angular/material/theming';
+//We import our custom scss component here
+@import './styles';
+
+@include mat-core();
+
+// I've just replicated the default theme here
+$theme-primary: mat-palette($mat-indigo);
+$theme-accent:  mat-palette($mat-pink, A200, A100, A400);
+$theme-warn:    mat-palette($mat-red);
+$theme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
+//
+@include theme-color-grabber($theme);
+// @include angular-material-theme($theme);
+// .light {
+//   $light-primary: mat-palette($mat-blue, 200,300, 900);
+//   $light-accent:  mat-palette($mat-light-blue, 600, 100, 800);
+//   $light-warn:    mat-palette($mat-red, 600);
+//   $light-theme: mat-dark-theme($light-primary, $light-accent, $light-warn);
+//   @include theme-color-grabber($light-theme);
+//   @include angular-material-theme($light-theme);
+
+// }
