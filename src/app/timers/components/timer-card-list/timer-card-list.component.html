@@ -1,11 +1,12 @@
 <section fxLayout="column" fxLayoutAlign="center center" >
+  <!-- <p class="mat-headline">Your Active Timers</p> -->
   <h1>Your Active Timers</h1>
   
   <div *ngIf="loading">
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
   <div *ngIf="!loading">
-    <div fxLayoutGap="20px" *ngIf="timers">
+    <div fxLayoutGap="20px" *ngIf="timers" id="card-container">
       <app-timer-card-item *ngFor="let timer of timers" [timer]="timer"></app-timer-card-item>
     </div>
   

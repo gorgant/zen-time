@@ -1,4 +1,10 @@
+// Creates some side margins for the cards
 section {
   padding-left: 3%;
   padding-right: 3%;
+}
+
+// Gets the first card to hug the title better
+#card-container:first-child {
+  margin-top: -20px;
 }
