@@ -7,7 +7,12 @@
   </div>
   <div *ngIf="!loading">
     <div fxLayoutGap="20px" *ngIf="timers" id="card-container">
-      <app-timer-card-item *ngFor="let timer of timers" [timer]="timer"></app-timer-card-item>
+      <app-timer-card-item 
+        *ngFor="let timer of timers" 
+        [timer]="timer"
+        [routerLink]="[ './', timer.id ]"
+        >
+      </app-timer-card-item>
     </div>
   
     <div *ngIf="!timers">No timers found</div>

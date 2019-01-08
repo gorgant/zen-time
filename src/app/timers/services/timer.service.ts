@@ -16,7 +16,7 @@ export class TimerService {
     private userService: UserService
   ) { }
 
-  fetchTimers(): Observable<Timer[]> {
+  fetchAllTimers(): Observable<Timer[]> {
     return this.getTimerCollection()
       .snapshotChanges()
       .pipe(
@@ -32,9 +32,29 @@ export class TimerService {
       );
   }
 
+  fetchSingleTimer(timerId: string): Observable<Timer> {
+    console.log('Fetching single timer', timerId);
+    return this.getTimerDoc(timerId)
+      .snapshotChanges()
+      .pipe(
+        map(doc => {
+          const timer: Timer = {
+            id: doc.payload.id,
+            ...doc.payload.data()
+          };
+          return timer;
+        })
+      );
+  }
+
   private getTimerCollection(): AngularFirestoreCollection<Timer> {
     const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
     const timerCollection = userDoc.collection<Timer>('timers');
     return timerCollection;
   }
+
+  private getTimerDoc(timerId: string): AngularFirestoreDocument<Timer> {
+    return this.getTimerCollection().doc<Timer>(`${timerId}`);
+  }
+
 }

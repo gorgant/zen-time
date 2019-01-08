@@ -1,0 +1,9 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+  <button mat-icon-button [routerLink]="['../']">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</mat-toolbar>
+<section *ngIf="(timer$ | async) as timer">
+  <div class="mat-title">{{ timer.title }}</div>
+  
+</section>

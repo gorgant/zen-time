@@ -6,6 +6,7 @@ import { Timer } from '../../models/timer.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
+import { map, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'app-timers',
@@ -33,6 +34,17 @@ export class TimersComponent implements OnInit {
 
     this.timers$ = this.store$.select(
       TimerStoreSelectors.selectAllTimers
+    ).pipe(
+      withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
+      map(([timers, timersLoaded]) => {
+        // Fetch timer if store hasn't been initialized
+        if (!timersLoaded) {
+          this.store$.dispatch(
+            new TimerStoreActions.AllTimersRequested()
+          );
+        }
+        return timers;
+      })
     );
 
     this.error$ = this.store$.select(
@@ -41,10 +53,6 @@ export class TimersComponent implements OnInit {
 
     this.isLoading$ = this.store$.select(
       TimerStoreSelectors.selectTimerIsLoading
-    );
-
-    this.store$.dispatch(
-      new TimerStoreActions.AllTimersRequested()
     );
   }
 

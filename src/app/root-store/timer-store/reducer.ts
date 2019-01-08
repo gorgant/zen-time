@@ -3,6 +3,14 @@ import { Actions, ActionTypes } from './actions';
 
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
+
+    case ActionTypes.SINGLE_TIMER_LOADED: {
+      return featureAdapter.addOne(
+        action.payload.timer,
+        state
+      );
+    }
+
     case ActionTypes.ALL_TIMERS_REQUESTED: {
       return {
         ...state,
