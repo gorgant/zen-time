@@ -4,10 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RemainingTimePipe } from './pipes/remaining-time.pipe';
+import { MatElevationDirective } from './directives/mat-elevation.directive';
 
 @NgModule({
   declarations: [
-    RemainingTimePipe
+    RemainingTimePipe,
+    MatElevationDirective
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { RemainingTimePipe } from './pipes/remaining-time.pipe';
     ReactiveFormsModule,
     MaterialModule,
     FlexLayoutModule,
-    RemainingTimePipe
+    RemainingTimePipe,
+    MatElevationDirective
   ]
 })
 export class SharedModule { }
