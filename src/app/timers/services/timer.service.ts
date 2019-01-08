@@ -33,7 +33,6 @@ export class TimerService {
   }
 
   fetchSingleTimer(timerId: string): Observable<Timer> {
-    console.log('Fetching single timer', timerId);
     return this.getTimerDoc(timerId)
       .snapshotChanges()
       .pipe(

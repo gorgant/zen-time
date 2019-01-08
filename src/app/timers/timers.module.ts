@@ -6,13 +6,15 @@ import { TimersComponent } from './containers/timers/timers.component';
 import { TimerCardListComponent } from './components/timer-card-list/timer-card-list.component';
 import { TimerCardItemComponent } from './components/timer-card-item/timer-card-item.component';
 import { TimerDetailsComponent } from './components/timer-details/timer-details.component';
+import { TimerComponent } from './containers/timer/timer.component';
 
 @NgModule({
   declarations: [
     TimersComponent,
     TimerCardListComponent,
     TimerCardItemComponent,
-    TimerDetailsComponent
+    TimerDetailsComponent,
+    TimerComponent
   ],
   imports: [
     SharedModule,

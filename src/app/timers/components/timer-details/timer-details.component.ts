@@ -1,11 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Component, OnInit, Input } from '@angular/core';
 import { Timer } from '../../models/timer.model';
-import { Store } from '@ngrx/store';
-import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
-import { TimerService } from '../../services/timer.service';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'app-timer-details',
@@ -14,30 +8,19 @@ import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 })
 export class TimerDetailsComponent implements OnInit {
 
-  timer$: Observable<Timer>;
+  @Input() timer: Timer;
+  @Input() loading: boolean;
+  @Input() error: any;
+
 
   constructor(
-    private route: ActivatedRoute,
-    private store$: Store<RootStoreState.State>,
+
   ) { }
 
   ngOnInit() {
-    const timerId: string = this.route.snapshot.params['id'];
-
-    this.timer$ = this.store$.select(
-      TimerStoreSelectors.selectTimerById(timerId)
-    ).pipe(
-      withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
-      map(([timer, timersLoaded]) => {
-        // Fetch timers if store hasn't been initialized
-        if (!timersLoaded) {
-          this.store$.dispatch(
-            new TimerStoreActions.SingleTimerRequested({timerId})
-          );
-        }
-        return timer;
-      })
-    );
+    if (this.loading) {
+      console.log('loading, spinner should show');
+    }
   }
 
 }

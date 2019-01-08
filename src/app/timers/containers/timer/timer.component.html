@@ -1,0 +1,11 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+  <button mat-icon-button [routerLink]="['../']">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</mat-toolbar>
+<app-timer-details 
+  [timer]="timer$ | async"
+  [loading]="isLoading$ | async"
+  [error]="error$ | async"
+  >
+</app-timer-details>

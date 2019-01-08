@@ -1,0 +1,26 @@
+// Creates some side margins for the cards
+section {
+  padding-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.mat-headline {
+  margin-bottom: 8px;
+}
+
+.mat-subheading-2 {
+  margin-bottom: 0px;
+}
+
+.mat-caption {
+  color: rgba(0,0,0,.54);
+}
+
+.notes {
+  margin-top: 16px;
+}
+
+button {
+  width: 300px;
+}

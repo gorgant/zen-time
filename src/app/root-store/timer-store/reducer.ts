@@ -3,14 +3,22 @@ import { Actions, ActionTypes } from './actions';
 
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
-
+    case ActionTypes.SINGLE_TIMER_REQUESTED: {
+      return {
+        ...state,
+        isLoading: true,
+        error: null
+      };
+    }
     case ActionTypes.SINGLE_TIMER_LOADED: {
       return featureAdapter.addOne(
-        action.payload.timer,
-        state
+        action.payload.timer, {
+          ...state,
+          isLoading: false,
+          error: null
+        }
       );
     }
-
     case ActionTypes.ALL_TIMERS_REQUESTED: {
       return {
         ...state,
@@ -19,12 +27,14 @@ export function featureReducer(state = initialState, action: Actions): State {
       };
     }
     case ActionTypes.ALL_TIMERS_LOADED: {
-      return featureAdapter.addAll(action.payload.items, {
-        ...state,
-        isLoading: false,
-        error: null,
-        timersLoaded: true,
-      });
+      return featureAdapter.addAll(
+        action.payload.items, {
+          ...state,
+          isLoading: false,
+          error: null,
+          timersLoaded: true,
+        }
+      );
     }
     case ActionTypes.TIMER_LOAD_FAILURE: {
       return {

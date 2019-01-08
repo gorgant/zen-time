@@ -1,9 +1,14 @@
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
-  <button mat-icon-button [routerLink]="['../']">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-</mat-toolbar>
-<section *ngIf="(timer$ | async) as timer">
-  <div class="mat-title">{{ timer.title }}</div>
-  
+<div *ngIf="loading" fxLayoutAlign="center center">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+<section fxLayout="column" fxLayoutAlign="start">
+  <div *ngIf="!loading && timer">
+    <div class="mat-headline">{{ timer.title }}</div>
+    <div class="mat-subheading-2">{{ timer.category }}</div>
+    <div class="mat-caption">Created {{ timer.createdDate | date }}</div>
+    <div class="mat-body-1 notes">{{ timer.notes }}</div>
+  </div>
+</section>
+<section fxLayoutAlign="center center">
+  <button mat-raised-button color="primary">Set Reminder</button>
 </section>

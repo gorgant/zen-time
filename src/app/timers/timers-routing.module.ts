@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { TimersComponent } from './containers/timers/timers.component';
-import { TimerDetailsComponent } from './components/timer-details/timer-details.component';
+import { TimerComponent } from './containers/timer/timer.component';
 
 const routes: Routes = [
   {path: '', component: TimersComponent},
-  {path: ':id', component: TimerDetailsComponent}
+  {path: ':id', component: TimerComponent}
 ];
 
 @NgModule({
