@@ -1,5 +1,5 @@
 <mat-card appMatElevation>
-  <mat-card-title>{{ timer.title }}</mat-card-title>
+  <mat-card-title class="title-text">{{ timer.title }}</mat-card-title>
   <mat-card-subtitle *ngIf="remainingTime >= 0"> Time Remaining: {{ remainingTime | remainingTimePipe }}</mat-card-subtitle>
   <mat-card-subtitle  class="accentColor" *ngIf="remainingTime < 0">Timer Expired!</mat-card-subtitle>
 </mat-card>
