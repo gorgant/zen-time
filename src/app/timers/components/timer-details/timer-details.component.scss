@@ -5,22 +5,38 @@ section {
   padding-right: 5%;
 }
 
-.mat-headline {
+.mat-headline.top-section {
   margin-bottom: 8px;
 }
 
-.mat-subheading-2 {
+.mat-subheading-2.top-section {
   margin-bottom: 0px;
 }
 
-.mat-caption {
+.mat-caption.top-section {
   color: rgba(0,0,0,.54);
 }
 
-.notes {
+.mat-body-1.top-section {
   margin-top: 16px;
 }
 
 button {
   width: 300px;
+}
+
+.mat-display-2.timer-section {
+  margin-bottom: 8px;
+}
+.mat-display-1.timer-section {
+  margin-bottom: 8px;
+}
+.mat-headline.timer-section {
+  margin-bottom: 8px;
+}
+.mat-title.timer-section {
+  margin-bottom: 8px;
+}
+.mat-subheading-2.timer-section {
+  margin-bottom: 8px;
 }

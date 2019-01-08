@@ -9,7 +9,7 @@ import { MatElevationDirective } from './directives/mat-elevation.directive';
 @NgModule({
   declarations: [
     RemainingTimePipe,
-    MatElevationDirective
+    MatElevationDirective,
   ],
   imports: [
     CommonModule,
@@ -23,7 +23,7 @@ import { MatElevationDirective } from './directives/mat-elevation.directive';
     MaterialModule,
     FlexLayoutModule,
     RemainingTimePipe,
-    MatElevationDirective
+    MatElevationDirective,
   ]
 })
 export class SharedModule { }
