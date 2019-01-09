@@ -1,4 +1,4 @@
-export interface RemainingTime {
+export interface CountDownClock {
   total: number;
   weeks: number;
   days: number;

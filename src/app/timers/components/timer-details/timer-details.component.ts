@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, AfterViewInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Timer } from '../../models/timer.model';
-import { now } from 'moment';
 import { Countdown } from 'src/app/shared/models/countdown.model';
-import { RemainingTime } from 'src/app/shared/models/remaining-time.model';
+import { CountDownClock } from 'src/app/shared/models/remaining-time.model';
 
 @Component({
   selector: 'app-timer-details',
@@ -11,9 +10,10 @@ import { RemainingTime } from 'src/app/shared/models/remaining-time.model';
 })
 export class TimerDetailsComponent implements OnInit, OnDestroy {
 
+  // This asynchronously loads the timer logic only once timer is present
+  // Not sure why this is necessary here while not in the timer-card-item component
   @Input()
   set timer(timer: Timer) {
-    console.log('timer set', timer);
     this._timer = timer;
     if (timer) {
       this.applyTimerValues();
@@ -25,7 +25,7 @@ export class TimerDetailsComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
   @Input() error: any;
   remainingTime: number;
-  remainingTimeTracker: RemainingTime;
+  countDownClock: CountDownClock;
   intervalTicker: NodeJS.Timer;
 
   constructor(
@@ -36,13 +36,14 @@ export class TimerDetailsComponent implements OnInit, OnDestroy {
   }
 
   applyTimerValues() {
-    const elapsedTime = now() - this.timer.createdDate;
-    this.remainingTime = this.timer.duration - elapsedTime;
+    // Initialize timer when screen loads
+    this.countDownClock = new Countdown(this.timer).getCountDownClock();
 
+    // Increment timer by 1 second
     const step = 1000;
     this.intervalTicker = setInterval(() => {
       this.remainingTime -= 1000;
-      this.remainingTimeTracker = new Countdown(this.remainingTime).getTimeRemaining();
+      this.countDownClock = new Countdown(this.timer).getCountDownClock();
     }, step);
   }
 

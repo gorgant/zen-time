@@ -9,11 +9,11 @@
     <div class="mat-body-1 top-section">{{ timer.notes }}</div>
   </div>
 </section>
-<section *ngIf="remainingTimeTracker" fxLayout="column" fxLayoutAlign="center center">
-  <div class="mat-display-2 timer-section">{{ remainingTimeTracker.weeks }} Weeks</div>
-  <div class="mat-display-1 timer-section">{{ remainingTimeTracker.days }} Days</div>
-  <div class="mat-headline timer-section">{{ remainingTimeTracker.hours }} Hours</div>
-  <div class="mat-title timer-section">{{ remainingTimeTracker.minutes }} Minutes</div>
-  <div class="mat-subheading-2 timer-section">{{ remainingTimeTracker.seconds }} Seconds</div>
+<section *ngIf="countDownClock" fxLayout="column" fxLayoutAlign="center center">
+  <div class="mat-display-2 timer-section">{{ countDownClock.weeks }} Weeks</div>
+  <div class="mat-display-1 timer-section">{{ countDownClock.days }} Days</div>
+  <div class="mat-headline timer-section">{{ countDownClock.hours }} Hours</div>
+  <div class="mat-title timer-section">{{ countDownClock.minutes }} Minutes</div>
+  <div class="mat-subheading-2 timer-section">{{ countDownClock.seconds }} Seconds</div>
   <button mat-raised-button color="primary">Set Reminder</button>
 </section>

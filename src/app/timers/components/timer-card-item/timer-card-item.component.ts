@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Timer } from '../../models/timer.model';
-import { now } from 'moment';
-import { RemainingTime } from 'src/app/shared/models/remaining-time.model';
+import { CountDownClock } from 'src/app/shared/models/remaining-time.model';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 
 @Component({
@@ -13,16 +12,12 @@ export class TimerCardItemComponent implements OnInit {
 
   @Input() timer: Timer;
   remainingTime: number;
-  remainingTimeTracker: RemainingTime;
+  countDownClock: CountDownClock;
 
   constructor() { }
 
   ngOnInit() {
-    const elapsedTime = now() - this.timer.createdDate;
-    this.remainingTime = this.timer.duration - elapsedTime;
-
-    this.remainingTimeTracker = new Countdown(this.remainingTime).getTimeRemaining();
-
+    this.countDownClock = new Countdown(this.timer).getCountDownClock();
   }
 
 }
