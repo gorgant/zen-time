@@ -1,19 +1,21 @@
-<div *ngIf="loading" fxLayoutAlign="center center">
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-</div>
-<section fxLayout="column" fxLayoutAlign="start">
-  <div *ngIf="!loading && timer">
-    <div class="mat-headline top-section">{{ timer.title }}</div>
-    <div class="mat-subheading-2 top-section">{{ timer.category }}</div>
-    <div class="mat-caption top-section">Created {{ timer.createdDate | date }}</div>
-    <div class="mat-body-1 top-section">{{ timer.notes }}</div>
+<div fxLayout="column" fxLayoutAlign="center center">
+  <div *ngIf="loading" fxLayoutAlign="center center">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
-</section>
-<section *ngIf="countDownClock" fxLayout="column" fxLayoutAlign="center center">
-  <div class="mat-display-2 timer-section">{{ countDownClock.weeks }} Weeks</div>
-  <div class="mat-display-1 timer-section">{{ countDownClock.days }} Days</div>
-  <div class="mat-headline timer-section">{{ countDownClock.hours }} Hours</div>
-  <div class="mat-title timer-section">{{ countDownClock.minutes }} Minutes</div>
-  <div class="mat-subheading-2 timer-section">{{ countDownClock.seconds }} Seconds</div>
-  <button mat-raised-button color="primary">Set Reminder</button>
-</section>
+  <section class="top-section-container" fxLayout="column" fxLayoutAlign="start">
+    <div *ngIf="!loading && timer">
+      <div class="mat-headline top-section">{{ timer.title }}</div>
+      <div class="mat-subheading-2 top-section">{{ timer.category }}</div>
+      <div class="mat-caption top-section">Created {{ timer.createdDate | date }}</div>
+      <div class="mat-body-1 top-section">{{ timer.notes }}</div>
+    </div>
+  </section>
+  <section class="bottom-section-container" *ngIf="countDownClock" fxLayout="column" fxLayoutAlign="center center">
+    <div class="mat-display-2 timer-section">{{ countDownClock.weeks }} Weeks</div>
+    <div class="mat-display-1 timer-section">{{ countDownClock.days }} Days</div>
+    <div class="mat-headline timer-section">{{ countDownClock.hours }} Hours</div>
+    <div class="mat-title timer-section">{{ countDownClock.minutes }} Minutes</div>
+    <div class="mat-subheading-2 timer-section">{{ countDownClock.seconds }} Seconds</div>
+    <button mat-raised-button color="primary">Set Reminder</button>
+  </section>
+</div>

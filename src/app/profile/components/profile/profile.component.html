@@ -1,8 +1,10 @@
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
-  <button mat-icon-button [routerLink]="['/']">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-</mat-toolbar>
+<div class="nav-contents-container" fxLayout="row" fxLayoutAlign="center center">
+  <div class="nav-contents">
+      <button mat-icon-button [routerLink]="['/']">
+        <mat-icon class="back-arrow">arrow_back</mat-icon>
+      </button>
+  </div>
+</div>
 <section 
   *ngIf="(appUser$ | async) as user"
   fxLayout="column" 

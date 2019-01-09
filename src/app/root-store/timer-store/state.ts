@@ -9,7 +9,7 @@ export const featureAdapter: EntityAdapter<Timer>
       sortComparer: (a: Timer, b: Timer): number => {
         const remainingTimeA = calcRemainingTime(a);
         const remainingTimeB = calcRemainingTime(b);
-        return remainingTimeA.toString().localeCompare(remainingTimeB.toString());
+        return remainingTimeA.toString().localeCompare(remainingTimeB.toString(), undefined, {numeric: true});
       }
     }
   );

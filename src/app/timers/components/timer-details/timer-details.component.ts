@@ -24,7 +24,6 @@ export class TimerDetailsComponent implements OnInit, OnDestroy {
 
   @Input() loading: boolean;
   @Input() error: any;
-  remainingTime: number;
   countDownClock: CountDownClock;
   intervalTicker: NodeJS.Timer;
 
@@ -36,13 +35,17 @@ export class TimerDetailsComponent implements OnInit, OnDestroy {
   }
 
   applyTimerValues() {
-    // Initialize timer when screen loads
+    // Initialize timer when screen loads (otherwise ticker doesn't display for 1 second)
     this.countDownClock = new Countdown(this.timer).getCountDownClock();
 
-    // Increment timer by 1 second
+    this.createTicker();
+  }
+
+  private createTicker() {
+    // Set interval at 1 second
     const step = 1000;
+    // Refresh countdown data each second
     this.intervalTicker = setInterval(() => {
-      this.remainingTime -= 1000;
       this.countDownClock = new Countdown(this.timer).getCountDownClock();
     }, step);
   }

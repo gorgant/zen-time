@@ -1,0 +1,21 @@
+// Styling for the nav contents
+.nav-contents-container {
+  width: 100%;
+  height: 64px;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+}
+
+@media (max-width: 599px) {
+  .nav-contents-container {
+    height: 56px;
+  }
+}
+
+.nav-contents {
+  width: 90vw;
+  max-width: 600px;
+  min-width: 288px;
+  color: white;
+}

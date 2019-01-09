@@ -11,13 +11,14 @@ import { Countdown } from 'src/app/shared/models/countdown.model';
 export class TimerCardItemComponent implements OnInit {
 
   @Input() timer: Timer;
-  remainingTime: number;
   countDownClock: CountDownClock;
+  remainingTime: number;
 
   constructor() { }
 
   ngOnInit() {
     this.countDownClock = new Countdown(this.timer).getCountDownClock();
+    this.remainingTime = new Countdown(this.timer).calcRemainingTime();
   }
 
 }

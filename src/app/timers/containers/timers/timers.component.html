@@ -1,14 +1,16 @@
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
-  <div>
-    <button [routerLink]="['/profile']" mat-icon-button>
-      <mat-icon id="profile-icon">person</mat-icon>
-      <span *ngIf="(appUser$ | async) as user" id="profile-name">{{ user.displayName }}</span>
-    </button>
-  </div>
-  <button mat-icon-button>
+<div class="nav-contents-container" fxLayout="row" fxLayoutAlign="center center">
+  <div class="nav-contents" fxLayoutAlign="space-between center">
+    <div>
+      <button [routerLink]="['/profile']" mat-icon-button>
+        <mat-icon id="profile-icon">person</mat-icon>
+        <span *ngIf="(appUser$ | async) as user" id="profile-name">{{ user.displayName }}</span>
+      </button>
+    </div>
+    <button mat-icon-button>
       <mat-icon>search</mat-icon>
     </button>
-</mat-toolbar>
+  </div>
+</div>
 <!-- <button mat-raised-button color="warn" (click)="onImport()">Import Timers</button> -->
 <app-timer-card-list 
   [timers]="timers$ | async" 

@@ -1,8 +1,8 @@
-// Creates some side margins for the cards
-section {
-  padding-top: 5%;
-  padding-left: 5%;
-  padding-right: 5%;
+
+.top-section-container {
+  width: 90vw;
+  max-width: 600px;
+  min-width: 288px;
 }
 
 .mat-headline.top-section {
@@ -15,16 +15,15 @@ section {
 
 .mat-caption.top-section {
   color: rgba(0,0,0,.54);
-}
-
-.mat-body-1.top-section {
-  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 button {
   width: 300px;
 }
-
+.mat-body-1.top-section {
+  margin-bottom: 16px;
+}
 .mat-display-2.timer-section {
   margin-bottom: 8px;
 }

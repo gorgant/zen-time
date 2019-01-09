@@ -1,29 +1,3 @@
-// import { RemainingTime } from './remaining-time.model';
-
-// export class Countdown {
-
-//   constructor(private remainingTime) {}
-
-//   getTimeRemaining(): RemainingTime {
-//     const t = this.remainingTime;
-//     const seconds = Math.floor( (t / 1000) % 60 );
-//     const minutes = Math.floor( (t / 1000 / 60) % 60 );
-//     const hours = Math.floor( (t / (1000 * 60 * 60)) % 24 );
-//     const days = Math.floor( t / (1000 * 60 * 60 * 24) % 7 );
-//     const weeks = Math.floor( t / (1000 * 60 * 60 * 24 * 7) );
-
-//     const remainingTime: RemainingTime = {
-//       'total': t,
-//       'weeks': weeks,
-//       'days': days,
-//       'hours': hours,
-//       'minutes': minutes,
-//       'seconds': seconds
-//     };
-//     return remainingTime;
-//   }
-// }
-
 import { CountDownClock } from './remaining-time.model';
 import { now } from 'moment';
 import { Timer } from 'src/app/timers/models/timer.model';
@@ -34,11 +8,18 @@ export class Countdown {
 
   getCountDownClock(): CountDownClock {
     const t = this.calcRemainingTime();
-    const seconds = Math.floor( (t / 1000) % 60 );
-    const minutes = Math.floor( (t / 1000 / 60) % 60 );
-    const hours = Math.floor( (t / (1000 * 60 * 60)) % 24 );
-    const days = Math.floor( t / (1000 * 60 * 60 * 24) % 7 );
-    const weeks = Math.floor( t / (1000 * 60 * 60 * 24 * 7) );
+
+    let seconds = Math.floor( (t / 1000) % 60 );
+    let minutes = Math.floor( (t / 1000 / 60) % 60 );
+    let hours = Math.floor( (t / (1000 * 60 * 60)) % 24 );
+    let days = Math.floor( t / (1000 * 60 * 60 * 24) % 7 );
+    let weeks = Math.floor( t / (1000 * 60 * 60 * 24 * 7) );
+
+    // Avoid confusing displays like 0 Hours if there are still Days left
+    if (seconds === 0 && minutes > 0) { minutes -= 1; seconds = 60; }
+    if (minutes === 0 && hours > 0) { hours -= 1; minutes = 60; }
+    if (hours === 0 && days > 0) { days -= 1; hours = 24; }
+    if (days === 0 && weeks > 0) { weeks -= 1; days = 7; }
 
     const remainingTime: CountDownClock = {
       'total': t,
@@ -51,7 +32,7 @@ export class Countdown {
     return remainingTime;
   }
 
-  private calcRemainingTime(): number {
+  calcRemainingTime(): number {
     const elapsedTime = now() - this.timer.createdDate;
     const remainingTime = this.timer.duration - elapsedTime;
     return remainingTime;
