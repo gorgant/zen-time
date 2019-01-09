@@ -1,8 +1,11 @@
 <div class="nav-contents-container" fxLayout="row" fxLayoutAlign="center center">
-  <div class="nav-contents">
-      <button mat-icon-button [routerLink]="['/']">
-        <mat-icon class="back-arrow">arrow_back</mat-icon>
-      </button>
+  <div class="nav-contents" fxLayoutAlign="space-between center">
+    <button mat-icon-button [routerLink]="['/']">
+      <mat-icon class="back-arrow">arrow_back</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon class="edit">edit</mat-icon>
+    </button>
   </div>
 </div>
 <app-timer-details 
@@ -11,3 +14,8 @@
   [error]="error$ | async"
   >
 </app-timer-details>
+<app-countdown [timer]="timer$ | async"></app-countdown>
+<div class="other-actions" fxLayout="column" fxLayoutAlign="center center">
+  <button class="complete-timer" mat-raised-button color="primary">Set Reminder</button>
+  <button class="complete-timer" mat-stroked-button color="accent">Complete Timer</button>
+</div>

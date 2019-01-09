@@ -1,3 +1,6 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
 // Styling for the nav contents
 .nav-contents-container {
   width: 100%;
@@ -19,4 +22,10 @@
   max-width: 600px;
   min-width: 288px;
   color: white;
+}
+
+.complete-timer {
+  border-color: $accent;
+  margin: 8px;
+  width: 300px;
 }
