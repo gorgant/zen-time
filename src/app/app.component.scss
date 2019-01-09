@@ -5,3 +5,10 @@ main {
   max-width: 600px;
   margin: auto;
 }
+
+.my-navbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

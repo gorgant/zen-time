@@ -1,5 +1,4 @@
 <section fxLayout="column" fxLayoutAlign="center center" >
-  <!-- <p class="mat-headline">Your Active Timers</p> -->
   <h1>Your Active Timers</h1>
   
   <div *ngIf="loading">
@@ -15,7 +14,7 @@
       </app-timer-card-item>
     </div>
   
-    <div *ngIf="!timers">No timers found</div>
+    <div id="no-timers" *ngIf="timers.length < 1">No active timers found</div>
   </div>
   
   <div *ngIf="error">

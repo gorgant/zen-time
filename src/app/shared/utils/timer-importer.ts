@@ -59,6 +59,22 @@ export class TimerImporterService {
       notes: `These wear out quickly so yeah... keep em fresh`,
       duration: 8746300200
     },
+    {
+      title: 'Swap out fish filter',
+      category: 'House Repairs',
+      createdDate: 1543130102699,
+      // tslint:disable-next-line:max-line-length
+      notes: `Only replace the cotton portion, the ceramic tiles don't need to be replaced as they are a permanent fixture in the filter apparatus`,
+      duration: 6666300200
+    },
+    {
+      title: 'Tighten screw on the sun protector',
+      category: 'House Repairs',
+      createdDate: 1543130102699,
+      // tslint:disable-next-line:max-line-length
+      notes: `It typically gets loose every few weeks, but lately it has been prety secure`,
+      duration: 10246300200
+    },
   ];
 
   private listWithIds: Timer[];
