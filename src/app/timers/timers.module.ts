@@ -8,6 +8,7 @@ import { TimerCardItemComponent } from './components/timer-card-item/timer-card-
 import { TimerDetailsComponent } from './components/timer-details/timer-details.component';
 import { TimerComponent } from './containers/timer/timer.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
+import { TimerFormDialogueComponent } from './components/timer-form-dialogue/timer-form-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -16,11 +17,15 @@ import { CountdownComponent } from './components/countdown/countdown.component';
     TimerCardItemComponent,
     TimerDetailsComponent,
     TimerComponent,
-    CountdownComponent
+    CountdownComponent,
+    TimerFormDialogueComponent
   ],
   imports: [
     SharedModule,
     TimersRoutingModule
-  ]
+  ],
+  entryComponents: [
+    TimerFormDialogueComponent
+  ],
 })
 export class TimersModule { }

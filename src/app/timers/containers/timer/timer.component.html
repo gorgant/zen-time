@@ -3,8 +3,8 @@
     <button mat-icon-button [routerLink]="['/']">
       <mat-icon class="back-arrow">arrow_back</mat-icon>
     </button>
-    <button mat-icon-button>
-      <mat-icon class="edit">edit</mat-icon>
+    <button mat-icon-button #matButton>
+      <mat-icon (click)="onEditTimer()" class="edit-icon">edit</mat-icon>
     </button>
   </div>
 </div>
@@ -16,6 +16,7 @@
 </app-timer-details>
 <app-countdown [timer]="timer$ | async"></app-countdown>
 <div class="other-actions" fxLayout="column" fxLayoutAlign="center center">
-  <button class="complete-timer" mat-raised-button color="primary">Set Reminder</button>
-  <button class="complete-timer" mat-stroked-button color="accent">Complete Timer</button>
+  <button class="timer-action" mat-raised-button color="primary">Set Reminder</button>
+  <button class="timer-action complete-timer" mat-stroked-button color="accent">Complete Timer</button>
+  <button class="timer-action" mat-button color="warn">Delete Timer</button>
 </div>

@@ -5,9 +5,9 @@
   <section class="top-section-container" fxLayout="column" fxLayoutAlign="start">
     <div *ngIf="!loading && timer">
       <div class="mat-headline top-section">{{ timer.title }}</div>
-      <div class="mat-subheading-2 top-section">{{ timer.category }}</div>
+      <div *ngIf="timer.category" class="mat-subheading-2 top-section">{{ timer.category }}</div>
       <div class="mat-caption top-section">Created {{ timer.createdDate | date }}</div>
-      <div class="mat-body-1 top-section">{{ timer.notes }}</div>
+      <div *ngIf="timer.notes" class="mat-body-1 top-section">{{ timer.notes }}</div>
     </div>
   </section>
 </div>

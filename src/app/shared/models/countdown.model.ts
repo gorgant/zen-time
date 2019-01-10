@@ -1,4 +1,4 @@
-import { CountDownClock } from './remaining-time.model';
+import { CountDownClock } from './count-down-clock.model';
 import { now } from 'moment';
 import { Timer } from 'src/app/timers/models/timer.model';
 

@@ -1,0 +1,15 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
+mat-form-field {
+  width: 100%;
+}
+
+.duration-form-field {
+  width: 44px;
+  padding: 8px;
+}
+
+.section-header {
+  color: $primary !important;
+}

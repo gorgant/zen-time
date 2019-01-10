@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Timer } from '../../models/timer.model';
-import { CountDownClock } from 'src/app/shared/models/remaining-time.model';
+import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 
 @Component({
   selector: 'app-timer-details',

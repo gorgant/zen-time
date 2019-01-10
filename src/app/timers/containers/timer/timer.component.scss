@@ -24,8 +24,11 @@
   color: white;
 }
 
-.complete-timer {
-  border-color: $accent;
+.timer-action {
   margin: 8px;
   width: 300px;
+}
+
+.complete-timer {
+  border-color: $accent;
 }

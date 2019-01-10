@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CountDownClock } from 'src/app/shared/models/remaining-time.model';
+import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { Timer } from '../../models/timer.model';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 
