@@ -3,6 +3,7 @@ import { Actions, ActionTypes } from './actions';
 
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
+
     case ActionTypes.SINGLE_TIMER_REQUESTED: {
       return {
         ...state,
@@ -10,6 +11,7 @@ export function featureReducer(state = initialState, action: Actions): State {
         error: null
       };
     }
+
     case ActionTypes.SINGLE_TIMER_LOADED: {
       return featureAdapter.addOne(
         action.payload.timer, {
@@ -19,6 +21,7 @@ export function featureReducer(state = initialState, action: Actions): State {
         }
       );
     }
+
     case ActionTypes.ALL_TIMERS_REQUESTED: {
       return {
         ...state,
@@ -26,6 +29,7 @@ export function featureReducer(state = initialState, action: Actions): State {
         error: null
       };
     }
+
     case ActionTypes.ALL_TIMERS_LOADED: {
       return featureAdapter.addAll(
         action.payload.items, {
@@ -36,6 +40,7 @@ export function featureReducer(state = initialState, action: Actions): State {
         }
       );
     }
+
     case ActionTypes.TIMER_LOAD_FAILURE: {
       return {
         ...state,
@@ -43,6 +48,25 @@ export function featureReducer(state = initialState, action: Actions): State {
         error: action.payload.error
       };
     }
+
+    case ActionTypes.UPDATE_TIMER_COMPLETE:
+      return featureAdapter.updateOne(
+        action.payload.timer,
+        state
+      );
+
+    case ActionTypes.ADD_TIMER_COMPLETE:
+      return featureAdapter.addOne(
+        action.payload.timer,
+        state
+      );
+
+    case ActionTypes.DELETE_TIMER_COMPLETE:
+      return featureAdapter.removeOne(
+        action.payload.timerId,
+        state
+      );
+
     default: {
       return state;
     }

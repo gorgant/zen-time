@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
+import { Observable, of } from 'rxjs';
 import { Timer } from '../models/timer.model';
 import { map } from 'rxjs/operators';
 import { AppUser } from 'src/app/shared/models/app-user.model';
@@ -12,7 +12,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class TimerService {
 
   constructor(
-    // private db: AngularFirestore,
+    private db: AngularFirestore,
     private userService: UserService
   ) { }
 
@@ -44,6 +44,33 @@ export class TimerService {
           return timer;
         })
       );
+  }
+
+  saveTimer(timer: Timer) {
+    const timerDoc = this.getTimerDoc(timer.id);
+    timerDoc.update(timer);
+    console.log('Updated timer in database', timer);
+    // Convert this return to an observable to be consumed properly by the store effects
+    return of(timer);
+  }
+
+  createTimer(timer: Timer) {
+    const timerDoc = this.getTimerDoc(timer.id);
+    timerDoc.set(timer);
+    console.log('Created timer in database', timer);
+    // Convert this return to an observable to be consumed properly by the store effects
+    return of(timer);
+  }
+
+  deleteTimer(timerId: string) {
+    const timerDoc = this.getTimerDoc(timerId);
+    timerDoc.delete();
+    console.log('Deleted timer with ID', timerId);
+    return of(timerId);
+  }
+
+  generateTimerId(): string {
+    return this.db.createId();
   }
 
   private getTimerCollection(): AngularFirestoreCollection<Timer> {

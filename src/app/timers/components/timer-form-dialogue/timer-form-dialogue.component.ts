@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TimerFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
@@ -6,6 +6,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { durationValidator } from '../../validators/duration-validator.directive';
+import { Store } from '@ngrx/store';
+import { RootStoreState, TimerStoreActions } from 'src/app/root-store';
+import { TimerService } from '../../services/timer.service';
+import { now } from 'moment';
 
 @Component({
   selector: 'app-timer-form',
@@ -22,6 +26,8 @@ export class TimerFormDialogueComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TimerFormDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) private timer: Timer,
+    private store$: Store<RootStoreState.State>,
+    private timerService: TimerService,
   ) { }
 
   ngOnInit() {
@@ -60,11 +66,40 @@ export class TimerFormDialogueComponent implements OnInit {
 
 
   onSave() {
-    const timerData: Timer = this.timerForm.value;
+    // const timerFormValues = this.timerForm.value;
+    let weeks: number = this.weeks.value;
+    let days: number = this.days.value;
+    let hours: number = this.hours.value;
+    let minutes: number = this.minutes.value;
+    weeks = weeks * 1000 * 60 * 60 * 24 * 7;
+    days = days * 1000 * 60 * 60 * 24;
+    hours = hours * 1000 * 60 * 60;
+    minutes = minutes * 1000 * 60;
+    const totalDuration: number = minutes + hours + days + weeks;
+
+    const timerData: Timer = {
+      title: this.title.value,
+      category: this.category.value,
+      notes: this.notes.value,
+      duration: totalDuration,
+      setOnDate: now()
+    };
+
     if (!this.newTimer) {
-      console.log('Save timer updates', timerData);
+      const updatedTimer: Timer = {
+        ...timerData,
+        id: this.timer.id,
+      };
+      console.log('Dispatching request to update timer');
+      this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer: updatedTimer}));
     } else {
-      console.log('Create new timer', timerData);
+      const autoTimerId: string = this.timerService.generateTimerId();
+      const newTimer: Timer = {
+        ...timerData,
+        id: autoTimerId,
+      };
+      console.log('Dispatching request to create new timer');
+      this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
     }
     this.dialogRef.close();
   }
@@ -79,5 +114,8 @@ export class TimerFormDialogueComponent implements OnInit {
   get notes() { return this.timerForm.get('notes'); }
   get duration() { return this.timerForm.get('duration'); }
   get weeks() { return this.timerForm.get('duration.weeks'); }
+  get days() { return this.timerForm.get('duration.days'); }
+  get hours() { return this.timerForm.get('duration.hours'); }
+  get minutes() { return this.timerForm.get('duration.minutes'); }
 
 }

@@ -1,8 +1,8 @@
 export interface Timer {
-  id?: string;
+  setOnDate: number;
   title: string;
   category: string;
-  createdDate: number;
   notes: string;
   duration: number;
+  id?: string;
 }

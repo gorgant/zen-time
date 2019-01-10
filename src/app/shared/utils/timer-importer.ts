@@ -13,56 +13,56 @@ export class TimerImporterService {
     {
       title: 'Replace toothbrush',
       category: 'Personal Care',
-      createdDate: 1546830102699,
+      setOnDate: 1546830102699,
       notes: `Purchased on Amazon, check for deals on the Sonicare diamondclean, shouldn't cost more than $10 a brush head`,
       duration: 7776000000
     },
     {
       title: 'Fix broken faucet',
       category: 'House Repairs',
-      createdDate: 1544821402000,
+      setOnDate: 1544821402000,
       notes: `Check with the local hardware store for replacement parts; may need professional assistance`,
       duration: 1123200000
     },
     {
       title: 'Change kitchen sponge',
       category: 'Pantry',
-      createdDate: 1545830102699,
+      setOnDate: 1545830102699,
       notes: `Typically lasts about this long, give it a sniff test`,
       duration: 4376000000
     },
     {
       title: 'Check protein powder levels',
       category: 'Sports',
-      createdDate: 1544320102699,
+      setOnDate: 1544320102699,
       notes: `Gotta make sure we don't run out before the next lifting competition brah`,
       duration: 2773050000
     },
     {
       title: 'Clean windows',
       category: 'House Repairs',
-      createdDate: 1545130102699,
+      setOnDate: 1545130102699,
       notes: `With the increase in pollution, this is getting more and more important`,
       duration: 9746000000
     },
     {
       title: 'Water plants',
       category: 'Gardening',
-      createdDate: 1542130102699,
+      setOnDate: 1542130102699,
       notes: `Important not to over water these`,
       duration: 3747000000
     },
     {
       title: 'Replace underwear supply',
       category: 'Personal Care',
-      createdDate: 1543130102699,
+      setOnDate: 1543130102699,
       notes: `These wear out quickly so yeah... keep em fresh`,
       duration: 8746300200
     },
     {
       title: 'Swap out fish filter',
       category: 'House Repairs',
-      createdDate: 1543130102699,
+      setOnDate: 1543130102699,
       // tslint:disable-next-line:max-line-length
       notes: `Only replace the cotton portion, the ceramic tiles don't need to be replaced as they are a permanent fixture in the filter apparatus`,
       duration: 6666300200
@@ -70,7 +70,7 @@ export class TimerImporterService {
     {
       title: 'Tighten screw on the sun protector',
       category: 'House Repairs',
-      createdDate: 1543130102699,
+      setOnDate: 1543130102699,
       // tslint:disable-next-line:max-line-length
       notes: `It typically gets loose every few weeks, but lately it has been prety secure`,
       duration: 10246300200

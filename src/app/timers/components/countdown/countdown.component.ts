@@ -10,19 +10,22 @@ import { Countdown } from 'src/app/shared/models/countdown.model';
 })
 export class CountdownComponent implements OnInit, OnDestroy {
 
+  tickerSet: boolean;
   // This asynchronously loads the timer logic only once timer is present
   // Not sure why this is necessary here while not in the timer-card-item component
   @Input()
   set timer(timer: Timer) {
     this._timer = timer;
-    if (timer) {
+    if (timer && !this.tickerSet) {
       this.applyTimerValues();
+      this.tickerSet = true; // This prevents additional tickers from firing when edit dialogue is closed
     }
   }
   private _timer: Timer;
   get timer(): Timer { return this._timer; }
   countDownClock: CountDownClock;
   intervalTicker: NodeJS.Timer;
+
 
   constructor() { }
 
@@ -45,9 +48,13 @@ export class CountdownComponent implements OnInit, OnDestroy {
     }, step);
   }
 
+  private killTicker() {
+    clearInterval(this.intervalTicker);
+  }
+
   ngOnDestroy() {
     // Stop timer when navigating away from page
-    clearInterval(this.intervalTicker);
+    this.killTicker();
   }
 
 }

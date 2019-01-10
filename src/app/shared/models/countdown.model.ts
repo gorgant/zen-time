@@ -33,7 +33,7 @@ export class Countdown {
   }
 
   calcRemainingTime(): number {
-    const elapsedTime = now() - this.timer.createdDate;
+    const elapsedTime = now() - this.timer.setOnDate;
     const remainingTime = this.timer.duration - elapsedTime;
     return remainingTime;
   }

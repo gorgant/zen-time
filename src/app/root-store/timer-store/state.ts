@@ -28,7 +28,8 @@ export const initialState: State = featureAdapter.getInitialState(
   }
 );
 
+// Helper function for sortComparer
 function calcRemainingTime(timer: Timer): number {
-  const elapsedTime = now() - timer.createdDate;
+  const elapsedTime = now() - timer.setOnDate;
   return timer.duration - elapsedTime;
 }
