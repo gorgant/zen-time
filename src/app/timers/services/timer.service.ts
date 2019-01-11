@@ -21,6 +21,7 @@ export class TimerService {
       .snapshotChanges()
       .pipe(
         map(docArray => {
+          // throw(new Error());
           return docArray.map(doc => {
             const timer: Timer = {
               id: doc.payload.doc.id,

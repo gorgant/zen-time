@@ -7,12 +7,14 @@ import * as featureActions from './actions';
 import { switchMap, map, catchError, mergeMap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Injectable()
 export class TimerStoreEffects {
   constructor(
     private timerService: TimerService,
     private actions$: Actions,
+    private uiService: UiService
   ) { }
 
   @Effect()
@@ -24,8 +26,10 @@ export class TimerStoreEffects {
       this.timerService.fetchSingleTimer(action.payload.timerId)
         .pipe(
           map(timer => new featureActions.SingleTimerLoaded({timer})),
-          catchError(error =>
-            of(new featureActions.LoadErrorDetected({ error }))
+          catchError(error => {
+            this.uiService.showSnackBar(error, null, 5000);
+            return of(new featureActions.LoadErrorDetected({ error }));
+          }
           )
         )
     )
@@ -40,8 +44,10 @@ export class TimerStoreEffects {
       this.timerService.fetchAllTimers()
         .pipe(
           map(timers => new featureActions.AllTimersLoaded({items: timers})),
-          catchError(error =>
-            of(new featureActions.LoadErrorDetected({ error }))
+          catchError(error => {
+            this.uiService.showSnackBar(error, null, 5000);
+            return of(new featureActions.LoadErrorDetected({ error }));
+          }
           )
         )
     )
@@ -60,9 +66,10 @@ export class TimerStoreEffects {
         };
         return new featureActions.UpdateTimerComplete({timer: timerUp});
       }),
-      catchError(error =>
-        of(new featureActions.LoadErrorDetected({ error }))
-      )
+      catchError(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return of(new featureActions.LoadErrorDetected({ error }));
+      })
     )),
   );
 
@@ -73,9 +80,10 @@ export class TimerStoreEffects {
     ),
     mergeMap(action => this.timerService.createTimer(action.payload.timer).pipe(
       map(timerWithId => new featureActions.AddTimerComplete({timer: timerWithId})),
-      catchError(error =>
-        of(new featureActions.LoadErrorDetected({ error }))
-      )
+      catchError(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return of(new featureActions.LoadErrorDetected({ error }));
+      })
     )),
   );
 
@@ -86,9 +94,10 @@ export class TimerStoreEffects {
     ),
     mergeMap(action => this.timerService.deleteTimer(action.payload.timerId).pipe(
       map(timerId => new featureActions.DeleteTimerComplete({timerId: timerId})),
-      catchError(error =>
-        of(new featureActions.LoadErrorDetected({ error }))
-      )
+      catchError(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return of(new featureActions.LoadErrorDetected({ error }));
+      })
     )),
   );
 }
