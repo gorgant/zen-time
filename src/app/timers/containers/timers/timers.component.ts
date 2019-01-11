@@ -7,6 +7,8 @@ import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
 import { map, withLatestFrom } from 'rxjs/operators';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 
 @Component({
   selector: 'app-timers',
@@ -24,7 +26,8 @@ export class TimersComponent implements OnInit {
 
   constructor(
     private store$: Store<RootStoreState.State>,
-    private timerImporterService: TimerImporterService
+    private timerImporterService: TimerImporterService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -54,6 +57,17 @@ export class TimersComponent implements OnInit {
     this.isLoading$ = this.store$.select(
       TimerStoreSelectors.selectTimerIsLoading
     );
+  }
+
+  onCreateTimer() {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '400px';
+
+    const dialogRef = this.dialog.open(TimerFormDialogueComponent, dialogConfig);
   }
 
   onImport() {

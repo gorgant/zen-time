@@ -15,3 +15,8 @@
   [loading]="isLoading$ | async" 
   [error]="(error$ | async)">
 </app-timer-card-list>
+<div *ngIf="!(isLoading$ | async) && timers$" id="button-holder" fxLayoutAlign="end center">
+  <button (click)="onCreateTimer()" id="add-timer" mat-fab aria-label="Add a category">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

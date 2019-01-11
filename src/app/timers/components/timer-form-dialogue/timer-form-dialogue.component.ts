@@ -34,6 +34,10 @@ export class TimerFormDialogueComponent implements OnInit {
 
     if (this.timer) {
       this.newTimer = false;
+      console.log('Timer detected, loading timer data');
+    } else {
+      this.newTimer = true;
+      console.log('No timer detected, loading blank form');
     }
 
     this.timerForm = this.fb.group({
