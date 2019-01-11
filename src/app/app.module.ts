@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { RootStoreModule } from './root-store/root-store.module';
+import { RootStoreModule } from './root-store';
 
 
 @NgModule({

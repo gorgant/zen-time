@@ -8,6 +8,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { CustomSerializer } from '../shared/utils/utils';
 import { TimersStoreModule } from './timer-store';
+import { metaReducers } from './meta-reducers';
 
 @NgModule({
   declarations: [],
@@ -15,7 +16,7 @@ import { TimersStoreModule } from './timer-store';
     CommonModule,
     AuthStoreModule,
     TimersStoreModule,
-    StoreModule.forRoot({}),
+    StoreModule.forRoot({}, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot({stateKey: 'router'}),

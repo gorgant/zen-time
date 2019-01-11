@@ -8,7 +8,7 @@ export const getIsLoading = (state: State): boolean => state.isLoading;
 export const getTimersLoaded = (state: State): boolean => state.timersLoaded;
 
 export const selectTimerState: MemoizedSelector<object, State>
-= createFeatureSelector<State>('timer');
+= createFeatureSelector<State>('timers');
 
 export const selectAllTimers: (state: object) => Timer[] = createSelector(
   selectTimerState,

@@ -9,7 +9,7 @@ import { TimerStoreEffects } from './effects';
   declarations: [],
   imports: [
     CommonModule,
-    StoreModule.forFeature('timer', featureReducer),
+    StoreModule.forFeature('timers', featureReducer),
     EffectsModule.forFeature([TimerStoreEffects])
   ],
   providers: [TimerStoreEffects]
