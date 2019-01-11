@@ -8,6 +8,7 @@ import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 import { UiService } from 'src/app/shared/services/ui.service';
+import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 
 @Component({
   selector: 'app-timer',
@@ -78,9 +79,18 @@ export class TimerComponent implements OnInit {
   }
 
   onDeleteTimer() {
-    this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timerId: this.timerId}));
-    this.router.navigate(['../']);
-    this.uiService.showSnackBar('Timer deleted', null, 3000);
+    const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
+    dialogRef.afterClosed().subscribe(userCanceled => {
+      if (userCanceled) {
+        this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timerId: this.timerId}));
+        this.router.navigate(['../']);
+        this.uiService.showSnackBar('Timer deleted', null, 3000);
+      } else {
+        // Do nothing
+      }
+    });
+
+
   }
 
 

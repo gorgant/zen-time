@@ -9,6 +9,7 @@ import { TimerDetailsComponent } from './components/timer-details/timer-details.
 import { TimerComponent } from './containers/timer/timer.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { TimerFormDialogueComponent } from './components/timer-form-dialogue/timer-form-dialogue.component';
+import { DeleteConfirmDialogueComponent } from './components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -18,14 +19,16 @@ import { TimerFormDialogueComponent } from './components/timer-form-dialogue/tim
     TimerDetailsComponent,
     TimerComponent,
     CountdownComponent,
-    TimerFormDialogueComponent
+    TimerFormDialogueComponent,
+    DeleteConfirmDialogueComponent
   ],
   imports: [
     SharedModule,
     TimersRoutingModule
   ],
   entryComponents: [
-    TimerFormDialogueComponent
+    TimerFormDialogueComponent,
+    DeleteConfirmDialogueComponent
   ],
 })
 export class TimersModule { }
