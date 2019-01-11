@@ -18,5 +18,5 @@
 <div class="other-actions" fxLayout="column" fxLayoutAlign="center center">
   <button class="timer-action" mat-raised-button color="primary">Set Reminder</button>
   <button class="timer-action complete-timer" mat-stroked-button color="accent">Complete Timer</button>
-  <button class="timer-action" mat-button color="warn">Delete Timer</button>
+  <button (click)="onDeleteTimer()" class="timer-action" mat-button color="warn">Delete Timer</button>
 </div>

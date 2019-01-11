@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
 import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-timer',
@@ -19,25 +20,28 @@ export class TimerComponent implements OnInit {
   error$: Observable<any>;
   isLoading$: Observable<boolean>;
   @ViewChild('matButton') matButton;
+  timerId: string;
 
   constructor(
     private route: ActivatedRoute,
     private store$: Store<RootStoreState.State>,
     private dialog: MatDialog,
+    private router: Router,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
-    const timerId: string = this.route.snapshot.params['id'];
+    this.timerId = this.route.snapshot.params['id'];
 
     this.timer$ = this.store$.select(
-      TimerStoreSelectors.selectTimerById(timerId)
+      TimerStoreSelectors.selectTimerById(this.timerId)
     ).pipe(
       withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
       map(([timer, timersLoaded]) => {
         // Fetch timers if store hasn't been initialized
         if (!timersLoaded) {
           this.store$.dispatch(
-            new TimerStoreActions.SingleTimerRequested({timerId})
+            new TimerStoreActions.SingleTimerRequested({timerId: this.timerId})
           );
         }
         return timer;
@@ -71,6 +75,12 @@ export class TimerComponent implements OnInit {
 
         const dialogRef = this.dialog.open(TimerFormDialogueComponent, dialogConfig);
       });
+  }
+
+  onDeleteTimer() {
+    this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timerId: this.timerId}));
+    this.router.navigate(['../']);
+    this.uiService.showSnackBar('Timer deleted', null, 3000);
   }
 
 

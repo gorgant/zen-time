@@ -5,6 +5,7 @@ import { Timer } from '../models/timer.model';
 import { map } from 'rxjs/operators';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { UserService } from 'src/app/shared/services/user.service';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class TimerService {
 
   constructor(
     private db: AngularFirestore,
-    private userService: UserService
+    private userService: UserService,
+    private uiService: UiService
   ) { }
 
   fetchAllTimers(): Observable<Timer[]> {
@@ -47,26 +49,24 @@ export class TimerService {
       );
   }
 
-  saveTimer(timer: Timer) {
+  updateTimer(timer: Timer): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.update(timer);
-    console.log('Updated timer in database', timer);
-    // Convert this return to an observable to be consumed properly by the store effects
+    this.uiService.showSnackBar(`Timer updated`, null, 3000);
     return of(timer);
   }
 
-  createTimer(timer: Timer) {
+  createTimer(timer: Timer): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.set(timer);
-    console.log('Created timer in database', timer);
-    // Convert this return to an observable to be consumed properly by the store effects
+    this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
     return of(timer);
   }
 
-  deleteTimer(timerId: string) {
+  deleteTimer(timerId: string): Observable<string> {
     const timerDoc = this.getTimerDoc(timerId);
     timerDoc.delete();
-    console.log('Deleted timer with ID', timerId);
+    this.uiService.showSnackBar(`Timer deleted`, null, 3000);
     return of(timerId);
   }
 

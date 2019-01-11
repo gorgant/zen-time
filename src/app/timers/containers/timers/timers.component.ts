@@ -9,6 +9,7 @@ import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-timers',
@@ -28,6 +29,7 @@ export class TimersComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private timerImporterService: TimerImporterService,
     private dialog: MatDialog,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {

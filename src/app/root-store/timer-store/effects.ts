@@ -58,7 +58,7 @@ export class TimerStoreEffects {
     ofType<featureActions.UpdateTimerRequested>(
       featureActions.ActionTypes.UPDATE_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.saveTimer(action.payload.timer).pipe(
+    mergeMap(action => this.timerService.updateTimer(action.payload.timer).pipe(
       map(timer => {
         const timerUp: Update<Timer> = {
           id: timer.id,

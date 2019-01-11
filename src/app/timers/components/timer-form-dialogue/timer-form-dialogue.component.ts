@@ -105,11 +105,11 @@ export class TimerFormDialogueComponent implements OnInit {
       console.log('Dispatching request to create new timer');
       this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
     }
-    this.dialogRef.close();
+    this.dialogRef.close(timerData.title);
   }
 
   onClose() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
   // These getters are used for easy access in the HTML template
