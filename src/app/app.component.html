@@ -1,15 +1,11 @@
-<mat-sidenav-container>
-  <mat-sidenav 
-    #sidenav 
-    mode="push" 
-    [fixedInViewport]="true"
-    role="navigation">
-    <app-sidenav (closeSidenav)="sidenav.toggle()"></app-sidenav>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-header (toggleSidenav)="sidenav.toggle()"></app-header>
-    <main>
+<div class="master-container" fxLayout="column">
+  <app-header class="app-header" (toggleSidenav)="sidenav.toggle()"></app-header>
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav class="sidenav" #sidenav mode="push" [fixedInViewport]="true">
+      <app-sidenav (closeSidenav)="sidenav.toggle()"></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
       <router-outlet></router-outlet>
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

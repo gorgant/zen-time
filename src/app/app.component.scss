@@ -1,21 +1,13 @@
-main {
-  padding-top: 16px;
-  padding-left: 16px;
-  padding-right: 16px;
-  max-width: 600px;
-  margin: auto;
-}
-
-
-mat-sidenav-container {
-  position: sticky;
+.app-header {
   top: 0;
+  position: sticky;
 }
 
-// mat-sidenav-container, mat-sidenav-content, mat-sidenav {
-//   height: 100%;
-// }
+.sidenav-container {
+  height: 90vh;
+}
 
-mat-sidenav {
-  width: 250px;
+.sidenav {
+  display: flex;
+  width: 200px;
 }
