@@ -1,4 +1,15 @@
-<mat-toolbar class="my-navbar" color="primary"></mat-toolbar>
-<main>
-  <router-outlet></router-outlet>
-</main>
+<mat-sidenav-container>
+  <mat-sidenav 
+    #sidenav 
+    mode="push" 
+    [fixedInViewport]="true"
+    role="navigation">
+    <app-sidenav (closeSidenav)="sidenav.toggle()"></app-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-header (toggleSidenav)="sidenav.toggle()"></app-header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

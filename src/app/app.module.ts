@@ -12,11 +12,15 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { RootStoreModule } from './root-store';
+import { HeaderComponent } from './navigation/components/header/header.component';
+import { SidenavComponent } from './navigation/components/sidenav/sidenav.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    HeaderComponent,
+    SidenavComponent
   ],
   imports: [
     BrowserModule,

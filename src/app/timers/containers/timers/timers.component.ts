@@ -3,13 +3,10 @@ import { RootStoreState, TimerStoreSelectors, TimerStoreActions, AuthStoreSelect
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
-import { imageUrls } from 'src/app/shared/assets/imageUrls';
-import { AppUser } from 'src/app/shared/models/app-user.model';
 import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
-import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-timers',
@@ -17,9 +14,6 @@ import { UiService } from 'src/app/shared/services/ui.service';
   styleUrls: ['./timers.component.scss']
 })
 export class TimersComponent implements OnInit {
-
-  defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
-  appUser$: Observable<AppUser>;
 
   timers$: Observable<Timer[]>;
   error$: Observable<any>;
@@ -29,14 +23,9 @@ export class TimersComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private timerImporterService: TimerImporterService,
     private dialog: MatDialog,
-    private uiService: UiService
   ) { }
 
   ngOnInit() {
-    this.appUser$ = this.store$.select(
-      AuthStoreSelectors.selectAppUser
-    );
-
     this.timers$ = this.store$.select(
       TimerStoreSelectors.selectAllTimers
     ).pipe(

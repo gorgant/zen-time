@@ -1,0 +1,20 @@
+<mat-nav-list>
+  <mat-list-item *ngIf="(appUser$ | async) as user" fxLayout="column">
+    <img [src]="defaultProfileImage" class="avatar">
+    <span class="img-caption">{{ user.displayName }}</span>
+  </mat-list-item>
+  <mat-list-item *ngIf="!(isAuth$ | async)" routerLink="/signup" (click)="onCloseSidenav()">
+    <mat-icon>list_alt</mat-icon>
+    <span class="nav-caption">Signup</span>
+  </mat-list-item>
+  <mat-list-item *ngIf="!(isAuth$ | async)" routerLink="/login" (click)="onCloseSidenav()">
+    <mat-icon>face</mat-icon>
+    <span class="nav-caption">Login</span>
+  </mat-list-item>
+  <mat-list-item>
+    <button mat-icon-button>
+      <mat-icon>exit_to_app</mat-icon>
+      <span class="nav-caption">Logout</span>
+    </button>
+  </mat-list-item>
+</mat-nav-list>

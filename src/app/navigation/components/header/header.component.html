@@ -1,0 +1,11 @@
+<mat-toolbar class="my-navbar" color="primary" fxLayoutAlign="center center">
+  <div *ngIf="(activeUrl$ | async) === '/timers' " class="nav-contents" fxLayoutAlign="space-between center">
+    <button (click)="onToggleSidenav()" #matButton mat-icon-button>
+      <mat-icon id="profile-icon">person</mat-icon>
+      <span *ngIf="(appUser$ | async) as user" id="profile-name">{{ user.displayName }}</span>
+    </button>
+    <button mat-icon-button>
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
