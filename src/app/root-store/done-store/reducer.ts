@@ -36,7 +36,7 @@ export function featureReducer(state = initialState, action: Actions): State {
           ...state,
           isLoading: false,
           error: null,
-          timersLoaded: true,
+          doneLoaded: true,
         }
       );
     }

@@ -11,7 +11,7 @@
   <mat-list-item 
     routerLinkActive
     routerLinkActive="active-list-item"
-    routerLink="/timers"
+    routerLink="/timers/active"
     (click)="onCloseSidenav()">
     <mat-icon mat-list-icon>timer</mat-icon>
     <p mat-line>Active Timers</p>
@@ -20,6 +20,7 @@
   <mat-list-item
     routerLinkActive
     routerLinkActive="active-list-item"
+    routerLink="/timers/completed" 
     (click)="onCloseSidenav()">
     <mat-icon mat-list-icon>timer_off</mat-icon>
     <p mat-line>Completed Timers</p>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RootStoreState, TimerStoreSelectors, TimerStoreActions, AuthStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
@@ -9,11 +9,11 @@ import { MatDialogConfig, MatDialog } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 
 @Component({
-  selector: 'app-timers',
-  templateUrl: './timers.component.html',
-  styleUrls: ['./timers.component.scss']
+  selector: 'app-active-timers',
+  templateUrl: './active-timers.component.html',
+  styleUrls: ['./active-timers.component.scss']
 })
-export class TimersComponent implements OnInit {
+export class ActiveTimersComponent implements OnInit {
 
   timers$: Observable<Timer[]>;
   error$: Observable<any>;

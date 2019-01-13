@@ -1,0 +1,6 @@
+<app-timer-card-list 
+  [timers]="done$ | async" 
+  [doneList]="'true'"
+  [loading]="isLoading$ | async" 
+  [error]="(error$ | async)">
+</app-timer-card-list>

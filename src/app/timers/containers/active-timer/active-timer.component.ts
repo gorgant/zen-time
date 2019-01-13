@@ -7,15 +7,14 @@ import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/
 import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
-import { UiService } from 'src/app/shared/services/ui.service';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 
 @Component({
-  selector: 'app-timer',
-  templateUrl: './timer.component.html',
-  styleUrls: ['./timer.component.scss']
+  selector: 'app-active-timer',
+  templateUrl: './active-timer.component.html',
+  styleUrls: ['./active-timer.component.scss']
 })
-export class TimerComponent implements OnInit {
+export class ActiveTimerComponent implements OnInit {
 
   timer$: Observable<Timer>;
   error$: Observable<any>;
@@ -28,7 +27,6 @@ export class TimerComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private dialog: MatDialog,
     private router: Router,
-    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -78,21 +76,25 @@ export class TimerComponent implements OnInit {
       });
   }
 
+  onCompleteTimer() {
+    this.timer$
+      .pipe(take(1))
+      .subscribe(timer => {
+        this.store$.dispatch(new TimerStoreActions.MarkTimerDone({timer: timer}));
+        this.router.navigate(['../']);
+      });
+  }
+
   onDeleteTimer() {
     const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
     dialogRef.afterClosed().subscribe(userCanceled => {
       if (userCanceled) {
         this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timerId: this.timerId}));
         this.router.navigate(['../']);
-        this.uiService.showSnackBar('Timer deleted', null, 3000);
+        // this.uiService.showSnackBar('Timer deleted', null, 3000);
       } else {
         // Do nothing
       }
     });
-
-
   }
-
-
-
 }

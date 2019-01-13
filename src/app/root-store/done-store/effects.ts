@@ -3,32 +3,35 @@ import { TimerService } from 'src/app/timers/services/timer.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { Observable, of } from 'rxjs';
-import { Action } from '@ngrx/store';
-import * as featureActions from './actions';
-import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
+import { Action, Store } from '@ngrx/store';
+import * as doneFeatureActions from './actions';
+import * as timerFeatureActions from '../timer-store/actions';
+import { mergeMap, map, catchError, switchMap, tap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
+import { RootStoreState } from '..';
 
 @Injectable()
 export class DoneStoreEffects {
   constructor(
     private timerService: TimerService,
     private actions$: Actions,
-    private uiService: UiService
+    private uiService: UiService,
+    private store$: Store<RootStoreState.State>,
   ) { }
 
   @Effect()
   singleDoneRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.SingleDoneRequested>(
-      featureActions.ActionTypes.SINGLE_DONE_REQUESTED
+    ofType<doneFeatureActions.SingleDoneRequested>(
+      doneFeatureActions.ActionTypes.SINGLE_DONE_REQUESTED
     ),
     mergeMap(action =>
       this.timerService.fetchSingleDone(action.payload.timerId)
         .pipe(
-          map(timer => new featureActions.SingleDoneLoaded({timer})),
+          map(timer => new doneFeatureActions.SingleDoneLoaded({timer})),
           catchError(error => {
             this.uiService.showSnackBar(error, null, 5000);
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new doneFeatureActions.LoadErrorDetected({ error }));
           }
           )
         )
@@ -37,16 +40,16 @@ export class DoneStoreEffects {
 
   @Effect()
   allDoneRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.AllDoneRequested>(
-      featureActions.ActionTypes.ALL_DONE_REQUESTED
+    ofType<doneFeatureActions.AllDoneRequested>(
+      doneFeatureActions.ActionTypes.ALL_DONE_REQUESTED
     ),
     switchMap(action =>
       this.timerService.fetchAllDone()
         .pipe(
-          map(timers => new featureActions.AllDoneLoaded({timers: timers})),
+          map(timers => new doneFeatureActions.AllDoneLoaded({timers: timers})),
           catchError(error => {
             this.uiService.showSnackBar(error, null, 5000);
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new doneFeatureActions.LoadErrorDetected({ error }));
           }
           )
         )
@@ -55,8 +58,8 @@ export class DoneStoreEffects {
 
   @Effect()
   updateDoneEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.UpdateDoneRequested>(
-      featureActions.ActionTypes.UPDATE_DONE_REQUESTED
+    ofType<doneFeatureActions.UpdateDoneRequested>(
+      doneFeatureActions.ActionTypes.UPDATE_DONE_REQUESTED
     ),
     mergeMap(action => this.timerService.updateDone(action.payload.timer).pipe(
       map(timer => {
@@ -64,39 +67,47 @@ export class DoneStoreEffects {
           id: timer.id,
           changes: timer
         };
-        return new featureActions.UpdateDoneComplete({timer: timerUp});
+        return new doneFeatureActions.UpdateDoneComplete({timer: timerUp});
       }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
-        return of(new featureActions.LoadErrorDetected({ error }));
+        return of(new doneFeatureActions.LoadErrorDetected({ error }));
       })
     )),
   );
 
   @Effect()
   addDoneEffect$ = this.actions$.pipe(
-    ofType<featureActions.AddDoneRequested>(
-      featureActions.ActionTypes.ADD_DONE_REQUESTED
+    ofType<doneFeatureActions.AddDoneRequested>(
+      doneFeatureActions.ActionTypes.ADD_DONE_REQUESTED
     ),
     mergeMap(action => this.timerService.createDone(action.payload.timer).pipe(
-      map(timerWithId => new featureActions.AddDoneComplete({timer: timerWithId})),
+      tap(completedTimer => {
+        if (completedTimer) {
+          console.log('Completed timer detected, deleting active one');
+          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timerId: action.payload.timer.id}));
+        } else {
+          console.log('Error creating completed timer');
+        }
+      }),
+      map(completedTimer => new doneFeatureActions.AddDoneComplete({timer: completedTimer})),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
-        return of(new featureActions.LoadErrorDetected({ error }));
+        return of(new doneFeatureActions.LoadErrorDetected({ error }));
       })
     )),
   );
 
   @Effect()
   deleteDoneEffect$ = this.actions$.pipe(
-    ofType<featureActions.DeleteDoneRequested>(
-      featureActions.ActionTypes.DELETE_DONE_REQUESTED
+    ofType<doneFeatureActions.DeleteDoneRequested>(
+      doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
     ),
     mergeMap(action => this.timerService.deleteDone(action.payload.timerId).pipe(
-      map(timerId => new featureActions.DeleteDoneComplete({timerId: timerId})),
+      map(timerId => new doneFeatureActions.DeleteDoneComplete({timerId: timerId})),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
-        return of(new featureActions.LoadErrorDetected({ error }));
+        return of(new doneFeatureActions.LoadErrorDetected({ error }));
       })
     )),
   );

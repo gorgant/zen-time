@@ -1,8 +1,13 @@
 <mat-card appMatElevation>
   <mat-card-title class="title-text">{{ timer.title }}</mat-card-title>
-  <mat-card-subtitle *ngIf="countDownClock.total >= 0 && countDownClock.days >= 1"> 
-    Time Remaining: {{ countDownClock.weeks }} Weeks, {{ countDownClock.days }} Days
-  </mat-card-subtitle>
-  <mat-card-subtitle class="primaryColor" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due today!</mat-card-subtitle>
-  <mat-card-subtitle  class="accentColor" *ngIf="countDownClock.total < 0">Timer Expired!</mat-card-subtitle>
+  <div *ngIf="!completedTimer">
+    <mat-card-subtitle *ngIf="countDownClock.total >= 0 && countDownClock.days >= 1"> 
+      Time Remaining: {{ countDownClock.weeks }} Weeks, {{ countDownClock.days }} Days
+    </mat-card-subtitle>
+    <mat-card-subtitle class="primaryColor" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due today!</mat-card-subtitle>
+    <mat-card-subtitle  class="accentColor" *ngIf="countDownClock.total < 0">Timer Expired!</mat-card-subtitle>
+  </div>
+  <div *ngIf="completedTimer">
+    <mat-card-subtitle *ngIf="countDownClock.total < 0">Completed date: {{ timer.completedDate | date }}</mat-card-subtitle>
+  </div>
 </mat-card>

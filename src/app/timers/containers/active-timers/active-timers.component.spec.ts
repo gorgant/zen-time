@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimersComponent } from './timers.component';
+import { ActiveTimersComponent } from './active-timers.component';
 
 describe('TimersComponent', () => {
-  let component: TimersComponent;
-  let fixture: ComponentFixture<TimersComponent>;
+  let component: ActiveTimersComponent;
+  let fixture: ComponentFixture<ActiveTimersComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimersComponent ]
+      declarations: [ ActiveTimersComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimersComponent);
+    fixture = TestBed.createComponent(ActiveTimersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

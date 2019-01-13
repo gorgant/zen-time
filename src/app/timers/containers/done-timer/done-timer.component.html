@@ -1,0 +1,19 @@
+<div class="nav-contents-container" fxLayout="row" fxLayoutAlign="center center">
+  <div class="nav-contents" fxLayoutAlign="start center">
+    <button mat-icon-button [routerLink]="['../']">
+      <mat-icon class="back-arrow">arrow_back</mat-icon>
+    </button>
+  </div>
+</div>
+<div class="timer-details-container">
+
+  <app-timer-details 
+    [timer]="timer$ | async"
+    [loading]="isLoading$ | async"
+    [error]="error$ | async"
+    >
+  </app-timer-details>
+  <div class="other-actions" fxLayout="column" fxLayoutAlign="center center">
+    <button (click)="onDeleteTimer()" class="timer-action" mat-button color="warn">Delete Timer</button>
+  </div>
+</div>

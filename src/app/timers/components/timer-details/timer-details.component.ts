@@ -11,12 +11,13 @@ export class TimerDetailsComponent implements OnInit {
   @Input() timer: Timer;
   @Input() loading: boolean;
   @Input() error: any;
+  completedTimer: boolean;
 
   constructor(
   ) { }
 
   ngOnInit() {
-
+    this.completedTimer = !!this.timer.completedDate;
   }
 
 }

@@ -8,6 +8,7 @@ import { Timer } from '../../models/timer.model';
 })
 export class TimerCardListComponent implements OnInit {
 
+  @Input() doneList: boolean;
   @Input() timers: Timer[];
   @Input() loading: boolean;
   @Input() error: any;

@@ -13,12 +13,14 @@ export class TimerCardItemComponent implements OnInit {
   @Input() timer: Timer;
   countDownClock: CountDownClock;
   remainingTime: number;
+  completedTimer: boolean;
 
   constructor() { }
 
   ngOnInit() {
     this.countDownClock = new Countdown(this.timer).getCountDownClock();
     this.remainingTime = new Countdown(this.timer).calcRemainingTime();
+    this.completedTimer = !!this.timer.completedDate;
   }
 
 }
