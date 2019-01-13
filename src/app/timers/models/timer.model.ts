@@ -5,4 +5,5 @@ export interface Timer {
   notes: string;
   duration: number;
   id?: string;
+  completedDate?: number;
 }

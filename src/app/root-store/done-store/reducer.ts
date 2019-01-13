@@ -4,7 +4,7 @@ import { Actions, ActionTypes } from './actions';
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 
-    case ActionTypes.SINGLE_TIMER_REQUESTED: {
+    case ActionTypes.SINGLE_DONE_REQUESTED: {
       return {
         ...state,
         isLoading: true,
@@ -12,7 +12,7 @@ export function featureReducer(state = initialState, action: Actions): State {
       };
     }
 
-    case ActionTypes.SINGLE_TIMER_LOADED: {
+    case ActionTypes.SINGLE_DONE_LOADED: {
       return featureAdapter.addOne(
         action.payload.timer, {
           ...state,
@@ -22,7 +22,7 @@ export function featureReducer(state = initialState, action: Actions): State {
       );
     }
 
-    case ActionTypes.ALL_TIMERS_REQUESTED: {
+    case ActionTypes.ALL_DONE_REQUESTED: {
       return {
         ...state,
         isLoading: true,
@@ -30,7 +30,7 @@ export function featureReducer(state = initialState, action: Actions): State {
       };
     }
 
-    case ActionTypes.ALL_TIMERS_LOADED: {
+    case ActionTypes.ALL_DONE_LOADED: {
       return featureAdapter.addAll(
         action.payload.timers, {
           ...state,
@@ -41,7 +41,7 @@ export function featureReducer(state = initialState, action: Actions): State {
       );
     }
 
-    case ActionTypes.TIMER_LOAD_FAILURE: {
+    case ActionTypes.DONE_LOAD_FAILURE: {
       return {
         ...state,
         isLoading: false,
@@ -49,19 +49,19 @@ export function featureReducer(state = initialState, action: Actions): State {
       };
     }
 
-    case ActionTypes.UPDATE_TIMER_COMPLETE:
+    case ActionTypes.UPDATE_DONE_COMPLETE:
       return featureAdapter.updateOne(
         action.payload.timer,
         state
       );
 
-    case ActionTypes.ADD_TIMER_COMPLETE:
+    case ActionTypes.ADD_DONE_COMPLETE:
       return featureAdapter.addOne(
         action.payload.timer,
         state
       );
 
-    case ActionTypes.DELETE_TIMER_COMPLETE:
+    case ActionTypes.DELETE_DONE_COMPLETE:
       return featureAdapter.removeOne(
         action.payload.timerId,
         state

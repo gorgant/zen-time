@@ -8,14 +8,14 @@
     <span class="avatar-caption">{{ user.displayName }}</span>
   </div>
   
-  <a mat-list-item 
+  <mat-list-item 
     routerLinkActive
     routerLinkActive="active-list-item"
     routerLink="/timers"
     (click)="onCloseSidenav()">
     <mat-icon mat-list-icon>timer</mat-icon>
     <p mat-line>Active Timers</p>
-  </a>
+  </mat-list-item>
   
   <mat-list-item
     routerLinkActive
@@ -32,7 +32,7 @@
     (click)="onCloseSidenav()">
     <mat-icon mat-list-icon>person</mat-icon>
     <p class="nav-item-caption" mat-line>Profile</p>
-  </mat-list-item>
+</mat-list-item>
   
   <mat-list-item>
     <mat-icon mat-list-icon>exit_to_app</mat-icon>

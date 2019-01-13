@@ -32,7 +32,7 @@ export class AllTimersRequested implements Action {
 
 export class AllTimersLoaded implements Action {
   readonly type = ActionTypes.ALL_TIMERS_LOADED;
-  constructor(public payload: { items: Timer[] }) {}
+  constructor(public payload: { timers: Timer[] }) {}
 }
 
 export class LoadErrorDetected implements Action {

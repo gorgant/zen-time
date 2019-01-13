@@ -1,16 +1,15 @@
 import { EntityAdapter, createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
-import { now } from 'moment';
 
 export const featureAdapter: EntityAdapter<Timer>
   = createEntityAdapter<Timer>(
     {
       selectId: (timer: Timer) => timer.id,
-      // Sort by remaining time
+      // Sort by completed date
       sortComparer: (a: Timer, b: Timer): number => {
-        const remainingTimeA = calcRemainingTime(a);
-        const remainingTimeB = calcRemainingTime(b);
-        return remainingTimeA.toString().localeCompare(remainingTimeB.toString(), undefined, {numeric: true});
+        const completedDateA = a.completedDate;
+        const completedDateB = b.completedDate;
+        return completedDateA.toString().localeCompare(completedDateB.toString(), undefined, {numeric: true});
       }
     }
   );
@@ -18,19 +17,13 @@ export const featureAdapter: EntityAdapter<Timer>
 export interface State extends EntityState<Timer> {
   isLoading?: boolean;
   error?: any;
-  timersLoaded?: boolean;
+  doneLoaded?: boolean;
 }
 
 export const initialState: State = featureAdapter.getInitialState(
   {
     isLoading: false,
     error: null,
-    timersLoaded: false,
+    doneLoaded: false,
   }
 );
-
-// Helper function for sortComparer
-function calcRemainingTime(timer: Timer): number {
-  const elapsedTime = now() - timer.setOnDate;
-  return timer.duration - elapsedTime;
-}

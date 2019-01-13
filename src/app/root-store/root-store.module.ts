@@ -9,6 +9,7 @@ import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router
 import { CustomSerializer } from '../shared/utils/utils';
 import { TimersStoreModule } from './timer-store';
 import { metaReducers } from './meta-reducers';
+import { DoneStoreModule } from './done-store';
 
 @NgModule({
   declarations: [],
@@ -16,6 +17,7 @@ import { metaReducers } from './meta-reducers';
     CommonModule,
     AuthStoreModule,
     TimersStoreModule,
+    DoneStoreModule,
     StoreModule.forRoot({}, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),

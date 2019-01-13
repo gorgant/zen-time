@@ -5,12 +5,12 @@ import { UiService } from 'src/app/shared/services/ui.service';
 import { Observable, of } from 'rxjs';
 import { Action } from '@ngrx/store';
 import * as featureActions from './actions';
-import { switchMap, map, catchError, mergeMap } from 'rxjs/operators';
+import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 
 @Injectable()
-export class TimerStoreEffects {
+export class DoneStoreEffects {
   constructor(
     private timerService: TimerService,
     private actions$: Actions,
@@ -18,14 +18,14 @@ export class TimerStoreEffects {
   ) { }
 
   @Effect()
-  singleTimerRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.SingleTimerRequested>(
-      featureActions.ActionTypes.SINGLE_TIMER_REQUESTED
+  singleDoneRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.SingleDoneRequested>(
+      featureActions.ActionTypes.SINGLE_DONE_REQUESTED
     ),
     mergeMap(action =>
-      this.timerService.fetchSingleTimer(action.payload.timerId)
+      this.timerService.fetchSingleDone(action.payload.timerId)
         .pipe(
-          map(timer => new featureActions.SingleTimerLoaded({timer})),
+          map(timer => new featureActions.SingleDoneLoaded({timer})),
           catchError(error => {
             this.uiService.showSnackBar(error, null, 5000);
             return of(new featureActions.LoadErrorDetected({ error }));
@@ -36,14 +36,14 @@ export class TimerStoreEffects {
   );
 
   @Effect()
-  allTimersRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.AllTimersRequested>(
-      featureActions.ActionTypes.ALL_TIMERS_REQUESTED
+  allDoneRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.AllDoneRequested>(
+      featureActions.ActionTypes.ALL_DONE_REQUESTED
     ),
     switchMap(action =>
-      this.timerService.fetchAllTimers()
+      this.timerService.fetchAllDone()
         .pipe(
-          map(timers => new featureActions.AllTimersLoaded({timers: timers})),
+          map(timers => new featureActions.AllDoneLoaded({timers: timers})),
           catchError(error => {
             this.uiService.showSnackBar(error, null, 5000);
             return of(new featureActions.LoadErrorDetected({ error }));
@@ -54,17 +54,17 @@ export class TimerStoreEffects {
   );
 
   @Effect()
-  updateTimerEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.UpdateTimerRequested>(
-      featureActions.ActionTypes.UPDATE_TIMER_REQUESTED
+  updateDoneEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.UpdateDoneRequested>(
+      featureActions.ActionTypes.UPDATE_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.updateTimer(action.payload.timer).pipe(
+    mergeMap(action => this.timerService.updateDone(action.payload.timer).pipe(
       map(timer => {
         const timerUp: Update<Timer> = {
           id: timer.id,
           changes: timer
         };
-        return new featureActions.UpdateTimerComplete({timer: timerUp});
+        return new featureActions.UpdateDoneComplete({timer: timerUp});
       }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
@@ -74,12 +74,12 @@ export class TimerStoreEffects {
   );
 
   @Effect()
-  addTimerEffect$ = this.actions$.pipe(
-    ofType<featureActions.AddTimerRequested>(
-      featureActions.ActionTypes.ADD_TIMER_REQUESTED
+  addDoneEffect$ = this.actions$.pipe(
+    ofType<featureActions.AddDoneRequested>(
+      featureActions.ActionTypes.ADD_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.createTimer(action.payload.timer).pipe(
-      map(timerWithId => new featureActions.AddTimerComplete({timer: timerWithId})),
+    mergeMap(action => this.timerService.createDone(action.payload.timer).pipe(
+      map(timerWithId => new featureActions.AddDoneComplete({timer: timerWithId})),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
         return of(new featureActions.LoadErrorDetected({ error }));
@@ -88,12 +88,12 @@ export class TimerStoreEffects {
   );
 
   @Effect()
-  deleteTimerEffect$ = this.actions$.pipe(
-    ofType<featureActions.DeleteTimerRequested>(
-      featureActions.ActionTypes.DELETE_TIMER_REQUESTED
+  deleteDoneEffect$ = this.actions$.pipe(
+    ofType<featureActions.DeleteDoneRequested>(
+      featureActions.ActionTypes.DELETE_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteTimer(action.payload.timerId).pipe(
-      map(timerId => new featureActions.DeleteTimerComplete({timerId: timerId})),
+    mergeMap(action => this.timerService.deleteDone(action.payload.timerId).pipe(
+      map(timerId => new featureActions.DeleteDoneComplete({timerId: timerId})),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
         return of(new featureActions.LoadErrorDetected({ error }));

@@ -1,3 +1,6 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
 // Gets the first card to hug the title better
 #card-container:first-child {
   margin-top: -20px;
@@ -5,4 +8,9 @@
 
 #no-timers {
   margin-top: 32px;
+}
+
+.mat-headline {
+  margin-top: 16px;
+  color: $primary;
 }
