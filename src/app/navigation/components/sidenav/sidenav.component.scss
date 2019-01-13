@@ -1,5 +1,27 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
+#avatar-container {
+  padding: 16px;
+}
+
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  margin-right: 8px;
+}
+
+.avatar-caption {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.active-list-item {
+  color: $primary;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.active-list-item p {
+  font-weight: bold !important;
 }

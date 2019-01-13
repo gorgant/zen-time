@@ -1,20 +1,42 @@
-<mat-nav-list>
-  <mat-list-item *ngIf="(appUser$ | async) as user" fxLayout="column">
+<mat-nav-list no-focus-trap="true">
+  
+  <button mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the auto-focus behavior -->
+  </button>
+  
+  <div id="avatar-container" *ngIf="(appUser$ | async) as user" fxLayoutAlign="start center">
     <img [src]="defaultProfileImage" class="avatar">
-    <span class="img-caption">{{ user.displayName }}</span>
+    <span class="avatar-caption">{{ user.displayName }}</span>
+  </div>
+  
+  <a mat-list-item 
+    routerLinkActive
+    routerLinkActive="active-list-item"
+    routerLink="/timers"
+    (click)="onCloseSidenav()">
+    <mat-icon mat-list-icon>timer</mat-icon>
+    <p mat-line>Active Timers</p>
+  </a>
+  
+  <mat-list-item
+    routerLinkActive
+    routerLinkActive="active-list-item"
+    (click)="onCloseSidenav()">
+    <mat-icon mat-list-icon>timer_off</mat-icon>
+    <p mat-line>Completed Timers</p>
   </mat-list-item>
-  <mat-list-item *ngIf="!(isAuth$ | async)" routerLink="/signup" (click)="onCloseSidenav()">
-    <mat-icon>list_alt</mat-icon>
-    <span class="nav-caption">Signup</span>
+  
+  <mat-list-item 
+    routerLinkActive
+    routerLinkActive="active-list-item"
+    routerLink="/profile" 
+    (click)="onCloseSidenav()">
+    <mat-icon mat-list-icon>person</mat-icon>
+    <p class="nav-item-caption" mat-line>Profile</p>
   </mat-list-item>
-  <mat-list-item *ngIf="!(isAuth$ | async)" routerLink="/login" (click)="onCloseSidenav()">
-    <mat-icon>face</mat-icon>
-    <span class="nav-caption">Login</span>
-  </mat-list-item>
+  
   <mat-list-item>
-    <button mat-icon-button>
-      <mat-icon>exit_to_app</mat-icon>
-      <span class="nav-caption">Logout</span>
-    </button>
+    <mat-icon mat-list-icon>exit_to_app</mat-icon>
+    <p mat-line (click)="onCloseSidenav()">Logout</p>
   </mat-list-item>
+
 </mat-nav-list>
