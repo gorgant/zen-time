@@ -7,6 +7,7 @@ import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { EditNameDialogueComponent } from '../edit-name-dialogue/edit-name-dialogue.component';
+import { EditEmailDialogueComponent } from '../edit-email-dialogue/edit-email-dialogue.component';
 
 @Component({
   selector: 'app-edit-profile',
@@ -19,6 +20,7 @@ export class EditProfileComponent implements OnInit {
   appUser$: Observable<AppUser>;
   defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
   @ViewChild('matButton') matButton;
+  @ViewChild('matButton2') matButton2;
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -37,7 +39,6 @@ export class EditProfileComponent implements OnInit {
 
   onEditName() {
     // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
-    // Must be 'matButton' and #matButton
     this.matButton._elementRef.nativeElement.blur();
 
     this.appUser$
@@ -52,6 +53,26 @@ export class EditProfileComponent implements OnInit {
         dialogConfig.data = user;
 
         const dialogRef = this.dialog.open(EditNameDialogueComponent, dialogConfig);
+      });
+  }
+
+  onEditEmail() {
+    // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
+    // Must be 'matButton' and #matButton
+    this.matButton2._elementRef.nativeElement.blur();
+
+    this.appUser$
+      .pipe(take(1))
+      .subscribe(user => {
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = false;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = '400px';
+
+        dialogConfig.data = user;
+
+        const dialogRef = this.dialog.open(EditEmailDialogueComponent, dialogConfig);
       });
   }
 

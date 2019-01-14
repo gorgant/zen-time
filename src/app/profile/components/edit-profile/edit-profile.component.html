@@ -16,7 +16,7 @@
       <div class="mat-subheading-2">
         {{ user.email }}
       </div>
-      <button mat-button color="primary">
+      <button #matButton2 (click)="onEditEmail()" mat-button color="primary">
         Edit
       </button>
     </div>

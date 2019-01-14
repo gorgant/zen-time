@@ -5,9 +5,9 @@ import { AuthData } from '../models/auth-data.model';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { RootStoreState, AuthStoreActions, UserStoreActions } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
-import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user.model';
-import { take } from 'rxjs/operators';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -70,14 +70,58 @@ export class AuthService {
     this.afAuth.auth.signOut();
   }
 
+  updateEmail(appUser: AppUser, password: string, newEmail: string) {
+
+    const credentials = this.getUserCredentials(appUser.email, password);
+
+    this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
+      .then(success => {
+        this.afAuth.auth.currentUser.updateEmail(newEmail)
+          .then(data => {
+            const newUserData: AppUser = {
+              ...appUser,
+              email: newEmail
+            };
+            this.store$.dispatch(new UserStoreActions.StoreUserDataRequested({userData: newUserData, userId: appUser.id}));
+            this.uiService.showSnackBar(`Email successfully updated: ${newEmail}`, null, 3000);
+          })
+          .catch(error => {
+            this.uiService.showSnackBar(error, null, 3000);
+          });
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 3000);
+      });
+  }
+
+  updatePassword(appUser: AppUser, oldPassword: string, newPassword: string) {
+    const credentials = this.getUserCredentials(appUser.email, oldPassword);
+
+    this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
+      .then(success => {
+        this.afAuth.auth.currentUser.updatePassword(newPassword)
+          .then(data => {
+            this.uiService.showSnackBar(`Password successfully updated`, null, 3000);
+          })
+          .catch(error => {
+            this.uiService.showSnackBar(error, null, 3000);
+          });
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 3000);
+      });
+  }
+
+  private getUserCredentials(email: string, password: string): firebase.auth.AuthCredential {
+    const credentials = firebase.auth.EmailAuthProvider.credential(
+      email,
+      password
+    );
+    return credentials;
+  }
+
   private authSuccess(user: firebase.User): void {
     this.store$.dispatch(new UserStoreActions.UserDataRequested({userId: user.uid}));
-    // this.userService.fetchUserData(user.uid)
-    //   .pipe(
-    //     take(1)
-    //   ).subscribe( appUser => {
-    //     this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
-    //   });
     this.store$.dispatch(new AuthStoreActions.SetAuthenticated());
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
     if (returnUrl && returnUrl !== '/') {

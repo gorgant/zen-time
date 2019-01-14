@@ -55,35 +55,6 @@ export class DoneTimerComponent implements OnInit {
     );
   }
 
-  // onEditDone() {
-  //   // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
-  //   // Must be 'matButton' and #matButton
-  //   this.matButton._elementRef.nativeElement.blur();
-
-  //   this.timer$
-  //     .pipe(take(1))
-  //     .subscribe(timer => {
-  //       const dialogConfig = new MatDialogConfig();
-
-  //       dialogConfig.disableClose = true;
-  //       dialogConfig.autoFocus = true;
-  //       dialogConfig.width = '400px';
-
-  //       dialogConfig.data = timer;
-
-  //       const dialogRef = this.dialog.open(TimerFormDialogueComponent, dialogConfig);
-  //     });
-  // }
-
-  // onCompleteTimer() {
-  //   this.timer$
-  //     .pipe(take(1))
-  //     .subscribe(timer => {
-  //       this.store$.dispatch(new DoneStoreActions.MarkTimerDone({timer: timer}));
-  //       this.router.navigate(['../']);
-  //     });
-  // }
-
   onDeleteTimer() {
     const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
     dialogRef.afterClosed().subscribe(userCanceled => {

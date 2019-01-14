@@ -5,19 +5,25 @@ import { SharedModule } from '../shared/shared.module';
 import { ProfileComponent } from './components/profile/profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { EditNameDialogueComponent } from './components/edit-name-dialogue/edit-name-dialogue.component';
+import { EditPasswordDialogueComponent } from './components/edit-password-dialogue/edit-password-dialogue.component';
+import { EditEmailDialogueComponent } from './components/edit-email-dialogue/edit-email-dialogue.component';
 
 @NgModule({
   declarations: [
     ProfileComponent,
     EditProfileComponent,
-    EditNameDialogueComponent
+    EditNameDialogueComponent,
+    EditPasswordDialogueComponent,
+    EditEmailDialogueComponent
   ],
   imports: [
     SharedModule,
     ProfileRoutingModule
   ],
   entryComponents: [
-    EditNameDialogueComponent
+    EditNameDialogueComponent,
+    EditEmailDialogueComponent,
+    EditPasswordDialogueComponent
   ]
 })
 export class ProfileModule { }

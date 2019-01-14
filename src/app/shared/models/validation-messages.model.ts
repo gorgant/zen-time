@@ -47,3 +47,31 @@ export const NameFormValidationMessages = {
     { type: 'required', message: 'You must provide a name.'},
   ],
 };
+
+export const EmailFormValidationMessages = {
+  'email': [
+    { type: 'required', message: 'You must provide an email.'},
+    { type: 'email', message: 'Not a valid email.'},
+  ],
+  'password': [
+    { type: 'required', message: 'You must confirm your current password.'},
+  ]
+};
+
+export const PasswordFormValidationMessages = {
+  'oldPassword': [
+    { type: 'required', message: 'You must provide your current password.'},
+  ],
+  'newPassword': [
+    { type: 'required', message: 'You must provide a new password.'},
+  ],
+  'confirmNewPassword': [
+    { type: 'required', message: 'You must confirm your new password.'},
+  ],
+  'updatedPwGroup': [
+    { type: 'noMatch', message: 'Your new passwords must match.'},
+  ],
+  'oldPwGroup': [
+    { type: 'match', message: 'Your new password cannot match your old password.'}
+  ]
+};

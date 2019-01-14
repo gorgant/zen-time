@@ -58,7 +58,6 @@ export class ActiveTimerComponent implements OnInit {
 
   onEditTimer() {
     // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
-    // Must be 'matButton' and #matButton
     this.matButton._elementRef.nativeElement.blur();
 
     this.timer$
