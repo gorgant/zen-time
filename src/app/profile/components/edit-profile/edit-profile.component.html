@@ -8,7 +8,7 @@
       <div class="mat-subheading-2">
         {{ user.displayName }}
       </div>
-      <button mat-button color="primary">
+      <button #matButton (click)="onEditName()" mat-button color="primary">
         Edit
       </button>
     </div>

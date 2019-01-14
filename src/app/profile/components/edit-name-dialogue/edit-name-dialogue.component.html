@@ -1,0 +1,32 @@
+<section fxLayout="column" fxLayoutAlign="start center">
+  <mat-dialog-content [formGroup]="nameForm">
+  
+    <h2 class="section-header" mat-dialog-title>Edit User Name</h2>
+    <!-- Name -->
+    <mat-form-field>
+      <input formControlName="name" matInput placeholder="New User Name">
+      <mat-error *ngFor="let validation of NAME_FORM_VALIDATION_MESSAGES.name">
+        <mat-error *ngIf="name.hasError(validation.type) && name.invalid && (name.dirty || name.touched)">{{ validation.message }}</mat-error>
+      </mat-error>
+    </mat-form-field>
+  
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+      <button
+        [disabled]="nameForm.invalid"
+        mat-raised-button
+        color="primary"
+        (click)="onSave()"
+        >
+          Save
+      </button>
+      <button 
+        mat-raised-button
+        (click)="onClose()"
+        >
+          Cancel
+      </button>
+    </mat-dialog-actions>
+
+</section>

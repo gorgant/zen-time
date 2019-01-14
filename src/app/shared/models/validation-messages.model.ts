@@ -41,3 +41,9 @@ export const TimerFormValidationMessages = {
     { type: 'durationNotWholeNumber', message: 'Duration must be a whole number.' },
   ],
 };
+
+export const NameFormValidationMessages = {
+  'name': [
+    { type: 'required', message: 'You must provide a name.'},
+  ],
+};
