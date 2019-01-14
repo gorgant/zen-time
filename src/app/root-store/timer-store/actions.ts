@@ -68,7 +68,7 @@ export class AddTimerComplete implements Action {
 export class DeleteTimerRequested implements Action {
   readonly type = ActionTypes.DELETE_TIMER_REQUESTED;
 
-  constructor(public payload: {timerId: string}) {}
+  constructor(public payload: {timerId: string, markDone?: boolean}) {}
 }
 
 export class DeleteTimerComplete implements Action {

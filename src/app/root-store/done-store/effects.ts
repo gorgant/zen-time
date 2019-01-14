@@ -85,7 +85,7 @@ export class DoneStoreEffects {
       tap(completedTimer => {
         if (completedTimer) {
           console.log('Completed timer detected, deleting active one');
-          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timerId: action.payload.timer.id}));
+          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timerId: action.payload.timer.id, markDone: true}));
         } else {
           console.log('Error creating completed timer');
         }

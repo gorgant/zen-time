@@ -18,9 +18,13 @@ export class TimerCardItemComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.countDownClock = new Countdown(this.timer).getCountDownClock();
-    this.remainingTime = new Countdown(this.timer).calcRemainingTime();
     this.completedTimer = !!this.timer.completedDate;
+    // Only generate countdown clocks (which is expensive) if this is not a completed timer
+    if (!this.completedTimer) {
+      this.countDownClock = new Countdown(this.timer).getCountDownClock();
+      this.remainingTime = new Countdown(this.timer).calcRemainingTime();
+      console.log('created coundown and remaining time', this.countDownClock);
+    }
   }
 
 }

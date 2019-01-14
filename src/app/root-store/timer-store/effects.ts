@@ -95,7 +95,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.DeleteTimerRequested>(
       timerFeatureActions.ActionTypes.DELETE_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteTimer(action.payload.timerId).pipe(
+    mergeMap(action => this.timerService.deleteTimer(action.payload.timerId, action.payload.markDone).pipe(
       map(timerId => new timerFeatureActions.DeleteTimerComplete({timerId: timerId})),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
