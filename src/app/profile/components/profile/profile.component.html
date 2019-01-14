@@ -4,7 +4,7 @@
   fxLayoutAlign="center center" 
   fxLayoutGap="16px">
   
-  <img [src]="defaultProfileImage" class="avatar">
+  <img [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage" class="avatar">
   <div id="username" class="mat-display-1">
     {{ user.displayName }}
   </div>
@@ -12,6 +12,7 @@
     {{ user.email }}
   </div>
   <button
+    [routerLink]="[ './edit']"
     class="action-button" 
     type="button" 
     mat-raised-button 

@@ -20,4 +20,9 @@
       <mat-icon>menu</mat-icon>
     </button>
   </div>
+  <div *ngIf="(activeUrl$ | async) === '/profile/edit' " class="nav-contents" fxLayoutAlign="start center">
+    <button [routerLink]="['/profile']" #matButton mat-icon-button>
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>

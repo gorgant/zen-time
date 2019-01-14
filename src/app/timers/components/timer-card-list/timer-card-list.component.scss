@@ -2,7 +2,7 @@
 @import "../../../variables";
 
 // Gets the first card to hug the title better
-#card-container:first-child {
+.card-container:first-child {
   margin-top: -20px;
 }
 

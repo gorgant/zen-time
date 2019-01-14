@@ -23,7 +23,6 @@ export class TimerCardItemComponent implements OnInit {
     if (!this.completedTimer) {
       this.countDownClock = new Countdown(this.timer).getCountDownClock();
       this.remainingTime = new Countdown(this.timer).calcRemainingTime();
-      console.log('created coundown and remaining time', this.countDownClock);
     }
   }
 

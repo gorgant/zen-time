@@ -1,0 +1,29 @@
+<section fxLayout="column" fxLayoutAlign="center start">
+  <h1 fxFlexAlign="center" class="mat-headline">Edit Profile</h1>
+  <div *ngIf="(appUser$ | async) as user" class="profile-content">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <div class="mat-subheading-2">
+        {{ user.displayName }}
+      </div>
+      <button mat-button color="primary">
+        Edit
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <div class="mat-subheading-2">
+        {{ user.email }}
+      </div>
+      <button mat-button color="primary">
+        Edit
+      </button>
+    </div>
+  </div>
+  <div *ngIf="(appUser$ | async) as user" class="change-image-container" fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <button mat-button color="primary">
+        Change Image
+      </button>
+    </div>
+    <img class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
+  </div>
+</section>

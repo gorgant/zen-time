@@ -4,7 +4,7 @@
   </button>
   
   <div id="avatar-container" *ngIf="(appUser$ | async) as user" fxLayoutAlign="start center">
-    <img [src]="defaultProfileImage" class="avatar">
+    <img [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage" class="avatar">
     <span class="avatar-caption">{{ user.displayName }}</span>
   </div>
   

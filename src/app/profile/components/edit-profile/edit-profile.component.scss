@@ -1,0 +1,30 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
+section {
+  padding: 16px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.mat-headline {
+  color: $primary;
+}
+
+.mat-subheading-2 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.change-image-container {
+  margin-top: 16px;
+}
+
+.avatar {
+  margin-top: 8px;
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
