@@ -10,6 +10,7 @@ import { CustomSerializer } from '../shared/utils/utils';
 import { TimersStoreModule } from './timer-store';
 import { metaReducers } from './meta-reducers';
 import { DoneStoreModule } from './done-store';
+import { UserStoreModule } from './user-store';
 
 @NgModule({
   declarations: [],
@@ -18,6 +19,7 @@ import { DoneStoreModule } from './done-store';
     AuthStoreModule,
     TimersStoreModule,
     DoneStoreModule,
+    UserStoreModule,
     StoreModule.forRoot({}, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),

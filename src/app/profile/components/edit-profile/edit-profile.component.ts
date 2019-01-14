@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 
 @Component({
@@ -12,6 +12,7 @@ import { imageUrls } from 'src/app/shared/assets/imageUrls';
 })
 export class EditProfileComponent implements OnInit {
 
+  loading$: Observable<boolean>;
   appUser$: Observable<AppUser>;
   defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
 
@@ -21,7 +22,11 @@ export class EditProfileComponent implements OnInit {
 
   ngOnInit() {
     this.appUser$ = this.store$.select(
-      AuthStoreSelectors.selectAppUser
+      UserStoreSelectors.selectAppUser
+    );
+
+    this.loading$ = this.store$.select(
+      UserStoreSelectors.selectUserIsLoading
     );
   }
 

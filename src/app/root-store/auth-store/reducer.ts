@@ -10,13 +10,7 @@ export function featureReducer(state = initialState, action: Actions): State {
       };
     case ActionTypes.SET_UNAUTHENTICATED:
       return {
-        user: null,
         isAuthenticated: false
-      };
-    case ActionTypes.SET_USER:
-      return {
-        ...state,
-        user: action.payload.user
       };
     default: {
       return state;

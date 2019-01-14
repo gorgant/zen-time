@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit {
 
   defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
   appUser$: Observable<AppUser>;
+  loading$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
@@ -23,8 +24,13 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.appUser$ = this.store$.select(
-      AuthStoreSelectors.selectAppUser
+      UserStoreSelectors.selectAppUser
     );
+
+    this.loading$ = this.store$.select(
+      UserStoreSelectors.selectUserIsLoading
+    );
+
   }
 
   onLogout() {

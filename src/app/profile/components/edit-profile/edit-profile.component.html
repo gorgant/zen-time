@@ -1,5 +1,8 @@
 <section fxLayout="column" fxLayoutAlign="center start">
   <h1 fxFlexAlign="center" class="mat-headline">Edit Profile</h1>
+  <div fxFlexAlign="center" *ngIf="loading$ | async">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
   <div *ngIf="(appUser$ | async) as user" class="profile-content">
     <div fxLayout="row" fxLayoutAlign="start center">
       <div class="mat-subheading-2">

@@ -1,3 +1,6 @@
+<div fxLayoutAlign="center center" *ngIf="loading$ | async">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
 <section 
   *ngIf="(appUser$ | async) as user"
   fxLayout="column" 

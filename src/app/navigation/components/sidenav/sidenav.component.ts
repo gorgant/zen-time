@@ -1,9 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -19,16 +20,22 @@ export class SidenavComponent implements OnInit {
 
   constructor(
     private store$: Store<RootStoreState.State>,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
     this.appUser$ = this.store$.select(
-      AuthStoreSelectors.selectAppUser
+      UserStoreSelectors.selectAppUser
     );
   }
 
   private onCloseSidenav() {
     this.closeSidenav.emit();
+  }
+
+  private onLogout() {
+    this.authService.logout();
+    this.onCloseSidenav();
   }
 
 }

@@ -4,7 +4,7 @@ import { filter, switchMap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 
 @Component({
@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit {
     );
 
     this.appUser$ = this.store$.select(
-      AuthStoreSelectors.selectAppUser
+      UserStoreSelectors.selectAppUser
     );
   }
 

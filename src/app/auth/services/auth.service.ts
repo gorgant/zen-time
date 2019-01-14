@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthData } from '../models/auth-data.model';
 import { UiService } from 'src/app/shared/services/ui.service';
-import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
+import { RootStoreState, AuthStoreActions, UserStoreActions } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user.model';
@@ -20,7 +20,7 @@ export class AuthService {
     private uiService: UiService,
     private store$: Store<RootStoreState.State>,
     private route: ActivatedRoute,
-    private userService: UserService
+    // private userService: UserService
   ) { }
 
   initAuthListener(): void {
@@ -43,8 +43,9 @@ export class AuthService {
         email: authData.email,
       };
       const userId = creds.user.uid;
-      this.userService.storeUserData(appUser, userId);
-      this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
+      this.store$.dispatch(new UserStoreActions.StoreUserDataRequested({userData: appUser, userId}));
+      // this.userService.storeUserData(appUser, userId);
+      // this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
@@ -65,16 +66,18 @@ export class AuthService {
 
   logout(): void {
     // Note the postLogoutActions as well, triggered by authstate change
+    this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
   }
 
   private authSuccess(user: firebase.User): void {
-    this.userService.fetchUserData(user.uid)
-      .pipe(
-        take(1)
-      ).subscribe( appUser => {
-        this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
-      });
+    this.store$.dispatch(new UserStoreActions.UserDataRequested({userId: user.uid}));
+    // this.userService.fetchUserData(user.uid)
+    //   .pipe(
+    //     take(1)
+    //   ).subscribe( appUser => {
+    //     this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
+    //   });
     this.store$.dispatch(new AuthStoreActions.SetAuthenticated());
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
     if (returnUrl && returnUrl !== '/') {
@@ -86,6 +89,5 @@ export class AuthService {
 
   private postLogoutActions(): void {
     this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
-    this.router.navigate(['/login']);
   }
 }

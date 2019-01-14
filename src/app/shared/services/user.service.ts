@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
 import { map } from 'rxjs/operators';
 
@@ -30,9 +30,12 @@ export class UserService {
       );
   }
 
-  storeUserData(userData: AppUser, userId: string): void {
+  storeUserData(userData: AppUser, userId: string): Observable<any> {
     const userCollection = this.db.collection<AppUser>('users');
-    userCollection.doc(userId).set(userData);
+    return from(userCollection.doc(userId).set(userData)
+      .then(response => response)
+      .catch(error => error)
+      );
   }
 
   // Provides easy access to user doc throughout the app
