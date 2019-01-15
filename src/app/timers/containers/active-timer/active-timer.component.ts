@@ -8,6 +8,7 @@ import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
+import { Calendars } from 'src/app/shared/utils/calendar/calendars';
 
 @Component({
   selector: 'app-active-timer',
@@ -21,6 +22,7 @@ export class ActiveTimerComponent implements OnInit {
   isLoading$: Observable<boolean>;
   @ViewChild('matButton') matButton;
   timerId: string;
+  reminderUrl: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,6 +56,25 @@ export class ActiveTimerComponent implements OnInit {
     this.isLoading$ = this.store$.select(
       TimerStoreSelectors.selectTimerIsLoading
     );
+  }
+
+  onSetReminder() {
+    this.timer$
+      .pipe(take(1))
+      .subscribe(timer => {
+        this.configureReminderUrl(timer);
+        window.open(this.reminderUrl);
+      });
+  }
+
+  private configureReminderUrl(timer: Timer) {
+
+    console.log('Configuring calendar');
+    const calendars = new Calendars(timer);
+
+    const googleUrl: string = calendars.getGoogleCalendarUrl();
+    this.reminderUrl = googleUrl;
+
   }
 
   onEditTimer() {
