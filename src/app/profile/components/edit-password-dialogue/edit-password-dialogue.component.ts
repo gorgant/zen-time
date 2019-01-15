@@ -28,7 +28,7 @@ export class EditPasswordDialogueComponent implements OnInit {
     this.passwordForm = this.fb.group({
       oldPassword: ['', Validators.required],
       updatedPwGroup: this.fb.group({
-        newPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
         confirmNewPassword: ['', Validators.required]
       }, {validator: pwMustMatchValidator()})
     }, {validator: pwMustNotMatchValidator()});

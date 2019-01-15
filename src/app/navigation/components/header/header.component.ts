@@ -1,11 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { filter, switchMap, map } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
-import { imageUrls } from 'src/app/shared/assets/imageUrls';
+import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +20,6 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private store$: Store<RootStoreState.State>,
   ) { }
 

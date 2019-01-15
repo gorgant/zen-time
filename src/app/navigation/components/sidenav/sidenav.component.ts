@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';

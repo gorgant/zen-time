@@ -64,6 +64,7 @@ export const PasswordFormValidationMessages = {
   ],
   'newPassword': [
     { type: 'required', message: 'You must provide a new password.'},
+    { type: 'minlength', message: 'Must be at least 6 characters' },
   ],
   'confirmNewPassword': [
     { type: 'required', message: 'You must confirm your new password.'},
