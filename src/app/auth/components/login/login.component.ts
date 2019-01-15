@@ -3,7 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
 import { loginValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
-import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private store$: Store<RootStoreState.State>,
   ) { }
 
   ngOnInit() {
@@ -34,7 +35,7 @@ export class LoginComponent implements OnInit {
       email: this.email.value,
       password: this.password.value
     };
-    this.authService.login(userAuthData);
+    this.store$.dispatch(new AuthStoreActions.AuthenticationRequested({authData: userAuthData}));
   }
 
   // Getters for easy access to form fields

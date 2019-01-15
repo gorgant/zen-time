@@ -5,7 +5,6 @@ import { ActionTypes } from './auth-store/actions';
 export function clearStore(reducer: ActionReducer<any>): ActionReducer<any> {
   return function(state, action) {
     if (action.type === ActionTypes.SET_UNAUTHENTICATED) {
-      console.log('Meta fired to clear state');
       state = undefined;
     }
 

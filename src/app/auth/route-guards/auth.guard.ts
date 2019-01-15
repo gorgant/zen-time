@@ -34,6 +34,7 @@ export class AuthGuard implements CanActivate, CanLoad {
       take(1),
       tap(authStatus => {
         if (!authStatus) {
+          console.log('Not authenticated, routing to login');
           const returnUrl = this.covertSegmentsToReturnUrl(segments);
           this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
         }

@@ -3,29 +3,30 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthData } from '../models/auth-data.model';
 import { UiService } from 'src/app/shared/services/ui.service';
-import { RootStoreState, AuthStoreActions, UserStoreActions } from 'src/app/root-store';
-import { Store } from '@ngrx/store';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import { from, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  authStatus = new Subject<string>();
+
+  // Cannot inject store$ here otherwise circular dependencies
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
     private uiService: UiService,
-    private store$: Store<RootStoreState.State>,
     private route: ActivatedRoute,
-    // private userService: UserService
   ) { }
 
   initAuthListener(): void {
     this.afAuth.authState.subscribe(user => {
       if (user) {
+        console.log('User detected, initiating authSuccess');
         this.authSuccess(user);
       } else {
         this.postLogoutActions();
@@ -33,8 +34,8 @@ export class AuthService {
     });
   }
 
-  registerUser(authData: AuthData): void {
-    this.afAuth.auth.createUserWithEmailAndPassword(
+  registerUser(authData: AuthData): Observable<{userData: AppUser, userId: string}> {
+    const authResponse = from(this.afAuth.auth.createUserWithEmailAndPassword(
       authData.email,
       authData.password
     ).then(creds => {
@@ -43,25 +44,32 @@ export class AuthService {
         email: authData.email,
       };
       const userId = creds.user.uid;
-      this.store$.dispatch(new UserStoreActions.StoreUserDataRequested({userData: appUser, userId}));
-      // this.userService.storeUserData(appUser, userId);
-      // this.store$.dispatch(new AuthStoreActions.SetUser({user: appUser}));
+      return {userData: appUser, userId: userId};
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
-    });
+      return error;
+    }));
+
+    return from(authResponse);
   }
 
-  login(authData: AuthData): void {
-    this.afAuth.auth.signInWithEmailAndPassword(
+  login(authData: AuthData): Observable<string> {
+    console.log('Auth requested with this data', authData);
+    const authResponse = this.afAuth.auth.signInWithEmailAndPassword(
       authData.email,
       authData.password
     ).then(creds => {
-      // Actions managed in the authSuccess via AuthListener
+      const userId = creds.user.uid;
+      console.log('Auth success', creds);
+      return userId;
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
+      return error;
     });
+
+    return from(authResponse);
   }
 
   logout(): void {
@@ -70,46 +78,57 @@ export class AuthService {
     this.afAuth.auth.signOut();
   }
 
-  updateEmail(appUser: AppUser, password: string, newEmail: string) {
+  updateEmail(appUser: AppUser, password: string, newEmail: string): Observable<{userData: AppUser, userId: string}> {
 
     const credentials = this.getUserCredentials(appUser.email, password);
 
-    this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
-      .then(success => {
-        this.afAuth.auth.currentUser.updateEmail(newEmail)
-          .then(data => {
+    const authResponse = this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
+      .then(userCreds => {
+        const updateResponse = this.afAuth.auth.currentUser.updateEmail(newEmail)
+          .then(empty => {
             const newUserData: AppUser = {
               ...appUser,
               email: newEmail
             };
-            this.store$.dispatch(new UserStoreActions.StoreUserDataRequested({userData: newUserData, userId: appUser.id}));
             this.uiService.showSnackBar(`Email successfully updated: ${newEmail}`, null, 3000);
+            return {userData: newUserData, userId: appUser.id};
           })
           .catch(error => {
             this.uiService.showSnackBar(error, null, 3000);
+            return error;
           });
+        return updateResponse;
       })
       .catch(error => {
         this.uiService.showSnackBar(error, null, 3000);
+        return error;
       });
+
+      return from(authResponse);
   }
 
   updatePassword(appUser: AppUser, oldPassword: string, newPassword: string) {
     const credentials = this.getUserCredentials(appUser.email, oldPassword);
 
-    this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
-      .then(success => {
-        this.afAuth.auth.currentUser.updatePassword(newPassword)
-          .then(data => {
+    const authResponse = this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
+      .then(userCreds => {
+        const updateResponse = this.afAuth.auth.currentUser.updatePassword(newPassword)
+          .then(empty => {
             this.uiService.showSnackBar(`Password successfully updated`, null, 3000);
+            return empty;
           })
           .catch(error => {
             this.uiService.showSnackBar(error, null, 3000);
+            return error;
           });
+        return updateResponse;
       })
       .catch(error => {
         this.uiService.showSnackBar(error, null, 3000);
+        return error;
       });
+
+      return from(authResponse);
   }
 
   private getUserCredentials(email: string, password: string): firebase.auth.AuthCredential {
@@ -121,8 +140,7 @@ export class AuthService {
   }
 
   private authSuccess(user: firebase.User): void {
-    this.store$.dispatch(new UserStoreActions.UserDataRequested({userId: user.uid}));
-    this.store$.dispatch(new AuthStoreActions.SetAuthenticated());
+    this.authStatus.next(user.uid);
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
     if (returnUrl && returnUrl !== '/') {
       this.router.navigate([returnUrl]);
@@ -132,6 +150,6 @@ export class AuthService {
   }
 
   private postLogoutActions(): void {
-    this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
+    this.authStatus.next(null);
   }
 }

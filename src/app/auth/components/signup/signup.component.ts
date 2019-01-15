@@ -3,7 +3,8 @@ import { signUpValidationMessages } from 'src/app/shared/models/validation-messa
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthData } from '../../models/auth-data.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
-import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'app-signup',
@@ -18,7 +19,7 @@ export class SignupComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private store$: Store<RootStoreState.State>,
   ) { }
 
   ngOnInit() {
@@ -37,7 +38,8 @@ export class SignupComponent implements OnInit {
       password: this.password.value,
       name: this.name.value
     };
-    this.authService.registerUser(newUserData);
+    this.store$.dispatch( new AuthStoreActions.RegisterUserRequested({authData: newUserData}));
+
   }
 
   // Getters for easy access to form fields

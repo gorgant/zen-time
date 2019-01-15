@@ -16,6 +16,7 @@ export class UserService {
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
+    console.log('User data requested with this id', userId);
     this.currentUserDoc = this.db.doc<AppUser>(`users/${userId}`);
     return this.db.doc<AppUser>(`users/${userId}`)
       .snapshotChanges()
@@ -30,12 +31,12 @@ export class UserService {
       );
   }
 
-  storeUserData(userData: AppUser, userId: string): Observable<any> {
+  storeUserData(userData: AppUser, userId: string): Observable<AppUser> {
     const userCollection = this.db.collection<AppUser>('users');
-    return from(userCollection.doc(userId).set(userData)
-      .then(response => response)
-      .catch(error => error)
-      );
+    const response = userCollection.doc(userId).set(userData)
+      .then(empty => userData)
+      .catch(error => error);
+    return from(response);
   }
 
   // Provides easy access to user doc throughout the app

@@ -4,7 +4,6 @@ import {
   createFeatureSelector
 } from '@ngrx/store';
 import { State } from './state';
-import { AppUser } from 'src/app/shared/models/app-user.model';
 
 const getIsAuth = (state: State): boolean => state.isAuthenticated;
 

@@ -3,8 +3,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PasswordFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppUser } from 'src/app/shared/models/app-user.model';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { pwMustMatchValidator, pwMustNotMatchValidator } from '../../validators/pw-match-validator.directive';
+import { Store } from '@ngrx/store';
+import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'app-edit-password-dialogue',
@@ -20,7 +21,7 @@ export class EditPasswordDialogueComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditPasswordDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) private appUser: AppUser,
-    private authService: AuthService
+    private store$: Store<RootStoreState.State>,
   ) { }
 
   ngOnInit() {
@@ -42,7 +43,11 @@ export class EditPasswordDialogueComponent implements OnInit {
     const oldPassword: string = this.oldPassword.value;
     const newPassword: string = this.newPassword.value;
 
-    this.authService.updatePassword(this.appUser, oldPassword, newPassword);
+    this.store$.dispatch( new AuthStoreActions.UpdatePasswordRequested({
+      appUser: this.appUser,
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    }));
 
     this.dialogRef.close();
   }

@@ -3,7 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EmailFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppUser } from 'src/app/shared/models/app-user.model';
-import { AuthService } from 'src/app/auth/services/auth.service';
+import { Store } from '@ngrx/store';
+import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'app-edit-email-dialogue',
@@ -19,7 +20,7 @@ export class EditEmailDialogueComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditEmailDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) private appUser: AppUser,
-    private authService: AuthService
+    private store$: Store<RootStoreState.State>,
   ) { }
 
   ngOnInit() {
@@ -40,7 +41,12 @@ export class EditEmailDialogueComponent implements OnInit {
     const password: string = this.password.value;
     const newEmail: string = this.email.value;
 
-    this.authService.updateEmail(this.appUser, password, newEmail);
+    // this.authService.updateEmail(this.appUser, password, newEmail);
+    this.store$.dispatch( new AuthStoreActions.UpdateEmailRequested({
+      appUser: this.appUser,
+      password: password,
+      newEmail: newEmail
+    }));
 
     this.dialogRef.close();
   }
