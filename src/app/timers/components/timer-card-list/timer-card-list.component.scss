@@ -14,3 +14,26 @@
   margin-top: 16px;
   color: $primary;
 }
+
+.search-icon-container {
+  position: fixed;
+  top: 8px;
+  right: 0px;
+  margin-right: 5vw;
+  color: white;
+}
+
+@media (min-width: 660px) {
+  .search-icon-container {
+    top: 12px;
+    margin-right: calc((100vw - 600px)/2);
+  }
+}
+
+.search-field {
+  background-color: white;
+  height: 32px;
+  width: 65vw;
+  max-width: 500px;
+  color: black;
+}

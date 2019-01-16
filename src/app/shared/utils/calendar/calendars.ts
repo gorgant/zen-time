@@ -3,6 +3,7 @@ import { CalendarUtils } from './calendar-utils';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { Countdown } from '../../models/countdown.model';
 
+// Courtesy of https://jshor.github.io/angular-addtocalendar
 export class Calendars {
 
   private utils = new CalendarUtils();

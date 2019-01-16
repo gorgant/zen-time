@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-// Courtesy of https://jshor.github.io/angular-addtocalendar/dist/
+// Courtesy of https://jshor.github.io/angular-addtocalendar
 export class CalendarUtils {
 
   /**

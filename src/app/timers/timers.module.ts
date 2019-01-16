@@ -12,6 +12,7 @@ import { TimerFormDialogueComponent } from './components/timer-form-dialogue/tim
 import { DeleteConfirmDialogueComponent } from './components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 import { DoneTimersComponent } from './containers/done-timers/done-timers.component';
 import { DoneTimerComponent } from './containers/done-timer/done-timer.component';
+import { TimerFilterPipe } from './pipes/timer-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { DoneTimerComponent } from './containers/done-timer/done-timer.component
     TimerFormDialogueComponent,
     DeleteConfirmDialogueComponent,
     DoneTimersComponent,
-    DoneTimerComponent
+    DoneTimerComponent,
+    TimerFilterPipe
   ],
   imports: [
     SharedModule,

@@ -1,27 +1,21 @@
 <mat-toolbar color="primary" fxLayoutAlign="center center">
   <div *ngIf="(activeUrl$ | async) === '/timers/active' " class="nav-contents" fxLayoutAlign="space-between center">
-    <button (click)="onToggleSidenav()" #matButton mat-icon-button>
+    <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon>search</mat-icon>
     </button>
   </div>
   <div *ngIf="(activeUrl$ | async) === '/timers/completed' " class="nav-contents" fxLayoutAlign="space-between center">
-    <button (click)="onToggleSidenav()" #matButton mat-icon-button>
+    <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon>search</mat-icon>
     </button>
   </div>
   <div *ngIf="(activeUrl$ | async) === '/profile' " class="nav-contents" fxLayoutAlign="start center">
-    <button (click)="onToggleSidenav()" #matButton mat-icon-button>
+    <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
   </div>
   <div *ngIf="(activeUrl$ | async) === '/profile/edit' " class="nav-contents" fxLayoutAlign="start center">
-    <button [routerLink]="['/profile']" #matButton mat-icon-button>
+    <button class="menu-button" [routerLink]="['/profile']" #matButton mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
