@@ -7,6 +7,7 @@
       <div class="mat-headline top-section">{{ timer.title }}</div>
       <div *ngIf="timer.category" class="mat-subheading-2 top-section">{{ timer.category }}</div>
       <div class="mat-caption top-section">Set on {{ timer.setOnDate | date }}</div>
+      <div *ngIf="!completedTimer" class="mat-caption top-section">Due on {{ timer.setOnDate + timer.duration | date }}</div>
       <div *ngIf="completedTimer" class="mat-caption top-section">Completed on {{ timer.completedDate | date }}</div>
       <div *ngIf="timer.notes" class="mat-body-1 top-section">{{ timer.notes }}</div>
     </div>

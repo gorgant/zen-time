@@ -63,25 +63,25 @@ export class DoneStoreEffects {
     )
   );
 
-  @Effect()
-  updateDoneEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<doneFeatureActions.UpdateDoneRequested>(
-      doneFeatureActions.ActionTypes.UPDATE_DONE_REQUESTED
-    ),
-    mergeMap(action => this.timerService.updateDone(action.payload.timer).pipe(
-      map(timer => {
-        const timerUp: Update<Timer> = {
-          id: timer.id,
-          changes: timer
-        };
-        return new doneFeatureActions.UpdateDoneComplete({timer: timerUp});
-      }),
-      catchError(error => {
-        this.uiService.showSnackBar(error, null, 5000);
-        return of(new doneFeatureActions.LoadErrorDetected({ error }));
-      })
-    )),
-  );
+  // @Effect()
+  // updateDoneEffect$: Observable<Action> = this.actions$.pipe(
+  //   ofType<doneFeatureActions.UpdateDoneRequested>(
+  //     doneFeatureActions.ActionTypes.UPDATE_DONE_REQUESTED
+  //   ),
+  //   mergeMap(action => this.timerService.updateDone(action.payload.timer).pipe(
+  //     map(timer => {
+  //       const timerUp: Update<Timer> = {
+  //         id: timer.id,
+  //         changes: timer
+  //       };
+  //       return new doneFeatureActions.UpdateDoneComplete({timer: timerUp});
+  //     }),
+  //     catchError(error => {
+  //       this.uiService.showSnackBar(error, null, 5000);
+  //       return of(new doneFeatureActions.LoadErrorDetected({ error }));
+  //     })
+  //   )),
+  // );
 
   @Effect()
   addDoneEffect$ = this.actions$.pipe(

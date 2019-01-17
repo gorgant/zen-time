@@ -7,11 +7,14 @@ import { Action, Store } from '@ngrx/store';
 import * as timerFeatureActions from './actions';
 import * as doneFeatureActions from '../done-store/actions';
 import * as undoFeatureActions from '../undo-store/actions';
-import { switchMap, map, catchError, mergeMap, tap } from 'rxjs/operators';
+import * as timerFeatureSelectors from './selectors';
+import { switchMap, map, catchError, mergeMap, tap, withLatestFrom, take } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
 import { UndoableAction } from 'src/app/shared/models/undoable-action.model';
+import { selectTimerById } from './selectors';
+import { TimerStoreSelectors } from '.';
 
 @Injectable()
 export class TimerStoreEffects {
@@ -63,7 +66,23 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.UpdateTimerRequested>(
       timerFeatureActions.ActionTypes.UPDATE_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.updateTimer(action.payload.timer).pipe(
+    tap((action) => {
+      if (!action.payload.undoAction) {
+        this.store$.select(timerFeatureSelectors.selectTimerById(action.payload.timer.id))
+          .pipe(take(1))
+          .subscribe(previousTimer => {
+            console.log('stashing action in undoable store', previousTimer.title);
+            const actionId = previousTimer.id;
+            const undoableAction: UndoableAction = {
+              payload: previousTimer,
+              actionId: actionId,
+              actionType: timerFeatureActions.ActionTypes.UPDATE_TIMER_REQUESTED
+            };
+            this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+          });
+      }
+    }),
+    mergeMap(action => this.timerService.updateTimer(action.payload.timer, action.payload.undoAction).pipe(
       map(timer => {
         const timerUp: Update<Timer> = {
           id: timer.id,
@@ -101,7 +120,7 @@ export class TimerStoreEffects {
     ),
     mergeMap(action => this.timerService.deleteTimer(action.payload.timer, action.payload.markDone).pipe(
       map(timerId => new timerFeatureActions.DeleteTimerComplete({timerId})),
-      tap(timerId => {
+      tap(() => {
         const actionId = action.payload.timer.id;
         const undoableAction: UndoableAction = {
           payload: action.payload.timer,

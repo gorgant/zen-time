@@ -62,6 +62,13 @@ export class AppComponent implements OnInit {
                 this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
                 return true;
               }
+              case TimerActionTypes.UPDATE_TIMER_REQUESTED: {
+                const timer: Timer = undoableAction.payload;
+                console.log('Undo update requested', timer.title);
+                this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer, undoAction: true}));
+                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+                return true;
+              }
               case DoneActionTypes.DELETE_DONE_REQUESTED: {
                 const timer: Timer = undoableAction.payload;
                 this.store$.dispatch(new DoneStoreActions.AddDoneRequested({timer, undoAction: true}));

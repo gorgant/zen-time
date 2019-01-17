@@ -26,6 +26,7 @@ export class ActiveTimerComponent implements OnInit {
   timerId: string;
   reminderUrl: string;
   coundownClock: CountDownClock;
+  timerLoaded: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,14 +44,18 @@ export class ActiveTimerComponent implements OnInit {
       withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
       map(([timer, timersLoaded]) => {
         // Fetch timers if store hasn't been initialized
-        if (!timersLoaded) {
+        if (!timersLoaded && !this.timerLoaded) {
           this.store$.dispatch(
             new TimerStoreActions.SingleTimerRequested({timerId: this.timerId})
           );
+          // Prevents this from firing a bunch of extra times
+          this.timerLoaded = true;
+          console.log('Setting timer since timers havent loaded');
         }
         if (timer) {
           this.coundownClock = new Countdown(timer).getCountDownClock();
         }
+        console.log('Setting timer');
         return timer;
       })
     );
@@ -123,7 +128,6 @@ export class ActiveTimerComponent implements OnInit {
         if (userConfirmed) {
           this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timer}));
           this.router.navigate(['../'], {relativeTo: this.route});
-          // this.uiService.showSnackBar('Timer deleted', null, 3000);
         } else {
           // Do nothing
         }

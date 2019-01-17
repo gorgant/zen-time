@@ -44,7 +44,7 @@ export class LoadErrorDetected implements Action {
 export class UpdateTimerRequested implements Action {
   readonly type = ActionTypes.UPDATE_TIMER_REQUESTED;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
 }
 
 export class UpdateTimerComplete implements Action {

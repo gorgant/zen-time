@@ -82,19 +82,26 @@ export class TimerService {
       );
   }
 
-  updateTimer(timer: Timer): Observable<Timer> {
+  updateTimer(timer: Timer, undoAction: boolean): Observable<Timer> {
+    console.log('Updating data in database', undoAction);
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.update(timer);
-    this.uiService.showSnackBar(`Timer updated`, null, 3000);
+    if (!undoAction) {
+      const undoSnackbarConfig: UndoSnackbarConfig = {
+        duration: 5000,
+        actionId: timer.id
+      };
+      this.uiService.showUndoSnackBar(`Timer updated`, 'Undo', undoSnackbarConfig);
+    }
     return of(timer);
   }
 
-  updateDone(timer: Timer): Observable<Timer> {
-    const timerDoc = this.getDoneDoc(timer.id);
-    timerDoc.update(timer);
-    this.uiService.showSnackBar(`Timer updated`, null, 3000);
-    return of(timer);
-  }
+  // updateDone(timer: Timer): Observable<Timer> {
+  //   const timerDoc = this.getDoneDoc(timer.id);
+  //   timerDoc.update(timer);
+  //   this.uiService.showSnackBar(`Timer updated`, null, 3000);
+  //   return of(timer);
+  // }
 
   createTimer(timer: Timer, undoAction?: boolean): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
