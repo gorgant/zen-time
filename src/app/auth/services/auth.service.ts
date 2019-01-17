@@ -26,7 +26,6 @@ export class AuthService {
   initAuthListener(): void {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        console.log('User detected, initiating authSuccess');
         this.authSuccess(user);
       } else {
         this.postLogoutActions();

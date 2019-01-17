@@ -9,6 +9,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 import { Calendars } from 'src/app/shared/utils/calendar/calendars';
+import { Countdown } from 'src/app/shared/models/countdown.model';
+import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 
 @Component({
   selector: 'app-active-timer',
@@ -23,6 +25,7 @@ export class ActiveTimerComponent implements OnInit {
   @ViewChild('matButton') matButton;
   timerId: string;
   reminderUrl: string;
+  coundownClock: CountDownClock;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +47,9 @@ export class ActiveTimerComponent implements OnInit {
           this.store$.dispatch(
             new TimerStoreActions.SingleTimerRequested({timerId: this.timerId})
           );
+        }
+        if (timer) {
+          this.coundownClock = new Countdown(timer).getCountDownClock();
         }
         return timer;
       })

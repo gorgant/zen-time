@@ -16,7 +16,6 @@ export class UserService {
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
-    console.log('User data requested with this id', userId);
     this.currentUserDoc = this.db.doc<AppUser>(`users/${userId}`);
     return this.db.doc<AppUser>(`users/${userId}`)
       .snapshotChanges()

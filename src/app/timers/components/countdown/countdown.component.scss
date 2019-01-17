@@ -1,3 +1,6 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
 .mat-display-2.timer-section {
   margin-bottom: 8px;
 }
@@ -12,4 +15,8 @@
 }
 .mat-subheading-2.timer-section {
   margin-bottom: 8px;
+}
+
+.expired-countdown {
+  color: $accent;
 }
