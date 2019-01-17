@@ -6,10 +6,12 @@ import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import * as timerFeatureActions from './actions';
 import * as doneFeatureActions from '../done-store/actions';
+import * as undoFeatureActions from '../undo-store/actions';
 import { switchMap, map, catchError, mergeMap, tap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
+import { UndoableAction } from 'src/app/shared/models/undoable-action.model';
 
 @Injectable()
 export class TimerStoreEffects {
@@ -82,7 +84,9 @@ export class TimerStoreEffects {
       timerFeatureActions.ActionTypes.ADD_TIMER_REQUESTED
     ),
     mergeMap(action => this.timerService.createTimer(action.payload.timer).pipe(
-      map(timerWithId => new timerFeatureActions.AddTimerComplete({timer: timerWithId})),
+      map(timerWithId => {
+        return new timerFeatureActions.AddTimerComplete({timer: timerWithId});
+      }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
         return of(new timerFeatureActions.LoadErrorDetected({ error }));
@@ -95,8 +99,16 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.DeleteTimerRequested>(
       timerFeatureActions.ActionTypes.DELETE_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteTimer(action.payload.timerId, action.payload.markDone).pipe(
-      map(timerId => new timerFeatureActions.DeleteTimerComplete({timerId: timerId})),
+    mergeMap(action => this.timerService.deleteTimer(action.payload.timer, action.payload.markDone).pipe(
+      map(timerId => new timerFeatureActions.DeleteTimerComplete({timerId})),
+      tap(timerId => {
+        const actionId = action.payload.timer.id;
+        const undoableAction: UndoableAction = {
+          payload: action.payload.timer,
+          actionId: actionId
+        };
+        this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+      }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
         return of(new timerFeatureActions.LoadErrorDetected({ error }));
@@ -114,4 +126,16 @@ export class TimerStoreEffects {
       return action.payload.timer;
     }),
   );
+
+  // // Courtesy of https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  // private generateActionId(): string {
+  //   let text = '';
+  //   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  //   for (let i = 0; i < 10; i++) {
+  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
+  //   }
+
+  //   return text;
+  // }
 }

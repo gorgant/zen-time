@@ -11,6 +11,7 @@ import { TimersStoreModule } from './timer-store';
 import { metaReducers } from './meta-reducers';
 import { DoneStoreModule } from './done-store';
 import { UserStoreModule } from './user-store';
+import { UndoStoreModule } from './undo-store';
 
 @NgModule({
   declarations: [],
@@ -20,6 +21,7 @@ import { UserStoreModule } from './user-store';
     TimersStoreModule,
     DoneStoreModule,
     UserStoreModule,
+    UndoStoreModule,
     StoreModule.forRoot({}, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),

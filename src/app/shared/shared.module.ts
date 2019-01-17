@@ -24,6 +24,6 @@ import { MatElevationDirective } from './directives/mat-elevation.directive';
     FlexLayoutModule,
     RemainingTimePipe,
     MatElevationDirective,
-  ]
+  ],
 })
 export class SharedModule { }

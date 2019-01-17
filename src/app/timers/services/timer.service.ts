@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { Timer } from '../models/timer.model';
-import { map, take, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { now } from 'moment';
+import { UndoSnackbarConfig } from 'src/app/shared/models/undoSnackbarConfig.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class TimerService {
   constructor(
     private db: AngularFirestore,
     private userService: UserService,
-    private uiService: UiService
+    private uiService: UiService,
   ) { }
 
   fetchAllTimers(): Observable<Timer[]> {
@@ -114,35 +115,25 @@ export class TimerService {
     return of(convertedTimer);
   }
 
-  deleteTimer(timerId: string, completeTimer?: boolean): Observable<string> {
-    const timerDoc = this.getTimerDoc(timerId);
+  deleteTimer(timer: Timer, completeTimer?: boolean): Observable<string> {
+    const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.delete();
     if (!completeTimer) {
-      this.uiService.showSnackBar(`Timer deleted`, null, 3000);
+      const undoSnackbarConfig: UndoSnackbarConfig = {
+        duration: 5000,
+        actionId: timer.id
+      };
+      this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
     }
-    return of(timerId);
+    return of(timer.id);
   }
 
-  deleteDone(timerId: string): Observable<string> {
-    const timerDoc = this.getDoneDoc(timerId);
+  deleteDone(timer: Timer): Observable<string> {
+    const timerDoc = this.getDoneDoc(timer.id);
     timerDoc.delete();
     this.uiService.showSnackBar(`Timer deleted`, null, 3000);
-    return of(timerId);
+    return of(timer.id);
   }
-
-  // completeTimer(timer: Timer): Observable<Timer> {
-  //   return this.createDone(timer)
-  //     .pipe(
-  //       tap(completedTimer => {
-  //         // Confirm that completed timer was generated before deleting
-  //         if (completedTimer) {
-  //           console.log('Timer deleted from active list');
-  //           this.deleteTimer(timer.id, true);
-  //         }
-  //       }),
-  //       map(completedTimer => completedTimer)
-  //     );
-  // }
 
   generateTimerId(): string {
     return this.db.createId();

@@ -67,7 +67,7 @@ export class AddDoneComplete implements Action {
 export class DeleteDoneRequested implements Action {
   readonly type = ActionTypes.DELETE_DONE_REQUESTED;
 
-  constructor(public payload: {timerId: string}) {}
+  constructor(public payload: {timer: Timer}) {}
 }
 
 export class DeleteDoneComplete implements Action {

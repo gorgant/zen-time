@@ -5,7 +5,7 @@ import { Timer } from '../../models/timer.model';
 import { Store } from '@ngrx/store';
 import { RootStoreState, DoneStoreSelectors, DoneStoreActions } from 'src/app/root-store';
 import { MatDialog } from '@angular/material';
-import { withLatestFrom, map } from 'rxjs/operators';
+import { withLatestFrom, map, take } from 'rxjs/operators';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
 
 @Component({
@@ -57,11 +57,16 @@ export class DoneTimerComponent implements OnInit {
 
   onDeleteTimer() {
     const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
-    dialogRef.afterClosed().subscribe(userCanceled => {
-      if (userCanceled) {
-        this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({timerId: this.timerId}));
-        this.router.navigate(['../']);
-        // this.uiService.showSnackBar('Timer deleted', null, 3000);
+    dialogRef.afterClosed()
+    .pipe(take(1))
+    .subscribe(userConfirmed => {
+      if (userConfirmed) {
+        this.timer$
+        .pipe(take(1))
+        .subscribe(timer => {
+          this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({timer}));
+          this.router.navigate(['../']);
+        });
       } else {
         // Do nothing
       }

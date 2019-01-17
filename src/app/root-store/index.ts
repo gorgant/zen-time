@@ -5,5 +5,6 @@ export * from './auth-store';
 export * from './timer-store';
 export * from './done-store';
 export * from './user-store';
+export * from './undo-store';
 
 export { RootStoreState, RootStoreModule };

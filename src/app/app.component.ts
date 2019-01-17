@@ -1,8 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/services/auth.service';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreActions, UserStoreActions, UserStoreSelectors } from './root-store';
-import { withLatestFrom } from 'rxjs/operators';
+import {
+  RootStoreState,
+  AuthStoreActions,
+  UserStoreActions,
+  UserStoreSelectors,
+  UndoStoreSelectors,
+  TimerStoreActions
+} from './root-store';
+import { withLatestFrom, take } from 'rxjs/operators';
+import { UiService } from './shared/services/ui.service';
+import { Timer } from './timers/models/timer.model';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +24,7 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private store$: Store<RootStoreState.State>,
+    private uiService: UiService
   ) {}
 
   ngOnInit() {
@@ -33,5 +43,19 @@ export class AppComponent implements OnInit {
         this.store$.dispatch( new AuthStoreActions.SetUnauthenticated);
       }
     });
+
+    // This handles Undo requests (can't do it in timer service b/c circular dependencies)
+    this.uiService.undoTransporter
+      .subscribe(actionId => {
+        const undoableAction$ = this.store$.select(UndoStoreSelectors.selectUndoById(actionId));
+        undoableAction$
+          .pipe(take(1))
+          .subscribe(undoableAction => {
+            if (undoableAction.payload.duration) {
+              const timer: Timer = undoableAction.payload;
+              this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer}));
+            }
+          });
+      });
   }
 }

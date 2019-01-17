@@ -113,14 +113,21 @@ export class ActiveTimerComponent implements OnInit {
 
   onDeleteTimer() {
     const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
-    dialogRef.afterClosed().subscribe(userCanceled => {
-      if (userCanceled) {
-        this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timerId: this.timerId}));
-        this.router.navigate(['../']);
-        // this.uiService.showSnackBar('Timer deleted', null, 3000);
-      } else {
-        // Do nothing
-      }
+
+    dialogRef.afterClosed()
+    .pipe(take(1))
+    .subscribe(userConfirmed => {
+      this.timer$
+      .pipe(take(1))
+      .subscribe(timer => {
+        if (userConfirmed) {
+          this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timer}));
+          this.router.navigate(['../']);
+          // this.uiService.showSnackBar('Timer deleted', null, 3000);
+        } else {
+          // Do nothing
+        }
+      });
     });
   }
 }

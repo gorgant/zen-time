@@ -10,6 +10,7 @@ import { mergeMap, map, catchError, switchMap, tap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
+import { UndoSnackbarConfig } from 'src/app/shared/models/undoSnackbarConfig.model';
 
 @Injectable()
 export class DoneStoreEffects {
@@ -30,6 +31,10 @@ export class DoneStoreEffects {
         .pipe(
           map(timer => new doneFeatureActions.SingleDoneLoaded({timer})),
           catchError(error => {
+            const snackBarConfig: UndoSnackbarConfig = {
+              duration: 5000,
+              actionId: action.payload.timerId
+            };
             this.uiService.showSnackBar(error, null, 5000);
             return of(new doneFeatureActions.LoadErrorDetected({ error }));
           }
@@ -85,7 +90,7 @@ export class DoneStoreEffects {
       tap(completedTimer => {
         if (completedTimer) {
           console.log('Completed timer detected, deleting active one');
-          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timerId: action.payload.timer.id, markDone: true}));
+          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
         } else {
           console.log('Error creating completed timer');
         }
@@ -103,8 +108,10 @@ export class DoneStoreEffects {
     ofType<doneFeatureActions.DeleteDoneRequested>(
       doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteDone(action.payload.timerId).pipe(
-      map(timerId => new doneFeatureActions.DeleteDoneComplete({timerId: timerId})),
+    mergeMap(action => this.timerService.deleteDone(action.payload.timer).pipe(
+      map(timerId => {
+        return new doneFeatureActions.DeleteDoneComplete({timerId});
+      }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
         return of(new doneFeatureActions.LoadErrorDetected({ error }));
