@@ -7,8 +7,17 @@
     <div class="mat-subheading-2 timer-section">{{ countDownClock.seconds }} Seconds</div>
   </div>
   <div *ngIf="countDownClock.total < 0" fxLayout="column" fxLayoutAlign="center center">
-    <div class="mat-headline expired-countdown">
+    <div *ngIf="expiredDays" class="mat-headline expired-countdown">
       {{ countDownClock.days * -1 }} Days Overdue!
+    </div>
+    <div *ngIf="expiredHours" class="mat-headline expired-countdown">
+      {{ countDownClock.hours * -1 }} Hours Overdue!
+    </div>
+    <div *ngIf="expiredMinutes" class="mat-headline expired-countdown">
+      {{ countDownClock.minutes * -1 }} Minutes Overdue!
+    </div>
+    <div *ngIf="expiredSeconds" class="mat-headline expired-countdown">
+      Timer just expired!
     </div>
   </div>
 </section>

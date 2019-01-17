@@ -26,6 +26,11 @@ export class CountdownComponent implements OnInit, OnDestroy {
   countDownClock: CountDownClock;
   intervalTicker: NodeJS.Timer;
 
+  expiredSeconds: boolean;
+  expiredMinutes: boolean;
+  expiredHours: boolean;
+  expiredDays: boolean;
+
 
   constructor() { }
 
@@ -35,8 +40,10 @@ export class CountdownComponent implements OnInit, OnDestroy {
   applyTimerValues() {
     // Initialize timer when screen loads (otherwise ticker doesn't display for 1 second)
     this.countDownClock = new Countdown(this.timer).getCountDownClock();
-
     this.createTicker();
+    if (this.countDownClock.total < 0) {
+      this.calculateExpirationLevel();
+    }
   }
 
   private createTicker() {
@@ -44,12 +51,44 @@ export class CountdownComponent implements OnInit, OnDestroy {
     const step = 1000;
     // Refresh countdown data each second
     this.intervalTicker = setInterval(() => {
+      if (this.countDownClock.total < 0) {
+        this.calculateExpirationLevel();
+      }
       this.countDownClock = new Countdown(this.timer).getCountDownClock();
     }, step);
   }
 
-  private killTicker() {
+  private killTicker(): void {
     clearInterval(this.intervalTicker);
+  }
+
+  // Determines what text is displayed for the expired timer
+  private calculateExpirationLevel(): void {
+    const remainingTime = this.countDownClock.total;
+    if (remainingTime < (1000) * -1) {
+      this.expiredSeconds = true;
+      this.expiredMinutes = false;
+      this.expiredHours = false;
+      this.expiredDays = false;
+    }
+    if (remainingTime < (1000 * 60) * -1) {
+      this.expiredSeconds = false;
+      this.expiredMinutes = true;
+      this.expiredHours = false;
+      this.expiredDays = false;
+    }
+    if (remainingTime < (1000 * 60 * 60) * -1) {
+      this.expiredSeconds = false;
+      this.expiredMinutes = false;
+      this.expiredHours = true;
+      this.expiredDays = false;
+    }
+    if (remainingTime < (1000 * 60 * 60 * 24) * -1) {
+      this.expiredSeconds = false;
+      this.expiredMinutes = false;
+      this.expiredHours = false;
+      this.expiredDays = true;
+    }
   }
 
   ngOnDestroy() {
