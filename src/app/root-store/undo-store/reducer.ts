@@ -10,6 +10,12 @@ export function featureReducer(state = initialState, action: Actions): State {
       );
     }
 
+    case ActionTypes.PURGE_UNDOABLE_ACTION: {
+      return featureAdapter.removeOne(
+        action.payload.undoableAction.actionId, state
+      );
+    }
+
     default: {
       return state;
     }

@@ -7,7 +7,8 @@ import {
   UserStoreActions,
   UserStoreSelectors,
   UndoStoreSelectors,
-  TimerStoreActions
+  TimerStoreActions,
+  UndoStoreActions
 } from './root-store';
 import { withLatestFrom, take } from 'rxjs/operators';
 import { UiService } from './shared/services/ui.service';
@@ -54,6 +55,7 @@ export class AppComponent implements OnInit {
             if (undoableAction.payload.duration) {
               const timer: Timer = undoableAction.payload;
               this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer}));
+              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
             }
           });
       });
