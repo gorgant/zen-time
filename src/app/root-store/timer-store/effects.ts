@@ -83,7 +83,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.AddTimerRequested>(
       timerFeatureActions.ActionTypes.ADD_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.createTimer(action.payload.timer).pipe(
+    mergeMap(action => this.timerService.createTimer(action.payload.timer, action.payload.undoAction).pipe(
       map(timerWithId => {
         return new timerFeatureActions.AddTimerComplete({timer: timerWithId});
       }),
@@ -105,7 +105,8 @@ export class TimerStoreEffects {
         const actionId = action.payload.timer.id;
         const undoableAction: UndoableAction = {
           payload: action.payload.timer,
-          actionId: actionId
+          actionId: actionId,
+          actionType: timerFeatureActions.ActionTypes.DELETE_TIMER_REQUESTED
         };
         this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
       }),

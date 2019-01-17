@@ -8,11 +8,14 @@ import {
   UserStoreSelectors,
   UndoStoreSelectors,
   TimerStoreActions,
-  UndoStoreActions
+  UndoStoreActions,
+  DoneStoreActions
 } from './root-store';
 import { withLatestFrom, take } from 'rxjs/operators';
 import { UiService } from './shared/services/ui.service';
 import { Timer } from './timers/models/timer.model';
+import { ActionTypes as TimerActionTypes } from './root-store/timer-store/actions';
+import { ActionTypes as DoneActionTypes } from './root-store/done-store/actions';
 
 @Component({
   selector: 'app-root',
@@ -52,11 +55,30 @@ export class AppComponent implements OnInit {
         undoableAction$
           .pipe(take(1))
           .subscribe(undoableAction => {
-            if (undoableAction.payload.duration) {
-              const timer: Timer = undoableAction.payload;
-              this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer}));
-              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+            switch (undoableAction.actionType) {
+              case TimerActionTypes.DELETE_TIMER_REQUESTED: {
+                const timer: Timer = undoableAction.payload;
+                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer, undoAction: true}));
+                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+                return true;
+              }
+              case DoneActionTypes.DELETE_DONE_REQUESTED: {
+                const timer: Timer = undoableAction.payload;
+                this.store$.dispatch(new DoneStoreActions.AddDoneRequested({timer, undoAction: true}));
+                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+                return true;
+              }
+
+              default: {
+                return true;
+              }
             }
+
+            // if (undoableAction.payload.duration) {
+            //   const timer: Timer = undoableAction.payload;
+            //   this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer}));
+            //   this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+            // }
           });
       });
   }

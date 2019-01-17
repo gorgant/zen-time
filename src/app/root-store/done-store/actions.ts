@@ -55,7 +55,7 @@ export class UpdateDoneComplete implements Action {
 export class AddDoneRequested implements Action {
   readonly type = ActionTypes.ADD_DONE_REQUESTED;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
 }
 
 export class AddDoneComplete implements Action {

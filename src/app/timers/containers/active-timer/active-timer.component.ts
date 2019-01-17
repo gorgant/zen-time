@@ -107,7 +107,7 @@ export class ActiveTimerComponent implements OnInit {
       .pipe(take(1))
       .subscribe(timer => {
         this.store$.dispatch(new TimerStoreActions.MarkTimerDone({timer: timer}));
-        this.router.navigate(['../']);
+        this.router.navigate(['../'], {relativeTo: this.route});
       });
   }
 
@@ -122,7 +122,7 @@ export class ActiveTimerComponent implements OnInit {
       .subscribe(timer => {
         if (userConfirmed) {
           this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timer}));
-          this.router.navigate(['../']);
+          this.router.navigate(['../'], {relativeTo: this.route});
           // this.uiService.showSnackBar('Timer deleted', null, 3000);
         } else {
           // Do nothing

@@ -96,22 +96,26 @@ export class TimerService {
     return of(timer);
   }
 
-  createTimer(timer: Timer): Observable<Timer> {
+  createTimer(timer: Timer, undoAction?: boolean): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.set(timer);
-    this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
+    if (!undoAction) {
+      this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
+    }
     return of(timer);
   }
 
-  createDone(timer: Timer): Observable<Timer> {
+  createDone(timer: Timer, undoAction?: boolean): Observable<Timer> {
     const convertedTimer: Timer = {
-      ...timer,
-      id: this.generateTimerId(),
-      completedDate: now()
+      ...timer
     };
+    if (!undoAction) {
+      convertedTimer.id = this.generateTimerId(),
+      convertedTimer.completedDate = now();
+      this.uiService.showSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, null, 3000);
+    }
     const timerDoc = this.getDoneDoc(convertedTimer.id);
     timerDoc.set(convertedTimer);
-    this.uiService.showSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, null, 3000);
     return of(convertedTimer);
   }
 
@@ -131,7 +135,11 @@ export class TimerService {
   deleteDone(timer: Timer): Observable<string> {
     const timerDoc = this.getDoneDoc(timer.id);
     timerDoc.delete();
-    this.uiService.showSnackBar(`Timer deleted`, null, 3000);
+    const undoSnackbarConfig: UndoSnackbarConfig = {
+      duration: 5000,
+      actionId: timer.id
+    };
+    this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
     return of(timer.id);
   }
 

@@ -65,7 +65,8 @@ export class DoneTimerComponent implements OnInit {
         .pipe(take(1))
         .subscribe(timer => {
           this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({timer}));
-          this.router.navigate(['../']);
+          console.log(this.router.url);
+          this.router.navigate(['../'], {relativeTo: this.route});
         });
       } else {
         // Do nothing

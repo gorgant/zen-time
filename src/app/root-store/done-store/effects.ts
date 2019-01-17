@@ -6,11 +6,13 @@ import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import * as doneFeatureActions from './actions';
 import * as timerFeatureActions from '../timer-store/actions';
+import * as undoFeatureActions from '../undo-store/actions';
 import { mergeMap, map, catchError, switchMap, tap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
 import { UndoSnackbarConfig } from 'src/app/shared/models/undoSnackbarConfig.model';
+import { UndoableAction } from 'src/app/shared/models/undoable-action.model';
 
 @Injectable()
 export class DoneStoreEffects {
@@ -86,13 +88,15 @@ export class DoneStoreEffects {
     ofType<doneFeatureActions.AddDoneRequested>(
       doneFeatureActions.ActionTypes.ADD_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.createDone(action.payload.timer).pipe(
+    mergeMap(action => this.timerService.createDone(action.payload.timer, action.payload.undoAction).pipe(
       tap(completedTimer => {
-        if (completedTimer) {
-          console.log('Completed timer detected, deleting active one');
-          this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
-        } else {
-          console.log('Error creating completed timer');
+        if (!action.payload.undoAction) {
+          if (completedTimer) {
+            console.log('Completed timer detected, deleting active one');
+            this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
+          } else {
+            console.log('Error creating completed timer');
+          }
         }
       }),
       map(completedTimer => new doneFeatureActions.AddDoneComplete({timer: completedTimer})),
@@ -111,6 +115,15 @@ export class DoneStoreEffects {
     mergeMap(action => this.timerService.deleteDone(action.payload.timer).pipe(
       map(timerId => {
         return new doneFeatureActions.DeleteDoneComplete({timerId});
+      }),
+      tap(timerId => {
+        const actionId = action.payload.timer.id;
+        const undoableAction: UndoableAction = {
+          payload: action.payload.timer,
+          actionId: actionId,
+          actionType: doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
+        };
+        this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
       }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);

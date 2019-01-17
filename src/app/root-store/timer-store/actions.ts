@@ -56,7 +56,7 @@ export class UpdateTimerComplete implements Action {
 export class AddTimerRequested implements Action {
   readonly type = ActionTypes.ADD_TIMER_REQUESTED;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
 }
 
 export class AddTimerComplete implements Action {
