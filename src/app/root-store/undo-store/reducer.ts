@@ -5,7 +5,8 @@ export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 
     case ActionTypes.STASH_UNDOABLE_ACTION: {
-      return featureAdapter.addOne(
+      // Upsert here b/c ID carries over switching from timer to done
+      return featureAdapter.upsertOne(
         action.payload.undoableAction, state
       );
     }

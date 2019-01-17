@@ -8,13 +8,11 @@ import * as timerFeatureActions from './actions';
 import * as doneFeatureActions from '../done-store/actions';
 import * as undoFeatureActions from '../undo-store/actions';
 import * as timerFeatureSelectors from './selectors';
-import { switchMap, map, catchError, mergeMap, tap, withLatestFrom, take } from 'rxjs/operators';
+import { switchMap, map, catchError, mergeMap, tap, take } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
 import { UndoableAction } from 'src/app/shared/models/undoable-action.model';
-import { selectTimerById } from './selectors';
-import { TimerStoreSelectors } from '.';
 
 @Injectable()
 export class TimerStoreEffects {
@@ -66,6 +64,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.UpdateTimerRequested>(
       timerFeatureActions.ActionTypes.UPDATE_TIMER_REQUESTED
     ),
+    // Capture original timer data for the undo store before updating timer
     tap((action) => {
       if (!action.payload.undoAction) {
         this.store$.select(timerFeatureSelectors.selectTimerById(action.payload.timer.id))
@@ -144,6 +143,15 @@ export class TimerStoreEffects {
     map(action => {
       this.store$.dispatch(new doneFeatureActions.AddDoneRequested({timer: action.payload.timer}));
       return action.payload.timer;
+    }),
+    tap((timer) => {
+      const actionId = timer.id;
+      const undoableAction: UndoableAction = {
+        payload: timer,
+        actionId: actionId,
+        actionType: timerFeatureActions.ActionTypes.MARK_TIMER_DONE
+      };
+      this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
     }),
   );
 

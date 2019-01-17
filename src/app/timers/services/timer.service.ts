@@ -117,9 +117,12 @@ export class TimerService {
       ...timer
     };
     if (!undoAction) {
-      convertedTimer.id = this.generateTimerId(),
       convertedTimer.completedDate = now();
-      this.uiService.showSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, null, 3000);
+      const undoSnackbarConfig: UndoSnackbarConfig = {
+        duration: 5000,
+        actionId: timer.id
+      };
+      this.uiService.showUndoSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, 'Undo', undoSnackbarConfig);
     }
     const timerDoc = this.getDoneDoc(convertedTimer.id);
     timerDoc.set(convertedTimer);
@@ -139,14 +142,16 @@ export class TimerService {
     return of(timer.id);
   }
 
-  deleteDone(timer: Timer): Observable<string> {
+  deleteDone(timer: Timer, undoAction?: boolean): Observable<string> {
     const timerDoc = this.getDoneDoc(timer.id);
     timerDoc.delete();
-    const undoSnackbarConfig: UndoSnackbarConfig = {
-      duration: 5000,
-      actionId: timer.id
-    };
-    this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
+    if (!undoAction) {
+      const undoSnackbarConfig: UndoSnackbarConfig = {
+        duration: 5000,
+        actionId: timer.id
+      };
+      this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
+    }
     return of(timer.id);
   }
 

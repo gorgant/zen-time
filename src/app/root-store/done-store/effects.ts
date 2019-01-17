@@ -112,18 +112,20 @@ export class DoneStoreEffects {
     ofType<doneFeatureActions.DeleteDoneRequested>(
       doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteDone(action.payload.timer).pipe(
+    mergeMap(action => this.timerService.deleteDone(action.payload.timer, action.payload.undoAction).pipe(
       map(timerId => {
         return new doneFeatureActions.DeleteDoneComplete({timerId});
       }),
-      tap(timerId => {
-        const actionId = action.payload.timer.id;
-        const undoableAction: UndoableAction = {
-          payload: action.payload.timer,
-          actionId: actionId,
-          actionType: doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
-        };
-        this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+      tap(() => {
+        if (!action.payload.undoAction) {
+          const actionId = action.payload.timer.id;
+          const undoableAction: UndoableAction = {
+            payload: action.payload.timer,
+            actionId: actionId,
+            actionType: doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
+          };
+          this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+        }
       }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
