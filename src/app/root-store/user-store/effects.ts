@@ -40,7 +40,7 @@ export class UserStoreEffects {
       featureActions.ActionTypes.STORE_USER_DATA_REQUESTED
     ),
     switchMap(action =>
-      this.userService.storeUserData(action.payload.userData, action.payload.userId)
+      this.userService.storeUserData(action.payload.userData, action.payload.userId, action.payload.userRegistration)
         .pipe(
           // // When user data is stored in the database, update it in the store as well for realtime update to UI
           // tap(appUser => this.store$.dispatch(new featureActions.UserDataRequested({userId: appUser.id}))),

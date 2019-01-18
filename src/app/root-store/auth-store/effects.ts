@@ -18,7 +18,7 @@ export class AuthStoreEffects {
 
   @Effect()
   registerUserRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<authFeatureActions.AuthenticationRequested>(
+    ofType<authFeatureActions.RegisterUserRequested>(
       authFeatureActions.ActionTypes.REGISTER_USER_REQUESTED
     ),
     switchMap(action =>
@@ -26,7 +26,7 @@ export class AuthStoreEffects {
         .pipe(
           // Store registered user data in the database (not just the user records)
           tap(response => this.store$.dispatch(
-            new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId}))
+            new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId, userRegistration: true}))
           ),
           map(response => new authFeatureActions.RegisterUserComplete()),
           catchError(error => {

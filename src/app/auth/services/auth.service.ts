@@ -54,13 +54,11 @@ export class AuthService {
   }
 
   login(authData: AuthData): Observable<string> {
-    console.log('Auth requested with this data', authData);
     const authResponse = this.afAuth.auth.signInWithEmailAndPassword(
       authData.email,
       authData.password
     ).then(creds => {
       const userId = creds.user.uid;
-      console.log('Auth success', creds);
       return userId;
     })
     .catch(error => {
