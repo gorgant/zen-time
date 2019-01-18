@@ -83,7 +83,6 @@ export class TimerService {
   }
 
   updateTimer(timer: Timer, undoAction: boolean): Observable<Timer> {
-    console.log('Updating data in database', undoAction);
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.update(timer);
     if (!undoAction) {

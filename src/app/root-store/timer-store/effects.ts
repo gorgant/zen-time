@@ -70,7 +70,6 @@ export class TimerStoreEffects {
         this.store$.select(timerFeatureSelectors.selectTimerById(action.payload.timer.id))
           .pipe(take(1))
           .subscribe(previousTimer => {
-            console.log('stashing action in undoable store', previousTimer.title);
             const actionId = previousTimer.id;
             const undoableAction: UndoableAction = {
               payload: previousTimer,

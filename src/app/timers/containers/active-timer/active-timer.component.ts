@@ -50,12 +50,10 @@ export class ActiveTimerComponent implements OnInit {
           );
           // Prevents this from firing a bunch of extra times
           this.timerLoaded = true;
-          console.log('Setting timer since timers havent loaded');
         }
         if (timer) {
           this.coundownClock = new Countdown(timer).getCountDownClock();
         }
-        console.log('Setting timer');
         return timer;
       })
     );
@@ -80,7 +78,6 @@ export class ActiveTimerComponent implements OnInit {
 
   private configureReminderUrl(timer: Timer) {
 
-    console.log('Configuring calendar');
     const calendars = new Calendars(timer);
 
     const googleUrl: string = calendars.getGoogleCalendarUrl();

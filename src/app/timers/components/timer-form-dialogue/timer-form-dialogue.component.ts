@@ -34,10 +34,8 @@ export class TimerFormDialogueComponent implements OnInit {
 
     if (this.timer) {
       this.newTimer = false;
-      console.log('Timer detected, loading timer data');
     } else {
       this.newTimer = true;
-      console.log('No timer detected, loading blank form');
     }
 
     this.timerForm = this.fb.group({
@@ -94,7 +92,6 @@ export class TimerFormDialogueComponent implements OnInit {
         ...timerData,
         id: this.timer.id,
       };
-      console.log('Dispatching request to update timer');
       this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer: updatedTimer}));
     } else {
       const autoTimerId: string = this.timerService.generateTimerId();
@@ -102,7 +99,6 @@ export class TimerFormDialogueComponent implements OnInit {
         ...timerData,
         id: autoTimerId,
       };
-      console.log('Dispatching request to create new timer');
       this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
     }
     this.dialogRef.close(timerData.title);
