@@ -26,6 +26,11 @@ export function featureReducer(state = initialState, action: Actions): State {
         ...state,
         error: null,
       };
+    case ActionTypes.UPDATE_PROFILE_IMAGE_COMPLETE:
+      return {
+        ...state,
+        error: null,
+      };
     case ActionTypes.USER_DATA_LOAD_ERROR:
       return {
         ...state,

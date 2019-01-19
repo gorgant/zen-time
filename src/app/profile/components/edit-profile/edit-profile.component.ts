@@ -2,12 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, UserStoreSelectors, UserStoreActions } from 'src/app/root-store';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
-import { take } from 'rxjs/operators';
+import { take, takeUntil, takeWhile } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { EditNameDialogueComponent } from '../edit-name-dialogue/edit-name-dialogue.component';
 import { EditEmailDialogueComponent } from '../edit-email-dialogue/edit-email-dialogue.component';
+import { UserService } from 'src/app/shared/services/user.service';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -22,9 +24,16 @@ export class EditProfileComponent implements OnInit {
   @ViewChild('matButton') matButton;
   @ViewChild('matButton2') matButton2;
 
+  profileImage: File;
+  imageUploadProgress$: Observable<number>;
+  imageUploadUrl$: Observable<string>;
+
   constructor(
     private store$: Store<RootStoreState.State>,
     private dialog: MatDialog,
+    private userService: UserService,
+    private uiService: UiService
+
   ) { }
 
   ngOnInit() {
@@ -74,6 +83,25 @@ export class EditProfileComponent implements OnInit {
 
         const dialogRef = this.dialog.open(EditEmailDialogueComponent, dialogConfig);
       });
+  }
+
+  onChooseFile(event) {
+    if (event) {
+      this.profileImage = <File>event.target.files[0];
+    }
+  }
+
+  onUploadImage() {
+    if (this.profileImage) {
+      this.appUser$
+        .pipe(take(1))
+        .subscribe(user => {
+          this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.profileImage, user: user }));
+          this.imageUploadProgress$ = this.userService.imageUploadPercentage;
+        });
+    } else {
+      this.uiService.showSnackBar('You must first choose a file to upload.', null, 3000);
+    }
   }
 
 }

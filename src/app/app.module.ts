@@ -14,6 +14,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { RootStoreModule } from './root-store';
 import { HeaderComponent } from './navigation/components/header/header.component';
 import { SidenavComponent } from './navigation/components/sidenav/sidenav.component';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { SidenavComponent } from './navigation/components/sidenav/sidenav.compon
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireStorageModule,
     AuthModule,
     RootStoreModule,
   ],

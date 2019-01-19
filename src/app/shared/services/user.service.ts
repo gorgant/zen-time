@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable, from } from 'rxjs';
+import { Observable, from, Subject } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
 import { map } from 'rxjs/operators';
 import { UiService } from './ui.service';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,12 @@ import { UiService } from './ui.service';
 export class UserService {
 
   private currentUserDoc: AngularFirestoreDocument<AppUser>;
+  private imageUploadPercentage$: Observable<number>;
+  imgUploadPercentage = new Subject<number>();
 
   constructor(
     private db: AngularFirestore,
+    private storage: AngularFireStorage,
     private uiService: UiService
   ) { }
 
@@ -43,8 +47,29 @@ export class UserService {
     return from(response);
   }
 
+  uploadProfileImage(imageFile: File, appUser: AppUser): Observable<string> {
+    console.log('Image upload initiated');
+    const file = imageFile;
+    const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+    const logger = task;
+
+    logger.then(result => console.log(result)).catch(error => console.log(error));
+
+    // observe percentage changes
+    this.imageUploadPercentage$ = task.percentageChanges();
+
+    // Return URL of image
+    return fileRef.getDownloadURL();
+  }
+
   // Provides easy access to user doc throughout the app
   get userDoc() {
     return this.currentUserDoc;
+  }
+
+  get imageUploadPercentage() {
+    return this.imageUploadPercentage$;
   }
 }

@@ -8,6 +8,8 @@ export enum ActionTypes {
   STORE_USER_DATA_COMPLETE = '[User] User Data Stored',
   UPDATE_PASSWORD_REQUESTED = '[User] Update Password Requested',
   UPDATE_PASSWORD_COMPLETE = '[User] Password Updated',
+  UPDATE_PROFILE_IMAGE_REQUESTED = '[User] Update Profile Image Requested',
+  UPDATE_PROFILE_IMAGE_COMPLETE = '[User] Update Profile Image Complete',
   USER_DATA_LOAD_ERROR = '[User] Load Failure'
 }
 
@@ -43,6 +45,18 @@ export class UpdatePasswordComplete implements Action {
   readonly type = ActionTypes.UPDATE_PASSWORD_COMPLETE;
 }
 
+export class UpdateProfileImageRequested implements Action {
+  readonly type = ActionTypes.UPDATE_PROFILE_IMAGE_REQUESTED;
+
+  constructor(public payload: { imageFile: File, user: AppUser }) {}
+}
+
+export class UpdateProfileImageComplete implements Action {
+  readonly type = ActionTypes.UPDATE_PROFILE_IMAGE_COMPLETE;
+}
+
+
+
 export class LoadErrorDetected implements Action {
   readonly type = ActionTypes.USER_DATA_LOAD_ERROR;
   constructor(public payload: { error: string }) {}
@@ -56,5 +70,7 @@ StoreUserDataRequested |
 StoreUserDataComplete |
 UpdatePasswordRequested |
 UpdatePasswordComplete |
+UpdateProfileImageRequested |
+UpdateProfileImageComplete |
 LoadErrorDetected
 ;

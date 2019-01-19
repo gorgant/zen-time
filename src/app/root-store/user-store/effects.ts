@@ -7,6 +7,7 @@ import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { RootStoreState } from '..';
+import { AppUser } from 'src/app/shared/models/app-user.model';
 
 @Injectable()
 export class UserStoreEffects {
@@ -53,4 +54,27 @@ export class UserStoreEffects {
     )
   );
 
+  @Effect()
+  updateProfileImageRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.UpdateProfileImageRequested>(
+      featureActions.ActionTypes.UPDATE_PROFILE_IMAGE_REQUESTED
+    ),
+    switchMap(action =>
+      this.userService.uploadProfileImage(action.payload.imageFile, action.payload.user)
+        .pipe(
+          tap(imageUrl => {
+            const updatedAppUser: AppUser = {
+              ...action.payload.user,
+              avatarUrl: imageUrl
+            };
+            this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
+          }),
+          map(imageUrl => new featureActions.StoreUserDataComplete()),
+          catchError(error => {
+            this.uiService.showSnackBar(error, null, 5000);
+            return of(new featureActions.LoadErrorDetected({ error }));
+          })
+        )
+    )
+  );
 }
