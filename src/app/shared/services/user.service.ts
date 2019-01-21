@@ -52,7 +52,10 @@ export class UserService {
     const file = imageFile;
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(filePath, file);
+    const customMetaData = {
+      resizedImage: 'false'
+    };
+    const task = this.storage.upload(filePath, file, {customMetadata: customMetaData});
     const logger = task;
 
     logger.then(result => console.log(result)).catch(error => console.log(error));

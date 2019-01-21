@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
@@ -23,6 +23,7 @@ export class EditProfileComponent implements OnInit {
   defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
   @ViewChild('matButton') matButton;
   @ViewChild('matButton2') matButton2;
+  @ViewChild('fileInput') fileInput: ElementRef;
 
   profileImage: File;
   imageUploadProgress$: Observable<number>;
@@ -32,8 +33,8 @@ export class EditProfileComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private dialog: MatDialog,
     private userService: UserService,
-    private uiService: UiService
-
+    private uiService: UiService,
+    private renderer: Renderer2
   ) { }
 
   ngOnInit() {
@@ -86,8 +87,15 @@ export class EditProfileComponent implements OnInit {
   }
 
   onChooseFile(event) {
-    if (event) {
-      this.profileImage = <File>event.target.files[0];
+    const file: File = event.target.files[0];
+    if (file) {
+      // Confirm file is an image
+      if (file.type.split('/')[0] !== 'image') {
+        this.uiService.showSnackBar('Invalid file type. File must be a standard image format.', null, 3000);
+        this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+      } else {
+        this.profileImage = file;
+      }
     }
   }
 

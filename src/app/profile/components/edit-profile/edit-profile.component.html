@@ -23,7 +23,7 @@
   </div>
   <div *ngIf="(appUser$ | async) as user" class="change-image-container" fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
     <div fxLayout="row" fxLayoutAlign="start center">
-      <input type="file" (change)="onChooseFile($event)" placeholder="Upload Profile Image">
+      <input #fileInput type="file" (change)="onChooseFile($event)" placeholder="Upload Profile Image">
       <button (click)="onUploadImage()" mat-button color="primary">Upload Image</button>
     </div>
     <div *ngIf="(imageUploadProgress$ | async) as uploadPercentage" fxLayout="column" fxLayoutAlign="center center">
