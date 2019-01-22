@@ -1,0 +1,45 @@
+<section fxLayout="column" fxLayoutAlign="start center">
+  <mat-dialog-content>
+      <h2 class="section-header" mat-dialog-title>Choose Your Calendar</h2>
+  </mat-dialog-content>
+  <mat-dialog-actions fxLayout="column" fxLayoutAlign="center center">
+    <button 
+      (click)="onSetGoogleReminder()" 
+      class="calendar-button" 
+      mat-stroked-button color="primary"
+      >
+        Add to Google Calendar
+    </button>
+    <button 
+      (click)="onSetMicrosoftReminder()" 
+      class="calendar-button" 
+      mat-stroked-button color="primary"
+      >
+        Add to Microsoft Calendar
+    </button>
+    <button 
+      (click)="onSetYahooReminder()" 
+      class="calendar-button" 
+      mat-stroked-button color="primary"
+      >
+        Add to Yahoo Calendar
+    </button>
+    <button 
+      (click)="onSetIcsReminder()" 
+      class="calendar-button" 
+      mat-stroked-button color="primary"
+      >
+        Generate ICS File
+    </button>
+    <button 
+      class="close-button"
+      mat-raised-button 
+      [mat-dialog-close]
+      >
+        Close
+    </button>
+
+  </mat-dialog-actions>
+</section>
+
+

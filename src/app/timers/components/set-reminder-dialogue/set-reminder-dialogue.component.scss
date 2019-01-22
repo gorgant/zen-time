@@ -1,0 +1,18 @@
+// Must import to use the custom theme classes
+@import "../../../variables";
+
+mat-form-field {
+  width: 100%;
+}
+.section-header {
+  color: $primary !important;
+}
+
+.calendar-button {
+  margin: 8px;
+  width: 250px;
+}
+
+.close-button {
+  margin: 16px;
+}

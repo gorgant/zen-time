@@ -30,6 +30,15 @@ export class Calendars {
     };
   }
 
+  public getIcsFileName(): string {
+    return this.utils.getIcsFileName(this.timer.title);
+  }
+
+  public getIcsBlob(): Blob {
+    const icsData = this.getIcsCalendar();
+    return this.utils.getIcsBlob(icsData);
+  }
+
   public getYahooCalendarUrl(): string {
     let yahooCalendarUrl = 'http://calendar.yahoo.com/?v=60&view=d&type=20';
     const duration = this.utils.getHoursDuration(this.calendarData.startDate, this.calendarData.endDate);
@@ -42,12 +51,21 @@ export class Calendars {
     return yahooCalendarUrl;
   }
 
+  // public getMicrosoftCalendarUrl(): string {
+  //   let microsoftCalendarUrl = 'http://calendar.live.com/calendar/calendar.aspx?rru=addevent';
+  //   microsoftCalendarUrl += '&summary=' + this.calendarData.title;
+  //   microsoftCalendarUrl += '&dtstart=' + this.calendarData.startDate + '&dtend=' + this.calendarData.endDate;
+  //   microsoftCalendarUrl += '&description=' + this.calendarData.description;
+  //   microsoftCalendarUrl += '&location=' + this.calendarData.location;
+
+  //   return microsoftCalendarUrl;
+  // }
+
   public getMicrosoftCalendarUrl(): string {
-    let microsoftCalendarUrl = 'http://calendar.live.com/calendar/calendar.aspx?rru=addevent';
-    microsoftCalendarUrl += '&summary=' + this.calendarData.title;
-    microsoftCalendarUrl += '&dtstart=' + this.calendarData.startDate + '&dtend=' + this.calendarData.endDate;
-    microsoftCalendarUrl += '&description=' + this.calendarData.description;
-    microsoftCalendarUrl += '&location=' + this.calendarData.location;
+    let microsoftCalendarUrl = 'https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent';
+    microsoftCalendarUrl += '&startdt=' + this.calendarData.startDate + '&enddt=' + this.calendarData.endDate;
+    microsoftCalendarUrl += '&subject=' + this.calendarData.title;
+    microsoftCalendarUrl += '&body=' + this.calendarData.description;
 
     return microsoftCalendarUrl;
   }
@@ -62,7 +80,7 @@ export class Calendars {
     return googleCalendarUrl;
   }
 
-  public getIcsCalendar(): string {
+  private getIcsCalendar(): string {
     return [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',

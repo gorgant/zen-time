@@ -13,6 +13,7 @@ import { DeleteConfirmDialogueComponent } from './components/delete-confirm-dial
 import { DoneTimersComponent } from './containers/done-timers/done-timers.component';
 import { DoneTimerComponent } from './containers/done-timer/done-timer.component';
 import { TimerFilterPipe } from './pipes/timer-filter.pipe';
+import { SetReminderDialogueComponent } from './components/set-reminder-dialogue/set-reminder-dialogue.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { TimerFilterPipe } from './pipes/timer-filter.pipe';
     DeleteConfirmDialogueComponent,
     DoneTimersComponent,
     DoneTimerComponent,
-    TimerFilterPipe
+    TimerFilterPipe,
+    SetReminderDialogueComponent
   ],
   imports: [
     SharedModule,
@@ -34,7 +36,8 @@ import { TimerFilterPipe } from './pipes/timer-filter.pipe';
   ],
   entryComponents: [
     TimerFormDialogueComponent,
-    DeleteConfirmDialogueComponent
+    DeleteConfirmDialogueComponent,
+    SetReminderDialogueComponent
   ],
 })
 export class TimersModule { }

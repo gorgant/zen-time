@@ -11,6 +11,7 @@ import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-
 import { Calendars } from 'src/app/shared/utils/calendar/calendars';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
+import { SetReminderDialogueComponent } from '../../components/set-reminder-dialogue/set-reminder-dialogue.component';
 
 @Component({
   selector: 'app-active-timer',
@@ -71,18 +72,14 @@ export class ActiveTimerComponent implements OnInit {
     this.timer$
       .pipe(take(1))
       .subscribe(timer => {
-        this.configureReminderUrl(timer);
-        window.open(this.reminderUrl);
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.autoFocus = false;
+        dialogConfig.width = '400px';
+        dialogConfig.data = timer;
+
+        const dialogRef = this.dialog.open(SetReminderDialogueComponent, dialogConfig);
       });
-  }
-
-  private configureReminderUrl(timer: Timer) {
-
-    const calendars = new Calendars(timer);
-
-    const googleUrl: string = calendars.getGoogleCalendarUrl();
-    this.reminderUrl = googleUrl;
-
   }
 
   onEditTimer() {

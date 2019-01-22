@@ -89,7 +89,7 @@ export class CalendarUtils {
    * The name of the file will be the event title with alphanumeric chars
    * having the extension `.ics`.
    */
-  private getIcsBlob(icsData: string): Blob {
+  public getIcsBlob(icsData: string): Blob {
     return new Blob([icsData], {
       type: 'application/octet-stream'
     });
@@ -98,11 +98,11 @@ export class CalendarUtils {
   /**
    * Transforms given string to be valid file name.
    */
-  private getIcsFileName(title: string): string {
+  public getIcsFileName(title: string): string {
     if (!title) {
       return 'event.ics';
     }
-    return `${title.replace(/[^\w ]+/g, '')}.ics`;
+    return `${title.replace(/[^\w ]+/g, '')}.ics`.replace(/\s+/g, '');
   }
 
   /**
