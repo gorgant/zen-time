@@ -125,7 +125,10 @@ export class TimerStoreEffects {
           actionId: actionId,
           actionType: timerFeatureActions.ActionTypes.DELETE_TIMER_REQUESTED
         };
-        this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+        // Only stash the delete action if this isn't a mark-done request
+        if (!action.payload.markDone) {
+          this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
+        }
       }),
       catchError(error => {
         this.uiService.showSnackBar(error, null, 5000);
