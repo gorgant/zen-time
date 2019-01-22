@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable, from, Subject } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 
@@ -13,7 +13,7 @@ export class UserService {
 
   private currentUserDoc: AngularFirestoreDocument<AppUser>;
   private imageUploadPercentage$: Observable<number>;
-  imgUploadPercentage = new Subject<number>();
+  downloadUrlSubject = new Subject<string>();
 
   constructor(
     private db: AngularFirestore,
@@ -57,18 +57,26 @@ export class UserService {
       resizedImage: 'false'
     };
     const task = this.storage.upload(filePath, file, {customMetadata: customMetaData});
-    const logger = task;
-
-    logger.then(result => console.log(result)).catch(error => console.log(error));
 
     // observe percentage changes
     this.imageUploadPercentage$ = task.percentageChanges();
 
-    // Return URL of image
-    return fileRef.getDownloadURL();
+    task
+      .then(() => {
+        fileRef.getDownloadURL()
+          .pipe(take(1))
+          .subscribe(url => {
+            console.log('Download url from snapshot', url);
+            this.downloadUrlSubject.next(url);
+          });
+      })
+      .catch(error => console.log(error));
+
+     return this.downloadUrlSubject;
   }
 
   fetchDownloadUrl(imageFile: File, appUser: AppUser): Observable<string> {
+    console.log('Fetching download URL for file', imageFile);
     const file = imageFile;
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
@@ -47,6 +47,11 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
+  // @HostListener('input', ['$event'])
+  // oninput($event) {
+  //   console.log('Input detected', $event);
+  // }
+
   onEditName() {
     // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
     this.matButton._elementRef.nativeElement.blur();
@@ -89,14 +94,29 @@ export class EditProfileComponent implements OnInit {
   onChooseFile(event) {
     const file: File = event.target.files[0];
     if (file) {
-      // Confirm file is an image
-      if (file.type.split('/')[0] !== 'image') {
-        this.uiService.showSnackBar('Invalid file type. File must be a standard image format.', null, 3000);
-        this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
-      } else {
-        this.profileImage = file;
-      }
+      this.checkImgDimensions(file) // This is an async operation using the file reader, so do it first
+        .then(validImageSize => {
+          if (file.type.split('/')[0] !== 'image') {
+            // Confirm file is an image
+            this.uiService.showSnackBar('Invalid file type. File must be a standard image format.', null, 3000);
+            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+            this.profileImage = null;
+          } else if (file.size > 4000000) {
+            // Confirm file size is less than 4 MB
+            this.uiService.showSnackBar('File too large.  Must be less than 4 MB.', null, 3000);
+            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+            this.profileImage = null;
+          } else if (!validImageSize) {
+            // Confirms file is a square
+            this.uiService.showSnackBar('Image dimensions must be square (image height must equal its width)', null, 3000);
+            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+            this.profileImage = null;
+          } else {
+            this.profileImage = file;
+          }
+        });
     }
+
   }
 
   onUploadImage() {
@@ -106,10 +126,34 @@ export class EditProfileComponent implements OnInit {
         .subscribe(user => {
           this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.profileImage, user: user }));
           this.imageUploadProgress$ = this.userService.imageUploadPercentage;
+          this.profileImage = null;
         });
     } else {
       this.uiService.showSnackBar('You must first choose a file to upload.', null, 3000);
     }
+  }
+
+  private async checkImgDimensions(file: File): Promise<boolean> {
+    let validImage: boolean;
+    const readFile = (fileToRead) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      const img = new Image;
+      reader.onload = () => {
+        img.src = <string>reader.result;
+        // Return the image with the source
+        return resolve(img);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(fileToRead);  // or a different mode
+    });
+    let loadedImage = new Image;
+    loadedImage = await <any>readFile(file);
+    if (loadedImage.height === loadedImage.width) {
+      validImage = true;
+    } else {
+      validImage = false;
+    }
+    return validImage;
   }
 
 }

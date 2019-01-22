@@ -23,8 +23,10 @@
   </div>
   <div *ngIf="(appUser$ | async) as user" class="change-image-container" fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
     <div fxLayout="row" fxLayoutAlign="start center">
-      <input #fileInput type="file" (change)="onChooseFile($event)" placeholder="Upload Profile Image">
-      <button (click)="onUploadImage()" mat-button color="primary">Upload Image</button>
+      <input #fileInput type="file" (change)="onChooseFile($event)" placeholder="Upload Profile Image" style="display: none">
+      <button mat-raised-button (click)="fileInput.click()">Choose Image</button>
+      <mat-icon>arrow_right_alt</mat-icon>
+      <button (click)="onUploadImage()" mat-raised-button color="primary" [disabled]="!profileImage">Upload Image</button>
     </div>
     <div *ngIf="(imageUploadProgress$ | async) as uploadPercentage" fxLayout="column" fxLayoutAlign="center center">
       <div *ngIf="uploadPercentage < 100">Upload Progress</div>
@@ -32,5 +34,6 @@
       </mat-progress-spinner>
     </div>
     <img class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
+    <p class="mat-caption image-caption">*Image dimensions must by square (e.g., 200x200) and file must be less than 4 MB.</p>
   </div>
 </section>
