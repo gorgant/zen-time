@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import * as featureActions from './actions';
-import { switchMap, map, catchError, tap } from 'rxjs/operators';
+import { switchMap, map, catchError, tap, take } from 'rxjs/operators';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { RootStoreState } from '..';
@@ -63,11 +63,18 @@ export class UserStoreEffects {
       this.userService.uploadProfileImage(action.payload.imageFile, action.payload.user)
         .pipe(
           tap(imageUrl => {
-            const updatedAppUser: AppUser = {
-              ...action.payload.user,
-              avatarUrl: imageUrl
-            };
-            this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
+            // This timeout allows time for image to be reized by Cloud Function before fetching url
+            setTimeout(() => {
+              const latestImageUrl = this.userService.fetchDownloadUrl(action.payload.imageFile, action.payload.user)
+                .pipe(take(1))
+                .subscribe(newImgUrl => {
+                  const updatedAppUser: AppUser = {
+                    ...action.payload.user,
+                    avatarUrl: newImgUrl
+                  };
+                  this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
+                });
+            }, 2000);
           }),
           map(imageUrl => new featureActions.StoreUserDataComplete()),
           catchError(error => {

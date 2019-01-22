@@ -52,6 +52,7 @@ export class UserService {
     const file = imageFile;
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
+    // Metadata used in cloud function (marked true by cloud function after resized)
     const customMetaData = {
       resizedImage: 'false'
     };
@@ -64,6 +65,13 @@ export class UserService {
     this.imageUploadPercentage$ = task.percentageChanges();
 
     // Return URL of image
+    return fileRef.getDownloadURL();
+  }
+
+  fetchDownloadUrl(imageFile: File, appUser: AppUser): Observable<string> {
+    const file = imageFile;
+    const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
+    const fileRef = this.storage.ref(filePath);
     return fileRef.getDownloadURL();
   }
 
