@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { Timer } from '../models/timer.model';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
 import { now } from 'moment';
 import { UndoSnackbarConfig } from 'src/app/shared/models/undoSnackbarConfig.model';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,15 @@ export class TimerService {
     private db: AngularFirestore,
     private userService: UserService,
     private uiService: UiService,
+    private authService: AuthService
   ) { }
 
   fetchAllTimers(): Observable<Timer[]> {
     return this.getTimerCollection()
       .snapshotChanges()
       .pipe(
+        // If logged out, this triggers unsub of this observable
+        takeUntil(this.authService.unsubTrigger$),
         map(docArray => {
           // throw(new Error());
           return docArray.map(doc => {
@@ -41,6 +45,8 @@ export class TimerService {
     return this.getDoneCollection()
       .snapshotChanges()
       .pipe(
+        // If logged out, this triggers unsub of this observable
+        takeUntil(this.authService.unsubTrigger$),
         map(docArray => {
           // throw(new Error());
           return docArray.map(doc => {
@@ -58,6 +64,8 @@ export class TimerService {
     return this.getTimerDoc(timerId)
       .snapshotChanges()
       .pipe(
+        // If logged out, this triggers unsub of this observable
+        takeUntil(this.authService.unsubTrigger$),
         map(doc => {
           const timer: Timer = {
             id: doc.payload.id,
@@ -72,6 +80,8 @@ export class TimerService {
     return this.getDoneDoc(timerId)
       .snapshotChanges()
       .pipe(
+        // If logged out, this triggers unsub of this observable
+        takeUntil(this.authService.unsubTrigger$),
         map(doc => {
           const timer: Timer = {
             id: doc.payload.id,

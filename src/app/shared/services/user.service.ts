@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable, from, Subject } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class UserService {
   constructor(
     private db: AngularFirestore,
     private storage: AngularFireStorage,
-    private uiService: UiService
+    private uiService: UiService,
+    private authService: AuthService
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
@@ -26,6 +28,8 @@ export class UserService {
     return this.db.doc<AppUser>(`users/${userId}`)
       .snapshotChanges()
       .pipe(
+        // If logged out, this triggers unsub of this observable
+        takeUntil(this.authService.unsubTrigger$),
         map(docSnapshot => {
           const appUser: AppUser = {
             id: docSnapshot.payload.id,

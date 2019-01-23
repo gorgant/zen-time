@@ -14,6 +14,7 @@ import { from, Observable, Subject } from 'rxjs';
 export class AuthService {
 
   authStatus = new Subject<string>();
+  private ngUnsubscribe$: Subject<void> = new Subject();
 
   // Cannot inject store$ here otherwise circular dependencies
   constructor(
@@ -71,6 +72,8 @@ export class AuthService {
 
   logout(): void {
     // Note the postLogoutActions as well, triggered by authstate change
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
     this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
   }
@@ -142,6 +145,10 @@ export class AuthService {
       });
 
     return from(authResponse);
+  }
+
+  get unsubTrigger$() {
+    return this.ngUnsubscribe$;
   }
 
   private getUserCredentials(email: string, password: string): firebase.auth.AuthCredential {
