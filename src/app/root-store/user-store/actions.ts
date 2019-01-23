@@ -28,7 +28,7 @@ export class UserDataLoaded implements Action {
 export class StoreUserDataRequested implements Action {
   readonly type = ActionTypes.STORE_USER_DATA_REQUESTED;
 
-  constructor(public payload: { userData: AppUser, userId: string, userRegistration?: boolean }) {}
+  constructor(public payload: { userData: AppUser, userId: string, userRegistration?: boolean, userEmailUpdate?: boolean }) {}
 }
 
 export class StoreUserDataComplete implements Action {

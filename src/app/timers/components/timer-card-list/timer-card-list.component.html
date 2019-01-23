@@ -28,11 +28,11 @@
       </app-timer-card-item>
     </div>
   
-    <div id="no-timers" *ngIf="timers.length < 1">No active timers found</div>
+    <div id="no-timers" *ngIf="timers.length < 1 && !error">No active timers found</div>
   </div>
   
-  <div *ngIf="error">
-    An error occurred: {{error.message}}
+  <div class="error-message" *ngIf="error">
+    An error occurred while loading your timers. Try refreshing the page or logging out and back in.
   </div>
 </section>
 
@@ -53,10 +53,10 @@
       </app-timer-card-item>
     </div>
   
-    <div id="no-timers" *ngIf="timers.length < 1">No completed timers found</div>
+    <div id="no-timers" *ngIf="timers.length < 1 && !error">No completed timers found</div>
   </div>
   
-  <div *ngIf="error">
-    An error occurred: {{error.message}}
+  <div class="error-message" *ngIf="error">
+      An error occurred while loading your timers. Try refreshing the page or logging out and back in.
   </div>
 </section>

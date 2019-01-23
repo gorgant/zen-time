@@ -6,7 +6,7 @@ import { UiService } from 'src/app/shared/services/ui.service';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { from, Observable, Subject } from 'rxjs';
+import { from, Observable, Subject, throwError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,7 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private uiService: UiService,
     private route: ActivatedRoute,
-  ) {
-    console.log('Auth service initialized');
-  }
+  ) { }
 
   initAuthListener(): void {
     this.afAuth.authState.subscribe(user => {
@@ -50,7 +48,7 @@ export class AuthService {
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
-      return error;
+      return throwError(error).toPromise();
     }));
 
     return from(authResponse);
@@ -66,7 +64,7 @@ export class AuthService {
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
-      return error;
+      return throwError(error).toPromise();
     });
 
     return from(authResponse);
@@ -105,7 +103,7 @@ export class AuthService {
       })
       .catch(error => {
         this.uiService.showSnackBar(error, null, 3000);
-        return error;
+        return throwError(error).toPromise();
       });
 
       return from(authResponse);
@@ -119,7 +117,7 @@ export class AuthService {
         const updateResponse = this.afAuth.auth.currentUser.updatePassword(newPassword)
           .then(empty => {
             this.uiService.showSnackBar(`Password successfully updated`, null, 3000);
-            return empty;
+            return 'success';
           })
           .catch(error => {
             this.uiService.showSnackBar(error, null, 3000);
@@ -129,7 +127,7 @@ export class AuthService {
       })
       .catch(error => {
         this.uiService.showSnackBar(error, null, 3000);
-        return error;
+        return throwError(error).toPromise();
       });
 
       return from(authResponse);
@@ -141,11 +139,11 @@ export class AuthService {
         this.uiService.showSnackBar(
           `Password reset link sent to ${email}. Please check your email for instructions.`, null, 5000
         );
-        return empty;
+        return 'success';
       } )
       .catch(error => {
         this.uiService.showSnackBar(error, null, 5000);
-        return error;
+        return throwError(error).toPromise();
       });
 
     return from(authResponse);

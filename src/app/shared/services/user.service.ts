@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable, from, Subject } from 'rxjs';
+import { Observable, from, Subject, throwError } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -36,19 +36,28 @@ export class UserService {
             ...docSnapshot.payload.data()
           };
           return appUser;
+        }),
+        catchError(error => {
+          this.uiService.showSnackBar(error, null, 5000);
+          return throwError(error);
         })
       );
   }
 
-  storeUserData(userData: AppUser, userId: string, userRegistration?: boolean): Observable<AppUser> {
+  storeUserData(userData: AppUser, userId: string, userRegistration?: boolean, userEmailUpdate?: boolean): Observable<AppUser> {
     const userCollection = this.db.collection<AppUser>('users');
-    const response = userCollection.doc(userId).set(userData)
-      .then(empty => userData)
-      .catch(error => error);
-    if (!userRegistration) {
-      this.uiService.showSnackBar('User info updated', null, 3000);
-    }
-    return from(response);
+    const fbResponse = userCollection.doc(userId).set(userData)
+      .then(empty => {
+        if (!userRegistration && !userEmailUpdate) {
+          this.uiService.showSnackBar('User info updated', null, 3000);
+        }
+        return userData;
+      } )
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   uploadProfileImage(imageFile: File, appUser: AppUser): Observable<string> {
@@ -64,17 +73,21 @@ export class UserService {
     // Observe percentage changes
     this.imageUploadPercentage$ = task.percentageChanges();
 
-    task
+    const fbResponse = task
       .then(() => {
         fileRef.getDownloadURL()
           .pipe(take(1))
           .subscribe(url => {
             this.downloadUrlSubject.next(url);
           });
+        return this.downloadUrlSubject;
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
 
-     return this.downloadUrlSubject;
+     return from(fbResponse);
   }
 
   fetchDownloadUrl(imageFile: File, appUser: AppUser): Observable<string> {

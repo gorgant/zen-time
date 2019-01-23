@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TimerService } from 'src/app/timers/services/timer.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { UiService } from 'src/app/shared/services/ui.service';
 import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
 import * as timerFeatureActions from './actions';
@@ -19,7 +18,6 @@ export class TimerStoreEffects {
   constructor(
     private timerService: TimerService,
     private actions$: Actions,
-    private uiService: UiService,
     private store$: Store<RootStoreState.State>,
   ) { }
 
@@ -33,7 +31,6 @@ export class TimerStoreEffects {
         .pipe(
           map(timer => new timerFeatureActions.SingleTimerLoaded({timer})),
           catchError(error => {
-            this.uiService.showSnackBar(error, null, 5000);
             return of(new timerFeatureActions.LoadErrorDetected({ error }));
           }
           )
@@ -51,7 +48,6 @@ export class TimerStoreEffects {
         .pipe(
           map(timers => new timerFeatureActions.AllTimersLoaded({timers: timers})),
           catchError(error => {
-            this.uiService.showSnackBar(error, null, 5000);
             return of(new timerFeatureActions.LoadErrorDetected({ error }));
           }
           )
@@ -89,7 +85,6 @@ export class TimerStoreEffects {
         return new timerFeatureActions.UpdateTimerComplete({timer: timerUp});
       }),
       catchError(error => {
-        this.uiService.showSnackBar(error, null, 5000);
         return of(new timerFeatureActions.LoadErrorDetected({ error }));
       })
     )),
@@ -105,7 +100,6 @@ export class TimerStoreEffects {
         return new timerFeatureActions.AddTimerComplete({timer: timerWithId});
       }),
       catchError(error => {
-        this.uiService.showSnackBar(error, null, 5000);
         return of(new timerFeatureActions.LoadErrorDetected({ error }));
       })
     )),
@@ -131,7 +125,6 @@ export class TimerStoreEffects {
         }
       }),
       catchError(error => {
-        this.uiService.showSnackBar(error, null, 5000);
         return of(new timerFeatureActions.LoadErrorDetected({ error }));
       })
     )),

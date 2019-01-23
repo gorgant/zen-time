@@ -28,7 +28,6 @@ export class UserStoreEffects {
         .pipe(
           map(user => new featureActions.UserDataLoaded({userData: user})),
           catchError(error => {
-            this.uiService.showSnackBar(error, null, 5000);
             return of(new featureActions.LoadErrorDetected({ error }));
           })
         )
@@ -41,13 +40,12 @@ export class UserStoreEffects {
       featureActions.ActionTypes.STORE_USER_DATA_REQUESTED
     ),
     switchMap(action =>
-      this.userService.storeUserData(action.payload.userData, action.payload.userId, action.payload.userRegistration)
+      this.userService.storeUserData(
+        action.payload.userData, action.payload.userId, action.payload.userRegistration, action.payload.userEmailUpdate
+      )
         .pipe(
-          // // When user data is stored in the database, update it in the store as well for realtime update to UI
-          // tap(appUser => this.store$.dispatch(new featureActions.UserDataRequested({userId: appUser.id}))),
           map(appUser => new featureActions.StoreUserDataComplete()),
           catchError(error => {
-            this.uiService.showSnackBar(error, null, 5000);
             return of(new featureActions.LoadErrorDetected({ error }));
           })
         )
@@ -78,7 +76,6 @@ export class UserStoreEffects {
           }),
           map(imageUrl => new featureActions.StoreUserDataComplete()),
           catchError(error => {
-            this.uiService.showSnackBar(error, null, 5000);
             return of(new featureActions.LoadErrorDetected({ error }));
           })
         )

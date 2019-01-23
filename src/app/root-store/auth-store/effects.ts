@@ -30,7 +30,6 @@ export class AuthStoreEffects {
           ),
           map(response => new authFeatureActions.RegisterUserComplete()),
           catchError(error => {
-            console.log('Error detected, store did not dispatch completion action');
             return of(new authFeatureActions.LoadErrorDetected({ error }));
           })
         )
@@ -49,7 +48,6 @@ export class AuthStoreEffects {
           tap(userId => this.store$.dispatch(new userFeatureActions.UserDataRequested({userId: userId}))),
           map(userId => new authFeatureActions.AuthenticationComplete()),
           catchError(error => {
-            console.log('Error detected, store did not dispatch completion action');
             return of(new authFeatureActions.LoadErrorDetected({ error }));
           })
         )
@@ -70,16 +68,12 @@ export class AuthStoreEffects {
         .pipe(
           // Update email in the main database (separate from the User database)
           tap(response => {
-            // Confirm that the email update was successful
-            if (response.userData) {
-              return this.store$.dispatch(
-                new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId})
-              );
-            }
+            return this.store$.dispatch(
+              new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId, userEmailUpdate: true})
+            );
           }),
           map(response => new authFeatureActions.UpdateEmailComplete()),
           catchError(error => {
-            console.log('Error detected, store did not dispatch completion action');
             return of(new authFeatureActions.LoadErrorDetected({ error }));
           })
         )
@@ -100,7 +94,6 @@ export class AuthStoreEffects {
         .pipe(
           map(response => new authFeatureActions.UpdatePasswordComplete()),
           catchError(error => {
-            console.log('Error detected, store did not dispatch completion action');
             return of(new authFeatureActions.LoadErrorDetected({ error }));
           })
         )
@@ -119,7 +112,6 @@ export class AuthStoreEffects {
         .pipe(
           map(response => new authFeatureActions.ResetPasswordComplete()),
           catchError(error => {
-            console.log('Error detected, store did not dispatch completion action');
             return of(new authFeatureActions.LoadErrorDetected({ error }));
           })
         )

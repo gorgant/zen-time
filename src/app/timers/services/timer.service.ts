@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError, from } from 'rxjs';
 import { Timer } from '../models/timer.model';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, catchError } from 'rxjs/operators';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
@@ -29,7 +29,7 @@ export class TimerService {
         // If logged out, this triggers unsub of this observable
         takeUntil(this.authService.unsubTrigger$),
         map(docArray => {
-          // throw(new Error());
+          // throw(new Error('Test error'));
           return docArray.map(doc => {
             const timer: Timer = {
               id: doc.payload.doc.id,
@@ -37,6 +37,10 @@ export class TimerService {
             };
             return timer;
           });
+        }),
+        catchError(error => {
+          this.uiService.showSnackBar(error, null, 5000);
+          return throwError(error);
         })
       );
   }
@@ -56,6 +60,10 @@ export class TimerService {
             };
             return timer;
           });
+        }),
+        catchError(error => {
+          this.uiService.showSnackBar(error, null, 5000);
+          return throwError(error);
         })
       );
   }
@@ -72,6 +80,10 @@ export class TimerService {
             ...doc.payload.data()
           };
           return timer;
+        }),
+        catchError(error => {
+          this.uiService.showSnackBar(error, null, 5000);
+          return throwError(error);
         })
       );
   }
@@ -88,30 +100,48 @@ export class TimerService {
             ...doc.payload.data()
           };
           return timer;
+        }),
+        catchError(error => {
+          this.uiService.showSnackBar(error, null, 5000);
+          return throwError(error);
         })
       );
   }
 
   updateTimer(timer: Timer, undoAction: boolean): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
-    timerDoc.update(timer);
-    if (!undoAction) {
-      const undoSnackbarConfig: UndoSnackbarConfig = {
-        duration: 5000,
-        actionId: timer.id
-      };
-      this.uiService.showUndoSnackBar(`Timer updated`, 'Undo', undoSnackbarConfig);
-    }
-    return of(timer);
+    const fbResponse = timerDoc.update(timer)
+      .then(empty => {
+        if (!undoAction) {
+          const undoSnackbarConfig: UndoSnackbarConfig = {
+            duration: 5000,
+            actionId: timer.id
+          };
+          this.uiService.showUndoSnackBar(`Timer updated`, 'Undo', undoSnackbarConfig);
+        }
+        return timer;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   createTimer(timer: Timer, undoAction?: boolean): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
-    timerDoc.set(timer);
-    if (!undoAction) {
-      this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
-    }
-    return of(timer);
+    const fbResponse = timerDoc.set(timer)
+      .then(empty => {
+        if (!undoAction) {
+          this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
+        }
+        return timer;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   createDone(timer: Timer, undoAction?: boolean): Observable<Timer> {
@@ -120,41 +150,64 @@ export class TimerService {
     };
     if (!undoAction) {
       convertedTimer.completedDate = now();
-      const undoSnackbarConfig: UndoSnackbarConfig = {
-        duration: 5000,
-        actionId: timer.id
-      };
-      this.uiService.showUndoSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, 'Undo', undoSnackbarConfig);
     }
     const timerDoc = this.getDoneDoc(convertedTimer.id);
-    timerDoc.set(convertedTimer);
-    return of(convertedTimer);
+    const fbResponse = timerDoc.set(convertedTimer)
+      .then(empty => {
+        if (!undoAction) {
+          const undoSnackbarConfig: UndoSnackbarConfig = {
+            duration: 5000,
+            actionId: timer.id
+          };
+          this.uiService.showUndoSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, 'Undo', undoSnackbarConfig);
+        }
+        return convertedTimer;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   deleteTimer(timer: Timer, completeTimer?: boolean): Observable<string> {
     const timerDoc = this.getTimerDoc(timer.id);
-    timerDoc.delete();
-    if (!completeTimer) {
-      const undoSnackbarConfig: UndoSnackbarConfig = {
-        duration: 5000,
-        actionId: timer.id
-      };
-      this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
-    }
-    return of(timer.id);
+    const fbResponse = timerDoc.delete()
+      .then(empty => {
+        if (!completeTimer) {
+          const undoSnackbarConfig: UndoSnackbarConfig = {
+            duration: 5000,
+            actionId: timer.id
+          };
+          this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
+        }
+        return timer.id;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   deleteDone(timer: Timer, undoAction?: boolean): Observable<string> {
     const timerDoc = this.getDoneDoc(timer.id);
-    timerDoc.delete();
-    if (!undoAction) {
-      const undoSnackbarConfig: UndoSnackbarConfig = {
-        duration: 5000,
-        actionId: timer.id
-      };
-      this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
-    }
-    return of(timer.id);
+    const fbResponse = timerDoc.delete()
+      .then(empty => {
+        if (!undoAction) {
+          const undoSnackbarConfig: UndoSnackbarConfig = {
+            duration: 5000,
+            actionId: timer.id
+          };
+          this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
+        }
+        return timer.id;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
   }
 
   generateTimerId(): string {
