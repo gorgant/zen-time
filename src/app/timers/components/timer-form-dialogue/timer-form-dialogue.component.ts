@@ -68,7 +68,6 @@ export class TimerFormDialogueComponent implements OnInit {
 
 
   onSave() {
-    // const timerFormValues = this.timerForm.value;
     let weeks: number = this.weeks.value;
     let days: number = this.days.value;
     let hours: number = this.hours.value;

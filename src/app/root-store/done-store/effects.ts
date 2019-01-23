@@ -8,8 +8,6 @@ import * as doneFeatureActions from './actions';
 import * as timerFeatureActions from '../timer-store/actions';
 import * as undoFeatureActions from '../undo-store/actions';
 import { mergeMap, map, catchError, switchMap, tap } from 'rxjs/operators';
-import { Update } from '@ngrx/entity';
-import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
 import { UndoSnackbarConfig } from 'src/app/shared/models/undoSnackbarConfig.model';
 import { UndoableAction } from 'src/app/shared/models/undoable-action.model';
@@ -63,26 +61,6 @@ export class DoneStoreEffects {
     )
   );
 
-  // @Effect()
-  // updateDoneEffect$: Observable<Action> = this.actions$.pipe(
-  //   ofType<doneFeatureActions.UpdateDoneRequested>(
-  //     doneFeatureActions.ActionTypes.UPDATE_DONE_REQUESTED
-  //   ),
-  //   mergeMap(action => this.timerService.updateDone(action.payload.timer).pipe(
-  //     map(timer => {
-  //       const timerUp: Update<Timer> = {
-  //         id: timer.id,
-  //         changes: timer
-  //       };
-  //       return new doneFeatureActions.UpdateDoneComplete({timer: timerUp});
-  //     }),
-  //     catchError(error => {
-  //       this.uiService.showSnackBar(error, null, 5000);
-  //       return of(new doneFeatureActions.LoadErrorDetected({ error }));
-  //     })
-  //   )),
-  // );
-
   @Effect()
   addDoneEffect$ = this.actions$.pipe(
     ofType<doneFeatureActions.AddDoneRequested>(
@@ -92,7 +70,6 @@ export class DoneStoreEffects {
       tap(completedTimer => {
         if (!action.payload.undoAction) {
           if (completedTimer) {
-            console.log('Completed timer detected, deleting active one');
             this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
           } else {
             console.log('Error creating completed timer');

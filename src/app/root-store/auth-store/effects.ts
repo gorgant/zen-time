@@ -69,9 +69,14 @@ export class AuthStoreEffects {
         )
         .pipe(
           // Update email in the main database (separate from the User database)
-          tap(response => this.store$.dispatch(
-            new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId}))
-          ),
+          tap(response => {
+            // Confirm that the email update was successful
+            if (response.userData) {
+              return this.store$.dispatch(
+                new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId})
+              );
+            }
+          }),
           map(response => new authFeatureActions.UpdateEmailComplete()),
           catchError(error => {
             console.log('Error detected, store did not dispatch completion action');

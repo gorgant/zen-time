@@ -95,13 +95,6 @@ export class TimerService {
     return of(timer);
   }
 
-  // updateDone(timer: Timer): Observable<Timer> {
-  //   const timerDoc = this.getDoneDoc(timer.id);
-  //   timerDoc.update(timer);
-  //   this.uiService.showSnackBar(`Timer updated`, null, 3000);
-  //   return of(timer);
-  // }
-
   createTimer(timer: Timer, undoAction?: boolean): Observable<Timer> {
     const timerDoc = this.getTimerDoc(timer.id);
     timerDoc.set(timer);

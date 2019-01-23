@@ -71,17 +71,14 @@ export class CalendarUtils {
 
   private calculateDueDateInMilliseconds(remainingTime: number): number {
     const dueDate: number = moment.now() + remainingTime;
-    console.log('Calculated due date', dueDate);
     return dueDate;
   }
 
   public getStartEndDates(remainingTimeInMil: number): {startDate: string, endDate: string} {
     const dueDateInMil = this.calculateDueDateInMilliseconds(remainingTimeInMil);
     const formattedStartDate = this.msToUniversalTime(dueDateInMil);
-    console.log('Formatted Start Date', formattedStartDate);
     const fifteenMinInMs = 1000 * 60 * 15;
     const formattedEndDate = this.msToUniversalTime(dueDateInMil + fifteenMinInMs);
-    console.log('Formatted End Date', formattedEndDate);
     return {startDate: formattedStartDate, endDate: formattedEndDate};
   }
 

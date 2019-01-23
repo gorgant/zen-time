@@ -8,7 +8,6 @@ import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
-import { Calendars } from 'src/app/shared/utils/calendar/calendars';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { SetReminderDialogueComponent } from '../../components/set-reminder-dialogue/set-reminder-dialogue.component';

@@ -68,7 +68,6 @@ export class UserStoreEffects {
               const latestImageUrl = this.userService.fetchDownloadUrl(action.payload.imageFile, action.payload.user)
                 .pipe(take(1))
                 .subscribe(newImgUrl => {
-                  console.log('Dispatching new image url to store', newImgUrl);
                   const updatedAppUser: AppUser = {
                     ...action.payload.user,
                     avatarUrl: newImgUrl

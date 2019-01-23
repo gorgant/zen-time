@@ -48,7 +48,6 @@ export class UserService {
   }
 
   uploadProfileImage(imageFile: File, appUser: AppUser): Observable<string> {
-    console.log('Image upload initiated');
     const file = imageFile;
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
@@ -58,7 +57,7 @@ export class UserService {
     };
     const task = this.storage.upload(filePath, file, {customMetadata: customMetaData});
 
-    // observe percentage changes
+    // Observe percentage changes
     this.imageUploadPercentage$ = task.percentageChanges();
 
     task
@@ -66,7 +65,6 @@ export class UserService {
         fileRef.getDownloadURL()
           .pipe(take(1))
           .subscribe(url => {
-            console.log('Download url from snapshot', url);
             this.downloadUrlSubject.next(url);
           });
       })
@@ -76,7 +74,6 @@ export class UserService {
   }
 
   fetchDownloadUrl(imageFile: File, appUser: AppUser): Observable<string> {
-    console.log('Fetching download URL for file', imageFile);
     const file = imageFile;
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);

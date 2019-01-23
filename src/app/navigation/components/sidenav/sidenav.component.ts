@@ -29,11 +29,11 @@ export class SidenavComponent implements OnInit {
     );
   }
 
-  private onCloseSidenav() {
+  onCloseSidenav() {
     this.closeSidenav.emit();
   }
 
-  private onLogout() {
+  onLogout() {
     this.authService.logout();
     this.onCloseSidenav();
   }

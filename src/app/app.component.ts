@@ -86,12 +86,6 @@ export class AppComponent implements OnInit {
                 return true;
               }
             }
-
-            // if (undoableAction.payload.duration) {
-            //   const timer: Timer = undoableAction.payload;
-            //   this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer}));
-            //   this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
-            // }
           });
       });
   }

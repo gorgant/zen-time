@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserStoreSelectors, UserStoreActions } from 'src/app/root-store';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
-import { take, takeUntil, takeWhile } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { EditNameDialogueComponent } from '../edit-name-dialogue/edit-name-dialogue.component';
 import { EditEmailDialogueComponent } from '../edit-email-dialogue/edit-email-dialogue.component';
@@ -46,11 +46,6 @@ export class EditProfileComponent implements OnInit {
       UserStoreSelectors.selectUserIsLoading
     );
   }
-
-  // @HostListener('input', ['$event'])
-  // oninput($event) {
-  //   console.log('Input detected', $event);
-  // }
 
   onEditName() {
     // This hacky solution is required to remove ripple effect from menu icon after closing sidenav

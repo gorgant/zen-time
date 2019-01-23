@@ -156,16 +156,4 @@ export class TimerStoreEffects {
       this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
     }),
   );
-
-  // // Courtesy of https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-  // private generateActionId(): string {
-  //   let text = '';
-  //   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  //   for (let i = 0; i < 10; i++) {
-  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-  //   }
-
-  //   return text;
-  // }
 }

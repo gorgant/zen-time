@@ -28,7 +28,6 @@ export class ResetPasswordDialogueComponent implements OnInit {
     });
 
     if (this.emailFromSignIn) {
-      console.log('Patching in value');
       this.resetPasswordForm.patchValue({
         email: this.emailFromSignIn
       });

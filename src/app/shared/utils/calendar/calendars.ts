@@ -51,16 +51,6 @@ export class Calendars {
     return yahooCalendarUrl;
   }
 
-  // public getMicrosoftCalendarUrl(): string {
-  //   let microsoftCalendarUrl = 'http://calendar.live.com/calendar/calendar.aspx?rru=addevent';
-  //   microsoftCalendarUrl += '&summary=' + this.calendarData.title;
-  //   microsoftCalendarUrl += '&dtstart=' + this.calendarData.startDate + '&dtend=' + this.calendarData.endDate;
-  //   microsoftCalendarUrl += '&description=' + this.calendarData.description;
-  //   microsoftCalendarUrl += '&location=' + this.calendarData.location;
-
-  //   return microsoftCalendarUrl;
-  // }
-
   public getMicrosoftCalendarUrl(): string {
     let microsoftCalendarUrl = 'https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent';
     microsoftCalendarUrl += '&startdt=' + this.calendarData.startDate + '&enddt=' + this.calendarData.endDate;

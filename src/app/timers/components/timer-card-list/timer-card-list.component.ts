@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 
 @Component({
