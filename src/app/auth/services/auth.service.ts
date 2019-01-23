@@ -22,7 +22,9 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private uiService: UiService,
     private route: ActivatedRoute,
-  ) { }
+  ) {
+    console.log('Auth service initialized');
+  }
 
   initAuthListener(): void {
     this.afAuth.authState.subscribe(user => {
@@ -74,6 +76,8 @@ export class AuthService {
     // Note the postLogoutActions as well, triggered by authstate change
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();
+    // Reinitialize the unsubscribe subject in case page isn't refreshed before logout (which means auth wouldn't reset)
+    this.ngUnsubscribe$ = new Subject<void>();
     this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
   }

@@ -36,12 +36,9 @@ export class EditEmailDialogueComponent implements OnInit {
 
   onSave() {
 
-    console.log('Update email to:', this.email.value, );
-
     const password: string = this.password.value;
     const newEmail: string = this.email.value;
 
-    // this.authService.updateEmail(this.appUser, password, newEmail);
     this.store$.dispatch( new AuthStoreActions.UpdateEmailRequested({
       appUser: this.appUser,
       password: password,
