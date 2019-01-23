@@ -5,6 +5,8 @@ import { loginValidationMessages } from 'src/app/shared/models/validation-messag
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { ResetPasswordDialogueComponent } from '../reset-password/reset-password-dialogue.component';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +22,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store$: Store<RootStoreState.State>,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -36,6 +39,18 @@ export class LoginComponent implements OnInit {
       password: this.password.value
     };
     this.store$.dispatch(new AuthStoreActions.AuthenticationRequested({authData: userAuthData}));
+  }
+
+  onResetPassword() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '300px';
+
+    dialogConfig.data = this.email.value;
+
+    const dialogRef = this.dialog.open(ResetPasswordDialogueComponent, dialogConfig);
   }
 
   // Getters for easy access to form fields

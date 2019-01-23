@@ -101,4 +101,23 @@ export class AuthStoreEffects {
         )
     )
   );
+
+  @Effect()
+  resetPasswordRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<authFeatureActions.ResetPasswordRequested>(
+      authFeatureActions.ActionTypes.RESET_PASSWORD_REQUESTED
+    ),
+    switchMap(action =>
+      this.authService.sendResetPasswordEmail(
+        action.payload.email
+        )
+        .pipe(
+          map(response => new authFeatureActions.ResetPasswordComplete()),
+          catchError(error => {
+            console.log('Error detected, store did not dispatch completion action');
+            return of(new authFeatureActions.LoadErrorDetected({ error }));
+          })
+        )
+    )
+  );
 }

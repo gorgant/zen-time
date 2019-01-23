@@ -15,12 +15,19 @@
       </mat-form-field>
       
       <!-- Password -->
-      <mat-form-field>
-        <input formControlName="password" matInput type="password" placeholder="Your password">
-        <mat-error *ngFor="let validation of LOGIN_FORM_VALIDATION_MESSAGES.password">
-          <mat-error *ngIf="password.hasError(validation.type) && password.invalid && (password.dirty || password.touched)">{{ validation.message }}</mat-error>
-        </mat-error>
-      </mat-form-field>
+      <div fxLayout="column" fxLayoutAlign="start center">
+        <mat-form-field>
+          <input formControlName="password" matInput type="password" placeholder="Your password">
+          <mat-error *ngFor="let validation of LOGIN_FORM_VALIDATION_MESSAGES.password">
+            <mat-error *ngIf="password.hasError(validation.type) && password.invalid && (password.dirty || password.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <caption fxFlexAlign="start" class="mat-small">
+          <button type="button" class="reset-password-button" mat-button color="primary" (click)="onResetPassword()"> 
+            Forgot password?
+          </button>
+        </caption>
+      </div>
 
       <button 
         [disabled]="loginForm.invalid"
@@ -31,7 +38,7 @@
           Submit
     </button>
   </form>
-  <caption class="mat-small" fxLayoutAlign="center center">
+  <caption class="no-account mat-small" fxLayoutAlign="center center">
       <a [routerLink]="['/signup']"> 
           Don't have an account?
       </a>

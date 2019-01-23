@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserStoreActions } from 'src/app/root-store';
-import { NameFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
+import { nameFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 
 @Component({
   selector: 'app-edit-name-dialogue',
@@ -14,7 +14,7 @@ import { NameFormValidationMessages } from 'src/app/shared/models/validation-mes
 export class EditNameDialogueComponent implements OnInit {
 
   nameForm: FormGroup;
-  NAME_FORM_VALIDATION_MESSAGES = NameFormValidationMessages;
+  NAME_FORM_VALIDATION_MESSAGES = nameFormValidationMessages;
 
   constructor(
     private fb: FormBuilder,

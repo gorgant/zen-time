@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TimerFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
+import { timerFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
@@ -20,7 +20,7 @@ export class TimerFormDialogueComponent implements OnInit {
 
   timerForm: FormGroup;
   newTimer: boolean;
-  TIMER_FORM_VALIDATION_MESSAGES = TimerFormValidationMessages;
+  TIMER_FORM_VALIDATION_MESSAGES = timerFormValidationMessages;
 
   constructor(
     private fb: FormBuilder,

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { PasswordFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
+import { passwordFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { pwMustMatchValidator, pwMustNotMatchValidator } from '../../validators/pw-match-validator.directive';
@@ -15,7 +15,7 @@ import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 export class EditPasswordDialogueComponent implements OnInit {
 
   passwordForm: FormGroup;
-  PASSWORD_FORM_VALIDATION_MESSAGES = PasswordFormValidationMessages;
+  PASSWORD_FORM_VALIDATION_MESSAGES = passwordFormValidationMessages;
 
   constructor(
     private fb: FormBuilder,

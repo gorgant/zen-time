@@ -13,6 +13,8 @@ export enum ActionTypes {
   UPDATE_EMAIL_COMPLETE = '[Auth] Update Email Complete',
   UPDATE_PASSWORD_REQUESTED = '[Auth] Update Password Requested',
   UPDATE_PASSWORD_COMPLETE = '[Auth] Update Password Complete',
+  RESET_PASSWORD_REQUESTED = '[Auth] Reset Password Requested',
+  RESET_PASSWORD_COMPLETE = '[Auth] Password Reset Email Submitted',
   AUTH_LOAD_ERROR = '[Auth] Load Failure'
 }
 
@@ -64,6 +66,16 @@ export class UpdatePasswordComplete implements Action {
   readonly type = ActionTypes.UPDATE_PASSWORD_COMPLETE;
 }
 
+export class ResetPasswordRequested implements Action {
+  readonly type = ActionTypes.RESET_PASSWORD_REQUESTED;
+
+  constructor(public payload: { email: string }) {}
+}
+
+export class ResetPasswordComplete implements Action {
+  readonly type = ActionTypes.RESET_PASSWORD_COMPLETE;
+}
+
 export class LoadErrorDetected implements Action {
   readonly type = ActionTypes.AUTH_LOAD_ERROR;
   constructor(public payload: { error: string }) {}
@@ -80,5 +92,7 @@ export type Actions =
   UpdateEmailComplete |
   UpdatePasswordRequested |
   UpdatePasswordComplete |
+  ResetPasswordRequested |
+  ResetPasswordComplete |
   LoadErrorDetected
   ;

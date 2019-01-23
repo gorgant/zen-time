@@ -23,9 +23,17 @@ export function featureReducer(state = initialState, action: Actions): State {
         isAuthenticated: false
       };
     case ActionTypes.UPDATE_EMAIL_COMPLETE:
-      return state;
+      return {
+        ...state
+      };
     case ActionTypes.UPDATE_PASSWORD_COMPLETE:
-      return state;
+      return {
+        ...state
+      };
+    case ActionTypes.RESET_PASSWORD_COMPLETE:
+      return {
+        ...state
+      };
     case ActionTypes.AUTH_LOAD_ERROR:
       return {
         ...state,

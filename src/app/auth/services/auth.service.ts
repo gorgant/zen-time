@@ -104,7 +104,7 @@ export class AuthService {
       return from(authResponse);
   }
 
-  updatePassword(appUser: AppUser, oldPassword: string, newPassword: string) {
+  updatePassword(appUser: AppUser, oldPassword: string, newPassword: string): Observable<string> {
     const credentials = this.getUserCredentials(appUser.email, oldPassword);
 
     const authResponse = this.afAuth.auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials)
@@ -126,6 +126,22 @@ export class AuthService {
       });
 
       return from(authResponse);
+  }
+
+  sendResetPasswordEmail(email: string): Observable<string> {
+    const authResponse = this.afAuth.auth.sendPasswordResetEmail(email)
+      .then(empty => {
+        this.uiService.showSnackBar(
+          `Password reset link sent to ${email}. Please check your email for instructions.`, null, 5000
+        );
+        return empty;
+      } )
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return error;
+      });
+
+    return from(authResponse);
   }
 
   private getUserCredentials(email: string, password: string): firebase.auth.AuthCredential {

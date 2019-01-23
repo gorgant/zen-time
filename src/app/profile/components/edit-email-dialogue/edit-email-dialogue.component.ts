@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EmailFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
+import { emailFormValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,7 @@ import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 export class EditEmailDialogueComponent implements OnInit {
 
   emailForm: FormGroup;
-  EMAIL_FORM_VALIDATION_MESSAGES = EmailFormValidationMessages;
+  EMAIL_FORM_VALIDATION_MESSAGES = emailFormValidationMessages;
 
   constructor(
     private fb: FormBuilder,

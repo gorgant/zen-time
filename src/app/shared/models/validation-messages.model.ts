@@ -25,7 +25,7 @@ export const loginValidationMessages = {
   ]
 };
 
-export const TimerFormValidationMessages = {
+export const timerFormValidationMessages = {
   'title': [
     { type: 'required', message: 'Title is required.'},
   ],
@@ -42,13 +42,13 @@ export const TimerFormValidationMessages = {
   ],
 };
 
-export const NameFormValidationMessages = {
+export const nameFormValidationMessages = {
   'name': [
     { type: 'required', message: 'You must provide a name.'},
   ],
 };
 
-export const EmailFormValidationMessages = {
+export const emailFormValidationMessages = {
   'email': [
     { type: 'required', message: 'You must provide an email.'},
     { type: 'email', message: 'Not a valid email.'},
@@ -58,7 +58,7 @@ export const EmailFormValidationMessages = {
   ]
 };
 
-export const PasswordFormValidationMessages = {
+export const passwordFormValidationMessages = {
   'oldPassword': [
     { type: 'required', message: 'You must provide your current password.'},
   ],
@@ -75,4 +75,11 @@ export const PasswordFormValidationMessages = {
   'oldPwGroup': [
     { type: 'match', message: 'Your new password cannot match your old password.'}
   ]
+};
+
+export const resetPasswordFormValidationMessages = {
+  'email': [
+    { type: 'required', message: 'Email is required.'},
+    { type: 'email', message: 'Not a valid email.'},
+  ],
 };
