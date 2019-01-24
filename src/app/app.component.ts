@@ -16,6 +16,7 @@ import { UiService } from './shared/services/ui.service';
 import { Timer } from './timers/models/timer.model';
 import { ActionTypes as TimerActionTypes } from './root-store/timer-store/actions';
 import { ActionTypes as DoneActionTypes } from './root-store/done-store/actions';
+import { SwUpdate } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -28,10 +29,21 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private store$: Store<RootStoreState.State>,
-    private uiService: UiService
+    private uiService: UiService,
+    private swUpdate: SwUpdate
   ) {}
 
   ngOnInit() {
+
+    // Prompts user to update interface when app has been updated (and downloaded in their cache)
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe(() => {
+        if (confirm('New version available. Load New Version?')) {
+          window.location.reload();
+        }
+      });
+    }
+
     this.authService.initAuthListener();
     this.authService.authStatus
     .pipe(

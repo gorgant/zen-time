@@ -15,6 +15,7 @@ import { RootStoreModule } from './root-store';
 import { HeaderComponent } from './navigation/components/header/header.component';
 import { SidenavComponent } from './navigation/components/sidenav/sidenav.component';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
     AngularFireStorageModule,
     AuthModule,
     RootStoreModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent]

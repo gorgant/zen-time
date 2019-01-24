@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   firebase: {
     apiKey: 'AIzaSyAAYFLGjmnxUqTqxWfs2gYzA11ny1TXtcs',
     authDomain: 'gorgant-zentime.firebaseapp.com',
