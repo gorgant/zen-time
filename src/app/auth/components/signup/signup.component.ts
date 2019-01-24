@@ -5,6 +5,8 @@ import { AuthData } from '../../models/auth-data.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { TermsAndConditionsDialogueComponent } from '../terms-and-conditions-dialogue/terms-and-conditions-dialogue.component';
 
 @Component({
   selector: 'app-signup',
@@ -20,6 +22,7 @@ export class SignupComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store$: Store<RootStoreState.State>,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -40,6 +43,16 @@ export class SignupComponent implements OnInit {
     };
     this.store$.dispatch( new AuthStoreActions.RegisterUserRequested({authData: newUserData}));
 
+  }
+
+  onReadTermsAndConditions() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+    dialogConfig.width = '600px';
+
+    const dialogRef = this.dialog.open(TermsAndConditionsDialogueComponent, dialogConfig);
   }
 
   // Getters for easy access to form fields

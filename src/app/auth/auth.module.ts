@@ -6,12 +6,14 @@ import { SignupComponent } from './components//signup/signup.component';
 import { SharedModule } from '../shared/shared.module';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ResetPasswordDialogueComponent } from './components/reset-password-dialogue/reset-password-dialogue.component';
+import { TermsAndConditionsDialogueComponent } from './components/terms-and-conditions-dialogue/terms-and-conditions-dialogue.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
     SignupComponent,
-    ResetPasswordDialogueComponent
+    ResetPasswordDialogueComponent,
+    TermsAndConditionsDialogueComponent
   ],
   imports: [
     SharedModule,
@@ -19,7 +21,8 @@ import { ResetPasswordDialogueComponent } from './components/reset-password-dial
     AngularFireAuthModule
   ],
   entryComponents: [
-    ResetPasswordDialogueComponent
+    ResetPasswordDialogueComponent,
+    TermsAndConditionsDialogueComponent
   ]
 })
 export class AuthModule { }

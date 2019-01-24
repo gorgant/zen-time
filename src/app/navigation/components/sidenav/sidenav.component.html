@@ -3,7 +3,13 @@
   <button mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the auto-focus behavior -->
   </button>
   
-  <div id="avatar-container" *ngIf="(appUser$ | async) as user" fxLayoutAlign="start center">
+  <div 
+    id="avatar-container" 
+    *ngIf="(appUser$ | async) as user" 
+    fxLayoutAlign="start center"
+    routerLink="/profile" 
+    (click)="onCloseSidenav()"
+    >
     <img [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage" class="avatar">
     <span class="avatar-caption">{{ user.displayName }}</span>
   </div>
@@ -34,10 +40,10 @@
     <mat-icon mat-list-icon>person</mat-icon>
     <p class="nav-item-caption" mat-line>Profile</p>
 </mat-list-item>
-  
+<!--   
   <mat-list-item>
     <mat-icon mat-list-icon>exit_to_app</mat-icon>
     <p mat-line (click)="onLogout()">Logout</p>
-  </mat-list-item>
+  </mat-list-item> -->
 
 </mat-nav-list>

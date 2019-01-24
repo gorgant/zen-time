@@ -27,7 +27,7 @@
 
       <!-- Weeks -->
       <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="weeks" matInput type="weeks" placeholder="Weeks">
+        <input formControlName="weeks" matInput type="number" placeholder="Weeks">
         <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
           <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
         </mat-error>
@@ -35,7 +35,7 @@
 
       <!-- Days -->
       <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="days" matInput type="days" placeholder="Days">
+        <input formControlName="days" matInput type="number" placeholder="Days">
         <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
           <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
         </mat-error>
@@ -43,7 +43,7 @@
 
       <!-- Hours -->
       <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="hours" matInput type="hours" placeholder="Hours">
+        <input formControlName="hours" matInput type="number" placeholder="Hours">
         <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
           <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
         </mat-error>
@@ -51,7 +51,7 @@
 
       <!-- Minutes -->
       <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="minutes" matInput type="minutes" placeholder="Minutes">
+        <input formControlName="minutes" matInput type="number" placeholder="Minutes">
         <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
           <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
         </mat-error>
