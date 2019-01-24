@@ -33,9 +33,11 @@
 .search-field {
   background-color: white;
   height: 32px;
-  width: 65vw;
+  width: 63vw;
   max-width: 500px;
   color: black;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .error-message {

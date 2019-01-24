@@ -1,84 +1,87 @@
-<section fxLayout="column" fxLayoutAlign="start center">
+<section >
+  <form [formGroup]="timerForm" (ngSubmit)="onSave()" fxLayout="column" fxLayoutAlign="start center">
 
-  <mat-dialog-content [formGroup]="timerForm">
+    <mat-dialog-content >
+      <h2 class="section-header" mat-dialog-title>Timer Details</h2>
+      <!-- Title -->
+      <mat-form-field>
+        <input formControlName="title" matInput placeholder="Timer title">
+        <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.title">
+          <mat-error *ngIf="title.hasError(validation.type) && title.invalid && (title.dirty || title.touched)">{{ validation.message }}</mat-error>
+        </mat-error>
+      </mat-form-field>
     
-    <h2 class="section-header" mat-dialog-title>Timer Details</h2>
-    <!-- Title -->
-    <mat-form-field>
-      <input formControlName="title" matInput placeholder="Timer title">
-      <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.title">
-        <mat-error *ngIf="title.hasError(validation.type) && title.invalid && (title.dirty || title.touched)">{{ validation.message }}</mat-error>
+      <!-- Category -->
+      <mat-form-field>
+        <input formControlName="category" matInput placeholder="Category (optional)">
+      </mat-form-field>
+  
+      <!-- Notes -->
+      <mat-form-field>
+        <textarea cdkTextareaAutosize formControlName="notes" matInput placeholder="Add notes (optional)"></textarea>
+      </mat-form-field>
+      
+      <!-- Duration Section -->
+      <h2 class="section-header" mat-dialog-title>Timer Duration</h2>
+      <div class="duration-form-group" formGroupName="duration">
+  
+        <!-- Weeks -->
+        <mat-form-field class="duration-form-field" floatLabel="always">
+          <input formControlName="weeks" matInput type="number" placeholder="Weeks">
+          <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
+            <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+  
+        <!-- Days -->
+        <mat-form-field class="duration-form-field" floatLabel="always">
+          <input formControlName="days" matInput type="number" placeholder="Days">
+          <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
+            <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+  
+        <!-- Hours -->
+        <mat-form-field class="duration-form-field" floatLabel="always">
+          <input formControlName="hours" matInput type="number" placeholder="Hours">
+          <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
+            <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+  
+        <!-- Minutes -->
+        <mat-form-field class="duration-form-field" floatLabel="always">
+          <input formControlName="minutes" matInput type="number" placeholder="Minutes">
+          <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
+            <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+  
+      </div>
+      <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
+        <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
       </mat-error>
-    </mat-form-field>
-  
-    <!-- Category -->
-    <mat-form-field>
-      <input formControlName="category" matInput placeholder="Category">
-    </mat-form-field>
-
-    <!-- Notes -->
-    <mat-form-field>
-      <textarea cdkTextareaAutosize formControlName="notes" matInput placeholder="Add notes"></textarea>
-    </mat-form-field>
+      
+    </mat-dialog-content>
     
-    <!-- Duration Section -->
-    <h2 class="section-header" mat-dialog-title>Timer Duration</h2>
-    <div class="duration-form-group" formGroupName="duration">
+    <mat-dialog-actions>
+      <button
+        [disabled]="timerForm.invalid"
+        mat-raised-button
+        color="primary"
+        type="submit"
+        >
+          Save
+      </button>
+      <button 
+        mat-raised-button
+        (click)="onClose()"
+        type="button"
+        >
+          Cancel
+      </button>
+    </mat-dialog-actions>
+  </form>
 
-      <!-- Weeks -->
-      <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="weeks" matInput type="number" placeholder="Weeks">
-        <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
-          <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Days -->
-      <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="days" matInput type="number" placeholder="Days">
-        <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
-          <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Hours -->
-      <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="hours" matInput type="number" placeholder="Hours">
-        <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
-          <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Minutes -->
-      <mat-form-field class="duration-form-field" floatLabel="always">
-        <input formControlName="minutes" matInput type="number" placeholder="Minutes">
-        <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
-          <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
-        </mat-error>
-      </mat-form-field>
-
-    </div>
-    <mat-error *ngFor="let validation of TIMER_FORM_VALIDATION_MESSAGES.duration">
-      <mat-error *ngIf="duration.hasError(validation.type) && duration.invalid && (duration.dirty || duration.touched)">{{ validation.message }}</mat-error>
-    </mat-error>
-    
-  </mat-dialog-content>
-  
-  <mat-dialog-actions>
-    <button
-      [disabled]="timerForm.invalid"
-      mat-raised-button
-      color="primary"
-      (click)="onSave()"
-      >
-        Save
-    </button>
-    <button 
-      mat-raised-button
-      (click)="onClose()"
-      >
-        Cancel
-    </button>
-  </mat-dialog-actions>
 
 </section>
