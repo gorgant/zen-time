@@ -6,7 +6,7 @@ import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 import { MatDialogConfig, MatDialog } from '@angular/material';
-import { ResetPasswordDialogueComponent } from '../reset-password/reset-password-dialogue.component';
+import { ResetPasswordDialogueComponent } from '../reset-password-dialogue/reset-password-dialogue.component';
 
 @Component({
   selector: 'app-login',

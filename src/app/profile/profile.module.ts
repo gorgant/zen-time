@@ -7,6 +7,7 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
 import { EditNameDialogueComponent } from './components/edit-name-dialogue/edit-name-dialogue.component';
 import { EditPasswordDialogueComponent } from './components/edit-password-dialogue/edit-password-dialogue.component';
 import { EditEmailDialogueComponent } from './components/edit-email-dialogue/edit-email-dialogue.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { EditEmailDialogueComponent } from './components/edit-email-dialogue/edi
   ],
   imports: [
     SharedModule,
-    ProfileRoutingModule
+    ProfileRoutingModule,
+    ImageCropperModule
   ],
   entryComponents: [
     EditNameDialogueComponent,
