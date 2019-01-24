@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable, from, Subject, throwError } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
-import { map, take, takeUntil, catchError } from 'rxjs/operators';
+import { map, takeUntil, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -75,12 +75,7 @@ export class UserService {
 
     const fbResponse = task
       .then(() => {
-        fileRef.getDownloadURL()
-          .pipe(take(1))
-          .subscribe(url => {
-            this.downloadUrlSubject.next(url);
-          });
-        return this.downloadUrlSubject;
+        // Do nothing, but this callback provides error handling and moderates the observable query volume
       })
       .catch(error => {
         this.uiService.showSnackBar(error, null, 5000);

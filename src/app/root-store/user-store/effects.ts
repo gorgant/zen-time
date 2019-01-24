@@ -60,21 +60,19 @@ export class UserStoreEffects {
     switchMap(action =>
       this.userService.uploadProfileImage(action.payload.imageFile, action.payload.user)
         .pipe(
-          tap(imageUrl => {
-            // This timeout allows time for image to be reized by Cloud Function before fetching url
-            setTimeout(() => {
-              const latestImageUrl = this.userService.fetchDownloadUrl(action.payload.imageFile, action.payload.user)
-                .pipe(take(1))
-                .subscribe(newImgUrl => {
-                  const updatedAppUser: AppUser = {
-                    ...action.payload.user,
-                    avatarUrl: newImgUrl
-                  };
-                  this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
-                });
-            }, 2000);
+          tap(emptySubject => {
+            // Fetch the latest download URL (which isn't what comes from the initial upload)
+            this.userService.fetchDownloadUrl(action.payload.imageFile, action.payload.user)
+              .pipe(take(1))
+              .subscribe(newImgUrl => {
+                const updatedAppUser: AppUser = {
+                  ...action.payload.user,
+                  avatarUrl: newImgUrl
+                };
+                this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
+              });
           }),
-          map(imageUrl => new featureActions.StoreUserDataComplete()),
+          map(imageUrl => new featureActions.UpdateProfileImageComplete()),
           catchError(error => {
             return of(new featureActions.LoadErrorDetected({ error }));
           })

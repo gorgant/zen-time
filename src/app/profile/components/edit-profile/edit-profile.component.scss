@@ -17,10 +17,6 @@ section {
   margin-right: 8px;
 }
 
-.change-image-container {
-  margin-top: 16px;
-}
-
 .avatar {
   margin-top: 8px;
   vertical-align: middle;
@@ -29,6 +25,12 @@ section {
   border-radius: 50%;
 }
 
-.image-caption {
-  text-align: center;
+.cropper-container {
+  width: 90vw;
+  max-width: 600px;
+  margin: auto;
+}
+
+.cropper-buttons {
+  margin-top: 16px;
 }

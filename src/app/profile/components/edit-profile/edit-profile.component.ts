@@ -10,6 +10,7 @@ import { EditNameDialogueComponent } from '../edit-name-dialogue/edit-name-dialo
 import { EditEmailDialogueComponent } from '../edit-email-dialogue/edit-email-dialogue.component';
 import { UserService } from 'src/app/shared/services/user.service';
 import { UiService } from 'src/app/shared/services/ui.service';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-edit-profile',
@@ -24,10 +25,16 @@ export class EditProfileComponent implements OnInit {
   @ViewChild('matButton') matButton;
   @ViewChild('matButton2') matButton2;
   @ViewChild('fileInput') fileInput: ElementRef;
+  @ViewChild('cropperInput') cropperInput: ElementRef;
 
   profileImage: File;
   imageUploadProgress$: Observable<number>;
   imageUploadUrl$: Observable<string>;
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  showCropper = false;
+
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -86,69 +93,104 @@ export class EditProfileComponent implements OnInit {
       });
   }
 
-  onChooseFile(event) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.checkImgDimensions(file) // This is an async operation using the file reader, so do it first
-        .then(validImageSize => {
-          if (file.type.split('/')[0] !== 'image') {
-            // Confirm file is an image
-            this.uiService.showSnackBar('Invalid file type. File must be a standard image format.', null, 3000);
-            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
-            this.profileImage = null;
-          } else if (file.size > 4000000) {
-            // Confirm file size is less than 4 MB
-            this.uiService.showSnackBar('File too large.  Must be less than 4 MB.', null, 3000);
-            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
-            this.profileImage = null;
-          } else if (!validImageSize) {
-            // Confirms file is a square
-            this.uiService.showSnackBar('Image dimensions must be square (image height must equal its width)', null, 3000);
-            this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
-            this.profileImage = null;
-          } else {
-            this.profileImage = file;
-          }
-        });
-    }
+  // onChooseFile(event) {
+  //   const file: File = event.target.files[0];
+  //   if (file) {
+  //     this.checkImgDimensions(file) // This is an async operation using the file reader, so do it first
+  //       .then(validImageSize => {
+  //         if (file.type.split('/')[0] !== 'image') {
+  //           // Confirm file is an image
+  //           this.uiService.showSnackBar('Invalid file type. File must be a standard image format.', null, 3000);
+  //           this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+  //           this.profileImage = null;
+  //         } else if (file.size > 4000000) {
+  //           // Confirm file size is less than 4 MB
+  //           this.uiService.showSnackBar('File too large.  Must be less than 4 MB.', null, 3000);
+  //           this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+  //           this.profileImage = null;
+  //         } else if (!validImageSize) {
+  //           // Confirms file is a square
+  //           this.uiService.showSnackBar('Image dimensions must be square (image height must equal its width)', null, 3000);
+  //           this.renderer.setProperty(this.fileInput.nativeElement, 'value', '');
+  //           this.profileImage = null;
+  //         } else {
+  //           this.profileImage = file;
+  //         }
+  //       });
+  //   }
 
+  // }
+
+  // onUploadImage() {
+  //   if (this.profileImage) {
+  //     this.appUser$
+  //       .pipe(take(1))
+  //       .subscribe(user => {
+  //         this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.profileImage, user: user }));
+  //         this.imageUploadProgress$ = this.userService.imageUploadPercentage;
+  //         this.profileImage = null;
+  //       });
+  //   } else {
+  //     this.uiService.showSnackBar('You must first choose a file to upload.', null, 3000);
+  //   }
+  // }
+
+  // private async checkImgDimensions(file: File): Promise<boolean> {
+  //   let validImage: boolean;
+  //   const readFile = (fileToRead) => new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     const img = new Image;
+  //     reader.onload = () => {
+  //       img.src = <string>reader.result;
+  //       // Return the image with the source
+  //       return resolve(img);
+  //     };
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(fileToRead);  // or a different mode
+  //   });
+  //   let loadedImage = new Image;
+  //   loadedImage = await <any>readFile(file);
+  //   if (loadedImage.height === loadedImage.width) {
+  //     validImage = true;
+  //   } else {
+  //     validImage = false;
+  //   }
+  //   return validImage;
+  // }
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+      this.croppedImage = event.file;
+  }
+
+  imageLoaded() {
+      // show cropper
+      this.showCropper = true;
+  }
+
+  loadImageFailed() {
+      // show message
+      this.uiService.showSnackBar('Image failed to load. Please make sure the image file is valid.', null, 5000);
   }
 
   onUploadImage() {
-    if (this.profileImage) {
+    if (this.croppedImage) {
       this.appUser$
         .pipe(take(1))
         .subscribe(user => {
-          this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.profileImage, user: user }));
+          this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.croppedImage, user: user }));
           this.imageUploadProgress$ = this.userService.imageUploadPercentage;
           this.profileImage = null;
+          this.renderer.setProperty(this.cropperInput.nativeElement, 'value', '');
         });
     } else {
       this.uiService.showSnackBar('You must first choose a file to upload.', null, 3000);
     }
-  }
-
-  private async checkImgDimensions(file: File): Promise<boolean> {
-    let validImage: boolean;
-    const readFile = (fileToRead) => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      const img = new Image;
-      reader.onload = () => {
-        img.src = <string>reader.result;
-        // Return the image with the source
-        return resolve(img);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(fileToRead);  // or a different mode
-    });
-    let loadedImage = new Image;
-    loadedImage = await <any>readFile(file);
-    if (loadedImage.height === loadedImage.width) {
-      validImage = true;
-    } else {
-      validImage = false;
-    }
-    return validImage;
+    this.showCropper = false;
+    this.croppedImage = null;
   }
 
 }

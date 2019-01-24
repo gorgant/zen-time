@@ -21,19 +21,33 @@
       </button>
     </div>
   </div>
-  <div *ngIf="(appUser$ | async) as user" class="change-image-container" fxFlexAlign="center" fxLayout="column" fxLayoutAlign="center center">
-    <div fxLayout="row" fxLayoutAlign="start center">
-      <input #fileInput type="file" (change)="onChooseFile($event)" placeholder="Upload Profile Image" style="display: none">
-      <button mat-raised-button (click)="fileInput.click()">Choose Image</button>
+  <div *ngIf="(appUser$ | async) as user" class="cropper-container" fxLayout="column" fxLayoutAlign="center center">
+    <div class="cropper-buttons" fxLayout="row" fxLayoutAlign="center center">
+      <input #cropperInput style="display: none" type="file" (change)="fileChangeEvent($event)" />
+      <button mat-raised-button (click)="cropperInput.click()">Choose Image</button>
       <mat-icon>arrow_right_alt</mat-icon>
-      <button (click)="onUploadImage()" mat-raised-button color="primary" [disabled]="!profileImage">Upload Image</button>
+      <button (click)="onUploadImage()" mat-raised-button color="primary" [disabled]="!croppedImage">Upload Image</button>
     </div>
+    <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1 / 1"
+        [resizeToWidth]="100"
+        [cropperMinWidth]="100"
+        [onlyScaleDown]="true"
+        [roundCropper]="true"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (loadImageFailed)="loadImageFailed()"
+        [style.display]="showCropper ? null : 'none'"
+    ></image-cropper>
     <div *ngIf="(imageUploadProgress$ | async) as uploadPercentage" fxLayout="column" fxLayoutAlign="center center">
       <div *ngIf="uploadPercentage < 100">Upload Progress</div>
       <mat-progress-spinner *ngIf="uploadPercentage < 100" [value]="uploadPercentage">
       </mat-progress-spinner>
     </div>
-    <img class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
-    <p class="mat-caption image-caption">*Image dimensions must by square (e.g., 200x200) and file must be less than 4 MB.</p>
+    <img *ngIf="!showCropper" class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
   </div>
 </section>
+
