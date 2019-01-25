@@ -15,8 +15,9 @@ import { RootStoreModule } from './root-store';
 import { HeaderComponent } from './navigation/components/header/header.component';
 import { SidenavComponent } from './navigation/components/sidenav/sidenav.component';
 import { AngularFireStorageModule } from '@angular/fire/storage';
-import { ServiceWorkerModule } from '@angular/service-worker';
-
+import { ServiceWorkerModule, SwPush } from '@angular/service-worker';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import * as firebase from 'firebase';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireStorageModule,
+    AngularFireMessagingModule,
     AuthModule,
     RootStoreModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
@@ -40,4 +42,15 @@ import { ServiceWorkerModule } from '@angular/service-worker';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  // constructor(swPush: SwPush) {
+  //   if (swPush.isEnabled) {
+  //     firebase.initializeApp({
+  //       'messagingSenderId': '854000616807'
+  //     });
+  //     navigator.serviceWorker
+  //       .ready
+  //       .then((registration) => firebase.messaging().useServiceWorker(registration));
+  //   }
+  // }
+ }

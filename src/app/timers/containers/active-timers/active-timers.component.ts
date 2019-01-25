@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
+import { RootStoreState, TimerStoreSelectors, TimerStoreActions, UserStoreSelectors } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
+import { PushSubRequested } from 'src/app/root-store/user-store/actions';
+import { VAPID_PUBLIC_KEY } from 'src/app/shared/utils/vapid-key';
 
 @Component({
   selector: 'app-active-timers',
@@ -18,6 +20,7 @@ export class ActiveTimersComponent implements OnInit {
   timers$: Observable<Timer[]>;
   error$: Observable<any>;
   isLoading$: Observable<boolean>;
+  readonly VAPID_PUBLIC_KEY = VAPID_PUBLIC_KEY;
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -48,6 +51,15 @@ export class ActiveTimersComponent implements OnInit {
     this.isLoading$ = this.store$.select(
       TimerStoreSelectors.selectTimerIsLoading
     );
+
+  }
+
+  onSubscribeToNotifications() {
+    this.store$.select(UserStoreSelectors.selectAppUser)
+    .pipe(take(1))
+    .subscribe(user => {
+      this.store$.dispatch(new PushSubRequested({ publicKey: this.VAPID_PUBLIC_KEY }));
+    });
   }
 
   onCreateTimer() {

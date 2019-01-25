@@ -5,16 +5,16 @@ import { Action, Store } from '@ngrx/store';
 import * as featureActions from './actions';
 import { switchMap, map, catchError, tap, take } from 'rxjs/operators';
 import { UserService } from 'src/app/shared/services/user.service';
-import { UiService } from 'src/app/shared/services/ui.service';
 import { RootStoreState } from '..';
 import { AppUser } from 'src/app/shared/models/app-user.model';
+import { MessagingService } from 'src/app/shared/services/messaging.service';
 
 @Injectable()
 export class UserStoreEffects {
   constructor(
     private actions$: Actions,
     private userService: UserService,
-    private uiService: UiService,
+    private messagingService: MessagingService,
     private store$: Store<RootStoreState.State>,
   ) { }
 
@@ -73,6 +73,41 @@ export class UserStoreEffects {
               });
           }),
           map(imageUrl => new featureActions.UpdateProfileImageComplete()),
+          catchError(error => {
+            return of(new featureActions.LoadErrorDetected({ error }));
+          })
+        )
+    )
+  );
+
+  @Effect()
+  pushSubRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.PushSubRequested>(
+      featureActions.ActionTypes.PUSH_SUB_REQUESTED
+    ),
+    switchMap(action =>
+      this.messagingService.requestSwPushSubscription(action.payload.publicKey)
+        .pipe(
+          tap(pushSubToken => {
+            this.store$.dispatch(new featureActions.StorePushSubTokenRequested({pushSub: pushSubToken}));
+          }),
+          map(pushSubToken => new featureActions.PushSubComplete()),
+          catchError(error => {
+            return of(new featureActions.LoadErrorDetected({ error }));
+          })
+        )
+    )
+  );
+
+  @Effect()
+  storePushSubTokenRequestedEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<featureActions.StorePushSubTokenRequested>(
+      featureActions.ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED
+    ),
+    switchMap(action =>
+      this.messagingService.storePushSubToken(action.payload.pushSub)
+        .pipe(
+          map(pushSubToken => new featureActions.StorePushSubTokenComplete()),
           catchError(error => {
             return of(new featureActions.LoadErrorDetected({ error }));
           })

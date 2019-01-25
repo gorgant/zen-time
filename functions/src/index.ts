@@ -91,3 +91,39 @@
 //     return fs.remove(workingDir);
 
 // });
+
+
+// import * as functions from 'firebase-functions';
+// import {Storage} from '@google-cloud/storage';
+// const gcs = new Storage();
+// import { join, dirname, basename } from 'path';
+// // import * as cors from 'cors';
+// // cors({origin: true});
+
+// const cors = require('cors')({
+//   origin: true,
+// });
+
+// export const showJSON = functions.https.onRequest((req, res) => {
+//   if (req.method === 'PUT') {
+//     return res.status(403).send('Forbidden!');
+//   }
+//   return cors(req, res, () => {
+//     // [END usingMiddleware]
+//     // Reading date format from URL query parameter.
+//     // [START readQueryParam]
+//     let format = req.query.format;
+//     // [END readQueryParam]
+//     // Reading date format from request body query parameter
+//     if (!format) {
+//       // [START readBodyParam]
+//       format = req.body.format;
+//       // [END readBodyParam]
+//     }
+//     // [START sendResponse]
+//     const formattedDate = moment().format(format);
+//     console.log('Sending Formatted date:', formattedDate);
+//     res.status(200).send(formattedDate);
+//     // [END sendResponse]
+//   });
+// })

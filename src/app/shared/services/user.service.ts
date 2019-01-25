@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable, from, Subject, throwError } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable, from, Subject, throwError, empty } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
 import { map, takeUntil, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { SwPush } from '@angular/service-worker';
+import { PushSubTokenSw } from '../models/push-sub-token-sw.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +22,8 @@ export class UserService {
     private db: AngularFirestore,
     private storage: AngularFireStorage,
     private uiService: UiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private swPush: SwPush,
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
@@ -47,7 +50,7 @@ export class UserService {
   storeUserData(userData: AppUser, userId: string, userRegistration?: boolean, userEmailUpdate?: boolean): Observable<AppUser> {
     const userCollection = this.db.collection<AppUser>('users');
     const fbResponse = userCollection.doc(userId).set(userData)
-      .then(empty => {
+      .then(() => {
         if (!userRegistration && !userEmailUpdate) {
           this.uiService.showSnackBar('User info updated', null, 3000);
         }
@@ -92,6 +95,8 @@ export class UserService {
     return fileRef.getDownloadURL();
   }
 
+
+
   // Provides easy access to user doc throughout the app
   get userDoc() {
     return this.currentUserDoc;
@@ -100,4 +105,6 @@ export class UserService {
   get imageUploadPercentage() {
     return this.imageUploadPercentage$;
   }
+
+
 }

@@ -31,6 +31,16 @@ export function featureReducer(state = initialState, action: Actions): State {
         ...state,
         error: null,
       };
+    case ActionTypes.PUSH_SUB_COMPLETE:
+      return {
+        ...state,
+        error: null,
+      };
+    case ActionTypes.STORE_PUSH_SUB_TOKEN_COMPLETE:
+      return {
+        ...state,
+        error: null,
+      };
     case ActionTypes.USER_DATA_LOAD_ERROR:
       return {
         ...state,

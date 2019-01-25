@@ -1,5 +1,7 @@
 import { Action } from '@ngrx/store';
 import { AppUser } from 'src/app/shared/models/app-user.model';
+import { PushSubTokenSw } from 'src/app/shared/models/push-sub-token-sw.model';
+import { PushSubTokenFcm } from 'src/app/shared/models/push-sub-token-fcm.model';
 
 export enum ActionTypes {
   USER_DATA_REQUESTED = '[User] User Data Requested',
@@ -10,6 +12,10 @@ export enum ActionTypes {
   UPDATE_PASSWORD_COMPLETE = '[User] Password Updated',
   UPDATE_PROFILE_IMAGE_REQUESTED = '[User] Update Profile Image Requested',
   UPDATE_PROFILE_IMAGE_COMPLETE = '[User] Update Profile Image Complete',
+  PUSH_SUB_REQUESTED = '[User] Subscribe Push Requested',
+  PUSH_SUB_COMPLETE = '[User] Subscribe Push Complete',
+  STORE_PUSH_SUB_TOKEN_REQUESTED = '[User] Store Push Sub Requested',
+  STORE_PUSH_SUB_TOKEN_COMPLETE = '[User] Store Push Sub Complete',
   USER_DATA_LOAD_ERROR = '[User] Load Failure'
 }
 
@@ -55,7 +61,25 @@ export class UpdateProfileImageComplete implements Action {
   readonly type = ActionTypes.UPDATE_PROFILE_IMAGE_COMPLETE;
 }
 
+export class PushSubRequested implements Action {
+  readonly type = ActionTypes.PUSH_SUB_REQUESTED;
 
+  constructor(public payload: { publicKey: string }) {}
+}
+
+export class PushSubComplete implements Action {
+  readonly type = ActionTypes.PUSH_SUB_COMPLETE;
+}
+
+export class StorePushSubTokenRequested implements Action {
+  readonly type = ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED;
+
+  constructor(public payload: { pushSub: PushSubTokenSw | PushSubTokenFcm }) {}
+}
+
+export class StorePushSubTokenComplete implements Action {
+  readonly type = ActionTypes.STORE_PUSH_SUB_TOKEN_COMPLETE;
+}
 
 export class LoadErrorDetected implements Action {
   readonly type = ActionTypes.USER_DATA_LOAD_ERROR;
@@ -72,5 +96,9 @@ UpdatePasswordRequested |
 UpdatePasswordComplete |
 UpdateProfileImageRequested |
 UpdateProfileImageComplete |
+PushSubRequested |
+PushSubComplete |
+StorePushSubTokenRequested |
+StorePushSubTokenComplete |
 LoadErrorDetected
 ;
