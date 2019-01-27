@@ -4,7 +4,7 @@
   "theme_color": "#1976d2",
   "description": "Manage Your To-Dos With Timers",
   "background_color": "#fafafa",
-  "display": "fullscreen",
+  "display": "standalone",
   "scope": "/",
   "start_url": "/",
   "icons": [

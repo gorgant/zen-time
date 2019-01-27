@@ -78,12 +78,15 @@ export class TimerFormDialogueComponent implements OnInit {
     minutes = minutes * 1000 * 60;
     const totalDuration: number = minutes + hours + days + weeks;
 
+    const dueDate: number = now() + totalDuration;
+
     const timerData: Timer = {
       title: this.title.value,
       category: this.category.value,
       notes: this.notes.value,
       duration: totalDuration,
-      setOnDate: now()
+      setOnDate: now(),
+      dueDate: dueDate
     };
 
     if (!this.newTimer) {

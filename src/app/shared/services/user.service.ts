@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { Observable, from, Subject, throwError, empty } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { Observable, from, Subject, throwError } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
 import { map, takeUntil, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { SwPush } from '@angular/service-worker';
-import { PushSubTokenSw } from '../models/push-sub-token-sw.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +21,6 @@ export class UserService {
     private storage: AngularFireStorage,
     private uiService: UiService,
     private authService: AuthService,
-    private swPush: SwPush,
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
@@ -105,6 +102,4 @@ export class UserService {
   get imageUploadPercentage() {
     return this.imageUploadPercentage$;
   }
-
-
 }

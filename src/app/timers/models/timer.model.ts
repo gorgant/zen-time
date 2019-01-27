@@ -4,6 +4,7 @@ export interface Timer {
   category: string;
   notes: string;
   duration: number;
+  dueDate: number;
   id?: string;
   completedDate?: number;
 }

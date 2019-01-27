@@ -31,6 +31,7 @@
     "@ngrx/router-store": "^7.0.0",
     "@ngrx/store": "^7.0.0",
     "@ngrx/store-devtools": "^7.0.0",
+    "@types/web-push": "^3.3.0",
     "core-js": "^2.5.4",
     "file-saver": "^2.0.0",
     "firebase": "^5.7.2",
@@ -39,6 +40,7 @@
     "ngx-image-cropper": "^1.3.7",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
+    "web-push": "^3.3.3",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

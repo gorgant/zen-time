@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, from } from 'rxjs';
-import { AngularFireMessaging } from '@angular/fire/messaging';
-import { map, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AppUser } from '../models/app-user.model';
 import { SwPush } from '@angular/service-worker';
 import { PushSubTokenSw } from '../models/push-sub-token-sw.model';
+import { PushSubTokenFcm } from '../models/push-sub-token-fcm.model';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { UserService } from './user.service';
-import { PushSubTokenFcm } from '../models/push-sub-token-fcm.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,48 +17,11 @@ export class MessagingService {
 
 
   constructor(
-    private afMessaging: AngularFireMessaging,
     private uiService: UiService,
     private swPush: SwPush,
     private db: AngularFirestore,
-    private userService: UserService
-  ) {
-    // this.afMessaging.messaging
-    //   .subscribe(messaging => {
-    //     messaging.onMessage = messaging.onMessage.bind(messaging);
-    //     messaging.onTokenRefresh = messaging.onTokenRefresh.bind(messaging);
-    //   }
-    // );
-}
-
-  // Request permission for notification from firebase cloud messaging
-  // Store this token in the user's profile
-  requestFcmPushSubscription(appUser: AppUser): Observable<PushSubTokenFcm> {
-    return this.afMessaging.requestToken
-      .pipe(
-        map(token => {
-          const pushSub: PushSubTokenFcm = {
-            token: token
-          };
-          return pushSub;
-        } ),
-        catchError(error => {
-          // If user replies no, need to pass that to the error handler and update the user store
-          // ENTER CODE HERE
-          this.uiService.showSnackBar(error, null, 5000);
-          return throwError(error);
-        })
-      );
-  }
-
-  // Hook method when new notification received in foreground
-  receiveMessage() {
-    this.afMessaging.messages
-      .subscribe(payload => {
-        console.log('new message received. ', payload);
-        this.currentMessage.next(payload);
-      });
-  }
+    private userService: UserService,
+  ) { }
 
   requestSwPushSubscription(publicKey: string): Observable<PushSubTokenSw> {
     const swResponse = this.swPush.requestSubscription({

@@ -1,0 +1,14 @@
+[debug] [2019-01-27T06:41:33.874Z] ----------------------------------------------------------------------
+[debug] [2019-01-27T06:41:33.876Z] Command:       /home/gorgantx1/.nvm/versions/node/v10.14.2/bin/node /home/gorgantx1/.nvm/versions/node/v10.14.2/bin/firebase deploy --only functions
+[debug] [2019-01-27T06:41:33.876Z] CLI Version:   6.3.0
+[debug] [2019-01-27T06:41:33.876Z] Platform:      linux
+[debug] [2019-01-27T06:41:33.876Z] Node Version:  v10.14.2
+[debug] [2019-01-27T06:41:33.876Z] Time:          Sun Jan 27 2019 14:41:33 GMT+0800 (Hong Kong Standard Time)
+[debug] [2019-01-27T06:41:33.876Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-01-27T06:41:33.883Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-01-27T06:41:33.883Z] > authorizing via signed-in user
+[debug] [2019-01-27T06:41:33.883Z] [iam] checking project gorgant-zentime for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2019-01-27T06:41:33.884Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/gorgant-zentime:testIamPermissions  
+
+[debug] [2019-01-27T06:41:34.919Z] <<< HTTP RESPONSE 200
