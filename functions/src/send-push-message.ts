@@ -15,6 +15,8 @@ interface PushSubTokenSw {
     p256dh: string;
     auth: string;
   };
+  fsDocId: string;
+  fsUserId: string;
 }
 
 
@@ -40,6 +42,8 @@ const pushMessage = {
   }
 };
 
+const invalidTokens: PushSubTokenSw[] = [];
+
 export const sendPushMessage = functions.https.onRequest(async (req, res) => {
   const key = req.query.key;
 
@@ -58,11 +62,20 @@ export const sendPushMessage = functions.https.onRequest(async (req, res) => {
   // Send push message to users
   await sendSwPushMessageToUsers(swPushSubTokens)
     .then(response => {
-      console.log('Push message sent', res)
+      // Delete any invalid tokens if they exist
+      if (invalidTokens.length > 0) {
+        batchRemoveInvalidTokens(invalidTokens);
+      }
+      // If no push messages, log that and exit
+      if (typeof response === 'string') {
+        console.log('No push messages to send.', res)
+        return res.status(200).json({message: 'No push messages to send.'})
+      }
+      console.log('Push messages successfully sent.', res)
       return res.status(200).json({message: 'Newsletter sent successfully.'})
     })
     .catch(err => {
-      console.error("Error sending notification, reason: ", err);
+      console.error("Error sending push notifications, reason: ", err);
       res.sendStatus(500);
   });
 
@@ -109,11 +122,15 @@ async function getUsersWithValidTimers(): Promise<string[]> {
 // Get a list of push sub tokens for a specific user
 async function getUserPushSubTokensSw(userId: string): Promise<PushSubTokenSw[]> {
   const userPushSubTokens: PushSubTokenSw[] = [];
-  const userRef = admin.firestore().collection('users');
-  const userPushSubTokensRef = userRef.doc(userId).collection('pushSubTokensSw');
+  const usersRef = admin.firestore().collection('users');
+  const userPushSubTokensRef = usersRef.doc(userId).collection('pushSubTokensSw');
   const userPushSubTokensSnapshot = await userPushSubTokensRef.get();
   userPushSubTokensSnapshot.forEach(async tokenSnapshot => {
-    const token: PushSubTokenSw = await tokenSnapshot.data() as PushSubTokenSw;
+    const token: PushSubTokenSw = {
+      ... await tokenSnapshot.data() as PushSubTokenSw,
+      fsDocId: tokenSnapshot.id,
+      fsUserId: userId
+    } 
     userPushSubTokens.push(token);
   });
   return userPushSubTokens;
@@ -134,7 +151,7 @@ async function getAllPushSubTokensSw(userIdList: string[]): Promise<PushSubToken
   return flatResults;
 }
 
-async function sendSwPushMessageToUsers(pushSubTokens: PushSubTokenSw[]) {
+async function sendSwPushMessageToUsers(pushSubTokens: PushSubTokenSw[]): Promise<webpush.SendResult[] | string> {
   const vapidPublicKey = 'BN_GrpVFBKooWXhTi0Cx0E4k6tAQ3fGKjY_boGy7crz6jMrYrIUdyV3jbGWID3P-vBiUXfHWoRy89Str_Gl9Nxw';
   const vapidPrivateKey = await getVapidPrivateKey();
 
@@ -143,10 +160,20 @@ async function sendSwPushMessageToUsers(pushSubTokens: PushSubTokenSw[]) {
     vapidPublicKey,
     vapidPrivateKey
   );
-
-  return Promise.all(pushSubTokens.map(sub => webpush.sendNotification(
-    sub, JSON.stringify(pushMessage)
-  )))
+  
+  if (pushSubTokens.length > 0) {
+      return Promise.all(pushSubTokens.map(
+        sub => webpush.sendNotification(
+          sub, JSON.stringify(pushMessage)
+        ).catch(err => {
+          console.log(`Push message failed, pushId ${sub.fsDocId}`);
+          invalidTokens.push(sub);
+          return err;
+        })
+    ))
+  } else {
+    return 'No push messages to send. Exiting with no action.';
+  }
 }
 
 async function getVapidPrivateKey(): Promise<string> {
@@ -163,4 +190,25 @@ async function fetchKeyData(): Promise<VapidKeys> {
   const fileAsString = fileData.toString(); // Convert the file to a string
   const jsonObj: VapidKeys = JSON.parse(fileAsString); // Convert the string to JSON
   return jsonObj;
+}
+
+function batchRemoveInvalidTokens(invalTokens: PushSubTokenSw[]) {
+  const batch = admin.firestore().batch();
+  invalTokens.map(token => {
+    console.log('Adding invalid token to batch', token.fsDocId);
+    const tokenRef = getInvalidToken(token);
+    batch.delete(tokenRef);
+  })
+  console.log('About to execut batch commit');
+  batch.commit()
+    .then(result => console.log('Batch removal complete', result))
+    .catch(err => console.log('Error with batch delete', err));
+}
+
+function getInvalidToken(token: PushSubTokenSw) {
+  const usersRef = admin.firestore().collection('users');
+  const userPushSubTokensRef = usersRef.doc(token.fsUserId).collection('pushSubTokensSw');
+  const targetTokenRef = userPushSubTokensRef.doc(token.fsDocId)
+  console.log('Returning this invalid token ref', targetTokenRef);
+  return targetTokenRef;
 }

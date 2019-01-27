@@ -51,7 +51,8 @@ export class MessagingService {
     const tokenId = this.db.createId();
     let tokenDoc: AngularFirestoreDocument;
     if ('keys' in pushSub) {
-      tokenDoc = this.getSwPushSubTokenCollection().doc(tokenId);
+      // Generate token with the auth as the ID (so if user adds multiple times, it doesn't add duplicates)
+      tokenDoc = this.getSwPushSubTokenCollection().doc(pushSub.keys.auth);
     } else {
       tokenDoc = this.getFcmPushSubTokenCollection().doc(tokenId);
     }
