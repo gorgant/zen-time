@@ -33,7 +33,8 @@ const pushMessage = {
       'vibrate': [100, 50, 100],
       'data': {
           'dateOfArrival': now(),
-          'primaryKey': 1
+          'primaryKey': 1,
+          'url': 'https://zentime.me/timers'
       },
       'actions': [{
           'action': 'See Now',

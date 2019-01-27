@@ -1,0 +1,134 @@
+[debug] [2019-01-27T10:03:23.490Z] ----------------------------------------------------------------------
+[debug] [2019-01-27T10:03:23.491Z] Command:       /home/gorgantx1/.nvm/versions/node/v10.14.2/bin/node /home/gorgantx1/.nvm/versions/node/v10.14.2/bin/firebase deploy
+[debug] [2019-01-27T10:03:23.491Z] CLI Version:   6.3.0
+[debug] [2019-01-27T10:03:23.491Z] Platform:      linux
+[debug] [2019-01-27T10:03:23.491Z] Node Version:  v10.14.2
+[debug] [2019-01-27T10:03:23.492Z] Time:          Sun Jan 27 2019 18:03:23 GMT+0800 (Hong Kong Standard Time)
+[debug] [2019-01-27T10:03:23.492Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-01-27T10:03:23.497Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-01-27T10:03:23.497Z] > authorizing via signed-in user
+[debug] [2019-01-27T10:03:23.497Z] [iam] checking project gorgant-zentime for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-01-27T10:03:23.498Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/gorgant-zentime:testIamPermissions  
+
+[debug] [2019-01-27T10:03:24.523Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:24.527Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/gorgant-zentime  
+ 
+[debug] [2019-01-27T10:03:25.101Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'gorgant-zentime'...
+[info] 
+[info] i  deploying functions, hosting
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] ✔  functions: Finished running predeploy script.
+[debug] [2019-01-27T10:03:32.615Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@google-cloud/storage": "^2.3.4",
+    "@types/fs-extra": "^5.0.4",
+    "@types/sharp": "^0.21.1",
+    "@types/web-push": "^3.3.0",
+    "child-process-promise": "^2.2.1",
+    "firebase-admin": "~6.0.0",
+    "firebase-functions": "^2.1.0",
+    "fs-extra": "^7.0.1",
+    "moment": "^2.24.0",
+    "secure-compare": "^3.0.1",
+    "sharp": "^0.21.3",
+    "web-push": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.4",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2019-01-27T10:03:32.616Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/gorgant-zentime?view=CONSUMER_VIEW  
+ 
+[debug] [2019-01-27T10:03:32.617Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/gorgant-zentime?view=CONSUMER_VIEW  
+ 
+[debug] [2019-01-27T10:03:34.327Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2019-01-27T10:03:34.360Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:34.362Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/gorgant-zentime  
+ 
+[debug] [2019-01-27T10:03:35.376Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:35.377Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/854000616807:getServerAppConfig  
+ 
+[debug] [2019-01-27T10:03:35.997Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:36.001Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/gorgant-zentime/versions  
+
+[debug] [2019-01-27T10:03:37.923Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2019-01-27T10:03:37.930Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/gorgant-zentime/configs  
+ 
+[debug] [2019-01-27T10:03:38.923Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:38.925Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/gorgant-zentime/configs/cron/variables  
+ 
+[debug] [2019-01-27T10:03:40.123Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:40.125Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/gorgant-zentime/configs/cron/variables/key  
+ 
+[debug] [2019-01-27T10:03:41.343Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (71.95 KB) for uploading
+[debug] [2019-01-27T10:03:41.775Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/gorgant-zentime/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2019-01-27T10:03:42.285Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:42.288Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-60381ecc-0f24-4b85-a151-c10694713bcc/4897e9c1-52a4-4b99-802c-162a712e762a.zip?GoogleAccessId=service-854000616807@gcf-admin-robot.iam.gserviceaccount.com&Expires=1548585222&Signature=lE2GG8C%2FJPU0s1vRSZhr5Mut0EKo5hb5p1lI01fJP9%2FJkiZyQapsqu5uuyzv1HbwNJFsnPE2WbORkqzx0eATq4d7KFS7gYP7mRBmTKzG7iyd%2FgoU1Xl3%2FnSlWAzytUSY79p3f8jLRdLdzfrbVkO%2B5doaNflHJZO0UCH%2BJxZqb84MDUBwz1S%2Foh0shDFGn8%2F8HQO%2FLz%2BmQc%2FIsVKLjr2IHrLJetHwbKUN%2FL2pwb9m0x4idWhHheKJnCjip%2BZXM7dbGcYjTYxS7B7KaKF5iuFA4iS1npCIJMdSNvlhTQmIcpwFwhUvjL8L8i9PajpNIJqOOk3%2FapvEMYkkctz7EtNN0w%3D%3D  
+
+[debug] [2019-01-27T10:03:42.740Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[info] i  hosting[gorgant-zentime]: beginning deploy...
+[info] i  hosting[gorgant-zentime]: found 26 files in dist/zen-time
+[debug] [2019-01-27T10:03:42.769Z] [hosting] hash cache [ZGlzdC96ZW4tdGltZQ] load error: lines is not defined
+[debug] [2019-01-27T10:03:42.921Z] [hosting] hash cache [ZGlzdC96ZW4tdGltZQ] stored for 26 files
+[debug] [2019-01-27T10:03:42.921Z] [hosting][hash queue][FINAL]
+[debug] [2019-01-27T10:03:42.921Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/gorgant-zentime/versions/9081af55e1eb70cb:populateFiles  
+ <request body omitted>
+[debug] [2019-01-27T10:03:44.510Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:44.517Z] [hosting][populate queue][FINAL]
+[debug] [2019-01-27T10:03:44.518Z] [hosting] uploads queued: 2
+[debug] [2019-01-27T10:03:47.516Z] [hosting][upload queue][FINAL]
+[info] ✔  hosting[gorgant-zentime]: file upload complete
+[debug] [2019-01-27T10:03:47.518Z] [hosting] deploy completed after 4775ms
+[debug] [2019-01-27T10:03:47.580Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/gorgant-zentime/locations/-/functions  
+ 
+[debug] [2019-01-27T10:03:47.971Z] <<< HTTP RESPONSE 200
+[info] i  functions: updating Node.js 6 function sendPushMessage(us-central1)...
+[debug] [2019-01-27T10:03:47.978Z] Trigger is:  {"httpsTrigger":{}}
+[debug] [2019-01-27T10:03:47.981Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/gorgant-zentime/locations/us-central1/functions/sendPushMessage {"updateMask":"sourceUploadUrl,name,labels,httpsTrigger"} 
+
+[debug] [2019-01-27T10:03:48.508Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:48.514Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/gorgant-zentime/locations/-/functions  
+ 
+[debug] [2019-01-27T10:03:48.895Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:48.898Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:03:49.153Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:51.157Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:03:51.416Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:53.420Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:03:53.674Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:55.676Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:03:55.931Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:03:57.935Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:03:58.199Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-27T10:04:00.203Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/Z29yZ2FudC16ZW50aW1lL3VzLWNlbnRyYWwxL3NlbmRQdXNoTWVzc2FnZS9wTGpaZUxVQ3JaWQ  
+ 
+[debug] [2019-01-27T10:04:00.452Z] <<< HTTP RESPONSE 200
