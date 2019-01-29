@@ -11,29 +11,42 @@
 </div>
 
 
-<section *ngIf="!doneList" fxLayout="column" fxLayoutAlign="center center" >
-  
-  <h1 class="mat-headline">Active Timers</h1>
-  
-  <div *ngIf="loading">
-    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+<section  *ngIf="!doneList" fxLayout="column" fxLayoutAlign="center center" >
+  <ng-container *ngIf="timeoutComplete" >
+    <div @todosAnimation >
+      <h1 class="mat-headline">Active Timers</h1>
+      <div *ngIf="testItems" fxLayout="column" fxLayoutAlign="center center">
+        <div 
+          @todoAnimation
+          *ngFor="let item of timers"    
+          type="button"
+          >
+          {{ item.title }}
+        </div>
+      </div>
+      <div *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <div *ngIf="!loading && timers">
+        <div 
+          @todoAnimation
+          *ngFor="let timer of timers | timerFilter : search?.value"   class="card-container">
+          <app-timer-card-item
+            [timer]="timer"
+            [routerLink]="[ './', timer.id ]"
+            >
+          </app-timer-card-item>
+        </div>
+      
+        <div id="no-timers" *ngIf="timers.length < 1 && !error">No active timers found</div>
+      </div>
+      
+      <div class="error-message" *ngIf="error">
+        An error occurred while loading your timers. Try refreshing the page or logging out and back in.
+      </div>
   </div>
-  <div *ngIf="!loading">
-    <div *ngIf="timers" class="card-container">
-      <app-timer-card-item 
-        *ngFor="let timer of timers | timerFilter : search?.value" 
-        [timer]="timer"
-        [routerLink]="[ './', timer.id ]"
-        >
-      </app-timer-card-item>
-    </div>
+  </ng-container>
   
-    <div id="no-timers" *ngIf="timers.length < 1 && !error">No active timers found</div>
-  </div>
-  
-  <div class="error-message" *ngIf="error">
-    An error occurred while loading your timers. Try refreshing the page or logging out and back in.
-  </div>
 </section>
 
 <section *ngIf="doneList" fxLayout="column" fxLayoutAlign="center center" >

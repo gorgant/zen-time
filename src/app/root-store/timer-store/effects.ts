@@ -7,7 +7,7 @@ import * as timerFeatureActions from './actions';
 import * as doneFeatureActions from '../done-store/actions';
 import * as undoFeatureActions from '../undo-store/actions';
 import * as timerFeatureSelectors from './selectors';
-import { switchMap, map, catchError, mergeMap, tap, take } from 'rxjs/operators';
+import { switchMap, map, catchError, mergeMap, tap, take, withLatestFrom } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
 import { RootStoreState } from '..';
@@ -43,10 +43,105 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.AllTimersRequested>(
       timerFeatureActions.ActionTypes.ALL_TIMERS_REQUESTED
     ),
-    switchMap(action =>
+    switchMap( action =>
       this.timerService.fetchAllTimers()
         .pipe(
-          map(timers => new timerFeatureActions.AllTimersLoaded({timers: timers})),
+          withLatestFrom(
+            this.store$.select(timerFeatureSelectors.selectAllTimers),
+            this.store$.select(timerFeatureSelectors.selectTimersLoaded)
+          ),
+          // take(1),
+          map(([serverTimers, storeTimers, timersLoaded]) => {
+            // If timers haven't loaded yet, pull from server
+            if (!timersLoaded) {
+              return new timerFeatureActions.AllTimersLoaded({timers: serverTimers});
+            }
+
+            // This epic set of if statements prevents mass refresh of timers which screws up animations
+            // ...instead allowing for individual fixes where possible
+
+            // If timers have already loaded, check for inconsistencies
+            if (serverTimers.length !== storeTimers.length) {
+              // If addition occurs on server (e.g., added in another window), update those specific items in store
+              if (serverTimers.length > storeTimers.length) {
+                const noIdMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.id === storeT.id));
+                console.log('On server, not in store', noIdMatchArray);
+                let updatedStoreTimers = [...storeTimers];
+                if (noIdMatchArray.length > 0) {
+                  noIdMatchArray.forEach((timer, index, array) => {
+                    // Add to store directly (don't dispatch action, which would add a circular loop to server)
+                    console.log('Adding single timer', timer);
+                    this.store$.dispatch(new timerFeatureActions.AddTimerComplete({timer}));
+                    updatedStoreTimers = [
+                      ...updatedStoreTimers,
+                      timer
+                    ];
+                  });
+                }
+                // Return the updated timer array to the effect (I guess this doesn't fire until the forEach above is complete)
+                return new timerFeatureActions.AllTimersLoaded({timers: updatedStoreTimers});
+              } else if (serverTimers.length < storeTimers.length) {
+              // If deletion occurs on server (e.g., deleted in another window), update those specific items in store
+                const noMatchArray = storeTimers.filter(timer => !serverTimers.some(serverT => timer.id === serverT.id));
+                console.log('In store, not in server', noMatchArray);
+                let updatedStoreTimers = [...storeTimers];
+                noMatchArray.forEach((timer, index, array) => {
+                  // Remove from store directly (don't dispatch action, which would add a circular loop to server)
+                  console.log('Deleting single timer', timer);
+                  this.store$.dispatch(new timerFeatureActions.DeleteTimerComplete({timerId: timer.id}));
+                  updatedStoreTimers = updatedStoreTimers.filter(tmr => tmr.id !== timer.id);
+                });
+                return new timerFeatureActions.AllTimersLoaded({timers: updatedStoreTimers});
+              }
+            } else {
+            // If server change is detected, scan timer attributes for changes
+              console.log('Timer update detected on server, checking for possible timer details changes');
+              const updatedStoreTimers = [...storeTimers];
+              const noTitleMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.title === storeT.title));
+              const noCategoryMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.category === storeT.category));
+              const noNotesMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.notes === storeT.notes));
+              const noDurationMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.duration === storeT.duration));
+              const combinedNoAttributeMatchArray = ([] as Timer[])
+                .concat(
+                noTitleMatchArray, noCategoryMatchArray, noNotesMatchArray, noDurationMatchArray
+                );
+
+              // Remove duplicates
+              // tslint:disable-next-line:max-line-length
+              // Code courtesy of: https://stackoverflow.com/questions/32238602/javascript-remove-duplicates-of-objects-sharing-same-property-value
+              const mySet = new Set();
+              const combArrayDeduped = combinedNoAttributeMatchArray.filter(timer => {
+                const key = timer.id, isNew = !mySet.has(key);
+                if (isNew) {
+                  mySet.add(key);
+                }
+                return isNew;
+              });
+
+
+              if (combArrayDeduped.length > 0) {
+                console.log('Timer changes detected', combArrayDeduped);
+                combArrayDeduped.forEach((timer, index, array) => {
+                  const modifedTimer = serverTimers.filter(svrTimer => svrTimer.id === timer.id)[0];
+                  console.log('Updating single timer', modifedTimer);
+                  const updatedTimer: Update<Timer> = {
+                    id: modifedTimer.id,
+                    changes: modifedTimer
+                  };
+                  this.store$.dispatch(new timerFeatureActions.UpdateTimerComplete({timer: updatedTimer}));
+                  // Now update the store timers so that we can pass the updated timer(s) to the AllTimersLoaded as well
+                  const targetTimerIndex = updatedStoreTimers.findIndex(oldTimer => oldTimer.id === updatedTimer.id);
+                  console.log('Updating ');
+                  updatedStoreTimers[targetTimerIndex] = modifedTimer;
+                });
+              return new timerFeatureActions.AllTimersLoaded({timers: updatedStoreTimers});
+              }
+              // Don't return anything if no attribute changes were detected
+            }
+            // If every other check fails, just pull from store
+            console.log('All checks passed, returning original store', storeTimers);
+            return new timerFeatureActions.AllTimersLoaded({timers: storeTimers});
+          } ),
           catchError(error => {
             return of(new timerFeatureActions.LoadErrorDetected({ error }));
           }

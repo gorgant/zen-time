@@ -10,8 +10,8 @@ export enum ActionTypes {
   TIMER_LOAD_FAILURE = '[Timers] Load Failure',
   UPDATE_TIMER_REQUESTED = '[Timers] Timer Update Requested',
   UPDATE_TIMER_COMPLETE = '[Timers] Timer Updated',
-  ADD_TIMER_REQUESTED = '[Timers] Save Timer Requested',
-  ADD_TIMER_COMPLETE = '[Timers] Timer Saved',
+  ADD_TIMER_REQUESTED = '[Timers] Add Timer Requested',
+  ADD_TIMER_COMPLETE = '[Timers] Timer Added',
   DELETE_TIMER_REQUESTED = '[Timers] Timer Delete Requested ',
   DELETE_TIMER_COMPLETE = '[Timers] Timer Deleted',
   MARK_TIMER_DONE = '[Timers] Mark Timer Done Requested'
