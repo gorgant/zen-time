@@ -21,6 +21,7 @@ export class ActiveTimersComponent implements OnInit {
   error$: Observable<any>;
   isLoading$: Observable<boolean>;
   readonly VAPID_PUBLIC_KEY = VAPID_PUBLIC_KEY;
+  pushPermissionsSet: boolean;
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -52,15 +53,31 @@ export class ActiveTimersComponent implements OnInit {
       TimerStoreSelectors.selectTimerIsLoading
     );
 
+    if (Notification.permission === 'granted') {
+      this.pushPermissionsSet = true;
+      console.log('Push notifications allowed');
+    } else if (Notification.permission === 'denied') {
+      this.pushPermissionsSet = true;
+      console.log('Push notifications denied');
+    } else {
+      this.pushPermissionsSet = false;
+      console.log('Push notifications not set');
+    }
+
   }
 
-  onSubscribeToNotifications() {
-    this.store$.select(UserStoreSelectors.selectAppUser)
-    .pipe(take(1))
-    .subscribe(user => {
-      this.store$.dispatch(new PushSubRequested({ publicKey: this.VAPID_PUBLIC_KEY }));
-    });
+  onPushSubResponse() {
+    this.pushPermissionsSet = true;
+    console.log('Push sub response detected');
   }
+
+  // onSubscribeToNotifications() {
+  //   this.store$.select(UserStoreSelectors.selectAppUser)
+  //   .pipe(take(1))
+  //   .subscribe(user => {
+  //     this.store$.dispatch(new PushSubRequested({ publicKey: this.VAPID_PUBLIC_KEY }));
+  //   });
+  // }
 
   onCreateTimer() {
 

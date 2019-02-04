@@ -5,11 +5,13 @@ import { MaterialModule } from '../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RemainingTimePipe } from './pipes/remaining-time.pipe';
 import { MatElevationDirective } from './directives/mat-elevation.directive';
+import { PushRequestComponent } from './components/push-request/push-request.component';
 
 @NgModule({
   declarations: [
     RemainingTimePipe,
     MatElevationDirective,
+    PushRequestComponent,
   ],
   imports: [
     CommonModule,
@@ -24,6 +26,7 @@ import { MatElevationDirective } from './directives/mat-elevation.directive';
     FlexLayoutModule,
     RemainingTimePipe,
     MatElevationDirective,
+    PushRequestComponent
   ],
 })
 export class SharedModule { }

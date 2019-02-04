@@ -1,8 +1,9 @@
 <!-- <button mat-raised-button color="warn" (click)="onImport()">Import Timers</button> -->
-<div fxLayoutAlign="center center">
-  <button class="button button-primary" (click)="onSubscribeToNotifications()">
+<div *ngIf="!pushPermissionsSet" fxLayoutAlign="center center">
+  <!-- <button class="button button-primary" (click)="onSubscribeToNotifications()">
     Get Expiring Timer Notifications
-  </button>
+  </button> -->
+  <app-push-request (pushResponse)="onPushSubResponse()"></app-push-request>
 </div>
 <app-timer-card-list 
   [timers]="timers$ | async" 
