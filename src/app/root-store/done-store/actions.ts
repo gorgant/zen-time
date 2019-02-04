@@ -10,8 +10,8 @@ export enum ActionTypes {
   DONE_LOAD_FAILURE = '[Done] Load Failure',
   UPDATE_DONE_REQUESTED = '[Done] Done Update Requested',
   UPDATE_DONE_COMPLETE = '[Done] Done Updated',
-  ADD_DONE_REQUESTED = '[Done] Save Done Requested',
-  ADD_DONE_COMPLETE = '[Done] Done Saved',
+  ADD_DONE_REQUESTED = '[Done] Add Done Requested',
+  ADD_DONE_COMPLETE = '[Done] Done Added',
   DELETE_DONE_REQUESTED = '[Done] Done Delete Requested ',
   DELETE_DONE_COMPLETE = '[Done] Done Deleted',
 }
