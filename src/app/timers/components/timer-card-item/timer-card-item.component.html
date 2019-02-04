@@ -1,13 +1,20 @@
-<mat-card appMatElevation>
-  <mat-card-title class="title-text">{{ timer.title }}</mat-card-title>
-  <div *ngIf="!completedTimer">
-    <mat-card-subtitle *ngIf="countDownClock.total >= 0 && countDownClock.days >= 1"> 
-      Time Remaining: {{ countDownClock.weeks }} Weeks, {{ countDownClock.days }} Days
-    </mat-card-subtitle>
-    <mat-card-subtitle class="primaryColor" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due today!</mat-card-subtitle>
-    <mat-card-subtitle  class="accentColor" *ngIf="countDownClock.total < 0">Timer Expired!</mat-card-subtitle>
+<mat-card appMatElevation fxLayoutAlign="start center" >
+  <div class="text-container" [routerLink]="[ './', timer.id ]">
+    <mat-card-title class="title-text">{{ timer.title }}</mat-card-title>
+    <div *ngIf="!completedTimer">
+      <mat-card-subtitle *ngIf="countDownClock.total >= 0 && countDownClock.days >= 1"> 
+        Time Remaining: {{ countDownClock.weeks }} Weeks, {{ countDownClock.days }} Days
+      </mat-card-subtitle>
+      <mat-card-subtitle class="due-today-time-text" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due today!</mat-card-subtitle>
+      <mat-card-subtitle  class="expired-time-text" *ngIf="countDownClock.total < 0">Timer Expired!</mat-card-subtitle>
+    </div>
+    <div *ngIf="completedTimer">
+      <mat-card-subtitle>Completed date: {{ timer.completedDate | date }}</mat-card-subtitle>
+    </div>
   </div>
-  <div *ngIf="completedTimer">
-    <mat-card-subtitle>Completed date: {{ timer.completedDate | date }}</mat-card-subtitle>
+  <div *ngIf="!completedTimer" class="mark-done-container" fxFlexAlign="end center" >
+    <button mat-icon-button (click)="onCompleteTimer()" >
+      <mat-icon class="mark-done">check_circle_outline</mat-icon>
+    </button>
   </div>
 </mat-card>

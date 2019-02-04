@@ -1,8 +1,7 @@
 // Must import to use the custom theme classes
-@import '../../../../my-theme.scss';
+@import "../../../variables";
 
 mat-card {
-  cursor: pointer;
   width: 90vw;
   max-width: 600px;
   min-width: 288px;
@@ -21,4 +20,34 @@ mat-card-subtitle {
 mat-card {
   margin-top: 16px;
   margin-bottom: 16px;
+}
+
+.text-container {
+  cursor: pointer;
+  width: 100%;
+}
+
+// Removes blue border when clicking timer (caused by router link)
+:focus {
+  outline:0 !important;
+}
+
+.mark-done {
+  color: grey;
+}
+
+.mark-done:active {
+  color: $primary !important;
+}
+
+.mark-done:hover {
+  color: $primary;
+}
+
+.due-today-time-text {
+  color: $primary;
+}
+
+.expired-time-text {
+  color: $accent;
 }

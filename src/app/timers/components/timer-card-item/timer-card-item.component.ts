@@ -1,7 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { Countdown } from 'src/app/shared/models/countdown.model';
+import { Store } from '@ngrx/store';
+import { RootStoreState, TimerStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'app-timer-card-item',
@@ -15,7 +17,9 @@ export class TimerCardItemComponent implements OnInit {
   remainingTime: number;
   completedTimer: boolean;
 
-  constructor() { }
+  constructor(
+    private store$: Store<RootStoreState.State>,
+  ) { }
 
   ngOnInit() {
     this.completedTimer = !!this.timer.completedDate;
@@ -24,6 +28,10 @@ export class TimerCardItemComponent implements OnInit {
       this.countDownClock = new Countdown(this.timer).getCountDownClock();
       this.remainingTime = new Countdown(this.timer).calcRemainingTime();
     }
+  }
+
+  onCompleteTimer() {
+    this.store$.dispatch(new TimerStoreActions.MarkTimerDone({timer: this.timer}));
   }
 
 }

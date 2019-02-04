@@ -13,9 +13,9 @@
 
 <section  *ngIf="!doneList" fxLayout="column" fxLayoutAlign="center center" >
   <ng-container *ngIf="timeoutComplete" >
-    <div @todosAnimation >
+    <div @todosAnimation fxLayout="column" fxLayoutAlign="center center">
       <h1 class="mat-headline">Active Timers</h1>
-      <div *ngIf="testItems" fxLayout="column" fxLayoutAlign="center center">
+      <!-- <div *ngIf="testItems" fxLayout="column" fxLayoutAlign="center center">
         <div 
           @todoAnimation
           *ngFor="let item of timers"    
@@ -23,7 +23,7 @@
           >
           {{ item.title }}
         </div>
-      </div>
+      </div> -->
       <div *ngIf="loading">
         <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
       </div>
@@ -33,7 +33,6 @@
           *ngFor="let timer of timers | timerFilter : search?.value"   class="card-container">
           <app-timer-card-item
             [timer]="timer"
-            [routerLink]="[ './', timer.id ]"
             >
           </app-timer-card-item>
         </div>
