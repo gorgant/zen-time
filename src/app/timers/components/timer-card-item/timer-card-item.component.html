@@ -12,9 +12,9 @@
       <mat-card-subtitle>Completed date: {{ timer.completedDate | date }}</mat-card-subtitle>
     </div>
   </div>
-  <div *ngIf="!completedTimer" class="mark-done-container" fxFlexAlign="end center" >
-    <button mat-icon-button (click)="onCompleteTimer()" >
-      <mat-icon class="mark-done">check_circle_outline</mat-icon>
+  <div #markDoneButton *ngIf="!completedTimer" class="mark-done-container" fxFlexAlign="end center" >
+    <button  mat-icon-button (click)="onCompleteTimer()" >
+      <mat-icon  class="mark-done">check_circle_outline</mat-icon>
     </button>
   </div>
 </mat-card>

@@ -36,8 +36,9 @@ mat-card {
   color: grey;
 }
 
-.mark-done:active {
-  color: $primary !important;
+// When div is clicked, apply style to icon (can't apply to icon directly using renderer2)
+.mark-done-clicked .mark-done {
+  color: $primary;
 }
 
 .mark-done:hover {

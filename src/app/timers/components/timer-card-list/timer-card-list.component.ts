@@ -1,26 +1,18 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Timer } from '../../models/timer.model';
-import { fade, slide, fadeInAnimation, bounceOutLeftAnimation } from 'src/app/shared/animations/timer-animations';
-import { trigger, transition, group, query, style, animate, stagger, animateChild, useAnimation } from '@angular/animations';
+import { bounceOutLeftAnimation, bounceInLeftAnimation } from 'src/app/shared/animations/timer-animations';
+import { trigger, transition, style, animate, useAnimation } from '@angular/animations';
 
 @Component({
   selector: 'app-timer-card-list',
   templateUrl: './timer-card-list.component.html',
   styleUrls: ['./timer-card-list.component.scss'],
   animations: [
-    trigger('todosAnimation', [
-      transition(':enter', [
-        // Stagger is to be used inside query functions
-        // animateChild ensures the parent doesn't block child behavior
-        query('@todoAnimation',
-          stagger(200, animateChild())),
-      ])
-    ]),
     trigger('todoAnimation', [
       transition(':enter', [
-        useAnimation(fadeInAnimation, {
+        useAnimation(bounceInLeftAnimation, {
           params: {
-            duration: '1000ms',
+            duration: '2000ms',
           }
         })
       ]),
@@ -57,10 +49,6 @@ export class TimerCardListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // FIND A WAY TO GET RID OF THIS TIMEOUT!
-    setTimeout(() => {
-      this.timeoutComplete = true;
-    }, 1000);
   }
 
   onSearch() {

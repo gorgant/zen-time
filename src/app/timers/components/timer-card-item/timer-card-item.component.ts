@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { Countdown } from 'src/app/shared/models/countdown.model';
@@ -16,9 +16,11 @@ export class TimerCardItemComponent implements OnInit {
   countDownClock: CountDownClock;
   remainingTime: number;
   completedTimer: boolean;
+  @ViewChild('markDoneButton') markDoneButton: ElementRef;
 
   constructor(
     private store$: Store<RootStoreState.State>,
+    private renderer: Renderer2
   ) { }
 
   ngOnInit() {
@@ -31,6 +33,8 @@ export class TimerCardItemComponent implements OnInit {
   }
 
   onCompleteTimer() {
+    // Add this class to make check-mark purple, can't apply to icon directly, must use wrapper div
+    this.renderer.addClass(this.markDoneButton.nativeElement, 'mark-done-clicked');
     this.store$.dispatch(new TimerStoreActions.MarkTimerDone({timer: this.timer}));
   }
 
