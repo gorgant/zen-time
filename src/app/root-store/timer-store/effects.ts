@@ -235,4 +235,19 @@ export class TimerStoreEffects {
       this.store$.dispatch(new undoFeatureActions.StashUndoableAction({undoableAction}));
     }),
   );
+
+  @Effect()
+  createDemoTimerEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<timerFeatureActions.CreateDemoTimerRequested>(
+      timerFeatureActions.ActionTypes.CREATE_DEMO_TIMER_REQUESTED
+    ),
+    mergeMap(action => this.timerService.createDemoTimer().pipe(
+      map(timerWithId => {
+        return new timerFeatureActions.CreateDemoTimerComplete({timer: timerWithId});
+      }),
+      catchError(error => {
+        return of(new timerFeatureActions.LoadErrorDetected({ error }));
+      })
+    )),
+  );
 }

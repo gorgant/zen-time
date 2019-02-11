@@ -214,6 +214,30 @@ export class TimerService {
     return this.db.createId();
   }
 
+  createDemoTimer(): Observable<Timer> {
+    const timerId = this.generateTimerId();
+    const timerDoc = this.getTimerDoc(timerId);
+    const demoTimer: Timer = {
+      setOnDate: now(),
+      title: 'Demo Timer (Click Me!)',
+      category: 'Demo Category',
+      // tslint:disable-next-line:max-line-length
+      notes: 'This is where you can view details about your timer. You can edit your timer using the button on the top right. You can use the actions below to Complete the timer, Delete the timer, or add it to the calendar of your choice using the Add to a Calendar.',
+      duration: 15552000000,
+      dueDate: now() + 15552000000,
+      id: timerId
+    };
+    const fbResponse = timerDoc.set(demoTimer)
+      .then(empty => {
+        return demoTimer;
+      })
+      .catch(error => {
+        this.uiService.showSnackBar(error, null, 5000);
+        return throwError(error).toPromise();
+      });
+    return from(fbResponse);
+  }
+
   private getTimerCollection(): AngularFirestoreCollection<Timer> {
     const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
     const timerCollection = userDoc.collection<Timer>('timers');

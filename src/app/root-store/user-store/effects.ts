@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
-import * as featureActions from './actions';
+import * as userFeatureActions from './actions';
+import * as timerFeatureActions from '../timer-store/actions';
 import { switchMap, map, catchError, tap, take } from 'rxjs/operators';
 import { UserService } from 'src/app/shared/services/user.service';
 import { RootStoreState } from '..';
@@ -20,15 +21,15 @@ export class UserStoreEffects {
 
   @Effect()
   userDataRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.UserDataRequested>(
-      featureActions.ActionTypes.USER_DATA_REQUESTED
+    ofType<userFeatureActions.UserDataRequested>(
+      userFeatureActions.ActionTypes.USER_DATA_REQUESTED
     ),
     switchMap(action =>
       this.userService.fetchUserData(action.payload.userId)
         .pipe(
-          map(user => new featureActions.UserDataLoaded({userData: user})),
+          map(user => new userFeatureActions.UserDataLoaded({userData: user})),
           catchError(error => {
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new userFeatureActions.LoadErrorDetected({ error }));
           })
         )
     )
@@ -36,26 +37,34 @@ export class UserStoreEffects {
 
   @Effect()
   storeUserDataRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.StoreUserDataRequested>(
-      featureActions.ActionTypes.STORE_USER_DATA_REQUESTED
+    ofType<userFeatureActions.StoreUserDataRequested>(
+      userFeatureActions.ActionTypes.STORE_USER_DATA_REQUESTED
     ),
     switchMap(action =>
       this.userService.storeUserData(
         action.payload.userData, action.payload.userId, action.payload.userRegistration, action.payload.userEmailUpdate
       )
-        .pipe(
-          map(appUser => new featureActions.StoreUserDataComplete()),
-          catchError(error => {
-            return of(new featureActions.LoadErrorDetected({ error }));
-          })
-        )
+      .pipe(
+        tap(appUser => {
+          if (action.payload.userRegistration) {
+            // Create a demo timer for the user after user registration is complete
+            this.store$.dispatch(
+              new timerFeatureActions.CreateDemoTimerRequested()
+            );
+          }
+        }),
+        map(appUser => new userFeatureActions.StoreUserDataComplete()),
+        catchError(error => {
+          return of(new userFeatureActions.LoadErrorDetected({ error }));
+        })
+      )
     )
   );
 
   @Effect()
   updateProfileImageRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.UpdateProfileImageRequested>(
-      featureActions.ActionTypes.UPDATE_PROFILE_IMAGE_REQUESTED
+    ofType<userFeatureActions.UpdateProfileImageRequested>(
+      userFeatureActions.ActionTypes.UPDATE_PROFILE_IMAGE_REQUESTED
     ),
     switchMap(action =>
       this.userService.uploadProfileImage(action.payload.imageFile, action.payload.user)
@@ -69,12 +78,12 @@ export class UserStoreEffects {
                   ...action.payload.user,
                   avatarUrl: newImgUrl
                 };
-                this.store$.dispatch(new featureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
+                this.store$.dispatch(new userFeatureActions.StoreUserDataRequested({userData: updatedAppUser, userId: updatedAppUser.id}));
               });
           }),
-          map(imageUrl => new featureActions.UpdateProfileImageComplete()),
+          map(imageUrl => new userFeatureActions.UpdateProfileImageComplete()),
           catchError(error => {
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new userFeatureActions.LoadErrorDetected({ error }));
           })
         )
     )
@@ -82,18 +91,18 @@ export class UserStoreEffects {
 
   @Effect()
   pushSubRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.PushSubRequested>(
-      featureActions.ActionTypes.PUSH_SUB_REQUESTED
+    ofType<userFeatureActions.PushSubRequested>(
+      userFeatureActions.ActionTypes.PUSH_SUB_REQUESTED
     ),
     switchMap(action =>
       this.messagingService.requestSwPushSubscription(action.payload.publicKey)
         .pipe(
           tap(pushSubToken => {
-            this.store$.dispatch(new featureActions.StorePushSubTokenRequested({pushSub: pushSubToken}));
+            this.store$.dispatch(new userFeatureActions.StorePushSubTokenRequested({pushSub: pushSubToken}));
           }),
-          map(pushSubToken => new featureActions.PushSubComplete()),
+          map(pushSubToken => new userFeatureActions.PushSubComplete()),
           catchError(error => {
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new userFeatureActions.LoadErrorDetected({ error }));
           })
         )
     )
@@ -101,15 +110,15 @@ export class UserStoreEffects {
 
   @Effect()
   storePushSubTokenRequestedEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.StorePushSubTokenRequested>(
-      featureActions.ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED
+    ofType<userFeatureActions.StorePushSubTokenRequested>(
+      userFeatureActions.ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED
     ),
     switchMap(action =>
       this.messagingService.storePushSubToken(action.payload.pushSub)
         .pipe(
-          map(pushSubToken => new featureActions.StorePushSubTokenComplete()),
+          map(pushSubToken => new userFeatureActions.StorePushSubTokenComplete()),
           catchError(error => {
-            return of(new featureActions.LoadErrorDetected({ error }));
+            return of(new userFeatureActions.LoadErrorDetected({ error }));
           })
         )
     )

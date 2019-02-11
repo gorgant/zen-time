@@ -14,7 +14,9 @@ export enum ActionTypes {
   ADD_TIMER_COMPLETE = '[Timers] Timer Added',
   DELETE_TIMER_REQUESTED = '[Timers] Timer Delete Requested ',
   DELETE_TIMER_COMPLETE = '[Timers] Timer Deleted',
-  MARK_TIMER_DONE = '[Timers] Mark Timer Done Requested'
+  MARK_TIMER_DONE = '[Timers] Mark Timer Done Requested',
+  CREATE_DEMO_TIMER_REQUESTED = '[Timers] Create Demo Timer Requested',
+  CREATE_DEMO_TIMER_COMPLETE = '[Timers] Created Demo Timer'
 }
 
 export class SingleTimerRequested implements Action {
@@ -83,6 +85,16 @@ export class MarkTimerDone implements Action {
   constructor(public payload: {timer: Timer}) {}
 }
 
+export class CreateDemoTimerRequested implements Action {
+  readonly type = ActionTypes.CREATE_DEMO_TIMER_REQUESTED;
+}
+
+export class CreateDemoTimerComplete implements Action {
+  readonly type = ActionTypes.CREATE_DEMO_TIMER_COMPLETE;
+
+  constructor(public payload: {timer: Timer}) {}
+}
+
 export type Actions =
   SingleTimerRequested |
   SingleTimerLoaded |
@@ -95,5 +107,7 @@ export type Actions =
   AddTimerComplete |
   DeleteTimerRequested |
   DeleteTimerComplete |
-  MarkTimerDone
+  MarkTimerDone |
+  CreateDemoTimerRequested |
+  CreateDemoTimerComplete
   ;
