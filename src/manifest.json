@@ -1,6 +1,6 @@
 {
-  "name": "ZenTime",
-  "short_name": "ZenTime",
+  "name": "ZenTimer",
+  "short_name": "ZenTimer",
   "theme_color": "#1976d2",
   "description": "Manage Your To-Dos With Timers",
   "background_color": "#fafafa",
