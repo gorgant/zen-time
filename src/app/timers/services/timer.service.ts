@@ -222,7 +222,7 @@ export class TimerService {
       title: 'Demo Timer (Click Me!)',
       category: 'Demo Category',
       // tslint:disable-next-line:max-line-length
-      notes: 'This is where you can view details about your timer. You can edit your timer using the button on the top right. You can use the actions below to Complete the timer, Delete the timer, or add it to the calendar of your choice using the Add to a Calendar.',
+      notes: 'This is where you can view details about your timer. You can edit your timer using the button on the top right. You can use the actions below to Complete the timer, Delete the timer, or add it to a calendar of your choice using the Add to Calendar.',
       duration: 15552000000,
       dueDate: now() + 15552000000,
       id: timerId

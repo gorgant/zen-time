@@ -18,7 +18,7 @@
   </app-timer-details>
   <app-countdown [timer]="timer$ | async"></app-countdown>
   <div class="other-actions" fxLayout="column" fxLayoutAlign="center center">
-    <button *ngIf="coundownClock" (click)="onSetReminder()" class="timer-action" mat-raised-button color="primary" [disabled]="coundownClock.total < 0">Set Reminder</button>
+    <button *ngIf="coundownClock" (click)="onSetReminder()" class="timer-action" mat-raised-button color="primary" [disabled]="coundownClock.total < 0">Add to Calendar</button>
     <button (click)="onCompleteTimer()" class="timer-action complete-timer" mat-stroked-button color="accent">Complete Timer</button>
     <button (click)="onDeleteTimer()" class="timer-action" mat-button color="warn">Delete Timer</button>
   </div>
