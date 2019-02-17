@@ -54,13 +54,32 @@ export class AuthService {
     return from(authResponse);
   }
 
-  login(authData: AuthData): Observable<string> {
+  googleLogin(): Observable<AppUser> {
+    const authResponse = this.afAuth.auth.signInWithPopup(
+      new firebase.auth.GoogleAuthProvider()
+    ).then(creds => {
+      const appUser: AppUser = {
+        displayName: creds.user.displayName,
+        email: creds.user.email,
+        avatarUrl: creds.user.photoURL,
+        id: creds.user.uid,
+      };
+      return appUser;
+    })
+    .catch(error => {
+      this.uiService.showSnackBar(error, null, 5000);
+      return throwError(error).toPromise();
+    });
+
+    return from(authResponse);
+  }
+
+  login(authData: AuthData): Observable<firebase.User> {
     const authResponse = this.afAuth.auth.signInWithEmailAndPassword(
       authData.email,
       authData.password
     ).then(creds => {
-      const userId = creds.user.uid;
-      return userId;
+      return creds.user;
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);

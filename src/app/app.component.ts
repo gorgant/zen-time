@@ -9,7 +9,8 @@ import {
   UndoStoreSelectors,
   TimerStoreActions,
   UndoStoreActions,
-  DoneStoreActions
+  DoneStoreActions,
+  AuthStoreSelectors
 } from './root-store';
 import { withLatestFrom, take } from 'rxjs/operators';
 import { UiService } from './shared/services/ui.service';
@@ -47,16 +48,20 @@ export class AppComponent implements OnInit {
     this.authService.initAuthListener();
     this.authService.authStatus
     .pipe(
-      withLatestFrom(this.store$.select(UserStoreSelectors.selectUserIsLoading))
+      withLatestFrom(
+        this.store$.select(UserStoreSelectors.selectUserIsLoading),
+        this.store$.select(AuthStoreSelectors.selectIsAuth)
+      )
     )
-    .subscribe(([userId, userIsLoading]) => {
-      // Prevents this from firing on a standard login/registration (b/c it'll fire elsewhere)
-      if (userId && !userIsLoading) {
+    .subscribe(([userId, userIsLoading, isAuth]) => {
+      // These if statements determine how to load user data
+      if (userId && !userIsLoading && !isAuth) {
+        // Fires only when app is loaded and user is already logged in
         this.store$.dispatch( new AuthStoreActions.AuthenticationComplete());
         this.store$.dispatch( new UserStoreActions.UserDataRequested({userId}));
-      } else if (!userIsLoading) {
-        // Prevents this from firing when first logging in
-        this.store$.dispatch( new AuthStoreActions.SetUnauthenticated);
+      } else if (userId && !userIsLoading && isAuth) {
+        // Fires only when user logged in via Google Auth
+        this.store$.dispatch( new UserStoreActions.UserDataRequested({userId}));
       }
     });
 

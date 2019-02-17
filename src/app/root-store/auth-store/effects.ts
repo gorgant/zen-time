@@ -7,6 +7,8 @@ import * as userFeatureActions from '../user-store/actions';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { RootStoreState } from '..';
+import { StoreUserDataType } from 'src/app/shared/models/store-user-data-type.model';
+import { AuthenticateUserType } from 'src/app/shared/models/authenticate-user-type.model';
 
 @Injectable()
 export class AuthStoreEffects {
@@ -26,7 +28,9 @@ export class AuthStoreEffects {
         .pipe(
           // Store registered user data in the database (not just the user records)
           tap(response => this.store$.dispatch(
-            new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId, userRegistration: true}))
+            new userFeatureActions.StoreUserDataRequested(
+              {userData: response.userData, userId: response.userId, requestType: StoreUserDataType.REGISTER_USER})
+            )
           ),
           map(response => new authFeatureActions.RegisterUserComplete()),
           catchError(error => {
@@ -41,17 +45,47 @@ export class AuthStoreEffects {
     ofType<authFeatureActions.AuthenticationRequested>(
       authFeatureActions.ActionTypes.AUTHENTICATION_REQUESTED
     ),
-    switchMap(action =>
-      this.authService.login(action.payload.authData)
-        .pipe(
-          // Load user data into the store
-          tap(userId => this.store$.dispatch(new userFeatureActions.UserDataRequested({userId: userId}))),
-          map(userId => new authFeatureActions.AuthenticationComplete()),
-          catchError(error => {
-            return of(new authFeatureActions.LoadErrorDetected({ error }));
-          })
-        )
-    )
+    switchMap(action => {
+
+      // If email auth, retrieve additional user data from FB
+      if (action.payload.requestType === AuthenticateUserType.EMAIL_AUTH) {
+        console.log('Email login request detected', action.payload.requestType);
+        return this.authService.login(action.payload.authData)
+          .pipe(
+            // Load user data into the store
+            tap(fbUser =>
+              // If email login, payload is a firebaseUser, but all we need is the uid
+              this.store$.dispatch(new userFeatureActions.UserDataRequested({userId: fbUser.uid}))
+            ),
+            map(fbUser => new authFeatureActions.AuthenticationComplete()),
+            catchError(error => {
+              return of(new authFeatureActions.LoadErrorDetected({ error }));
+            })
+          );
+      }
+
+      // If Google login, treat like user registration
+      if (action.payload.requestType === AuthenticateUserType.GOOGLE_AUTH) {
+        console.log('Google login request detected', action.payload.requestType);
+        return this.authService.googleLogin()
+          .pipe(
+            // Store or update user data
+            tap(appUser => {
+              console.log('Storing Google profile data');
+              this.store$.dispatch(
+                new userFeatureActions.StoreUserDataRequested(
+                  {userData: appUser, userId: appUser.id, requestType: StoreUserDataType.GOOGLE_LOGIN}
+                )
+              );
+            }),
+            map(fbUser => new authFeatureActions.AuthenticationComplete()),
+            catchError(error => {
+              return of(new authFeatureActions.LoadErrorDetected({ error }));
+            })
+          );
+      }
+
+    })
   );
 
   @Effect()
@@ -69,7 +103,9 @@ export class AuthStoreEffects {
           // Update email in the main database (separate from the User database)
           tap(response => {
             return this.store$.dispatch(
-              new userFeatureActions.StoreUserDataRequested({userData: response.userData, userId: response.userId, userEmailUpdate: true})
+              new userFeatureActions.StoreUserDataRequested(
+                {userData: response.userData, userId: response.userId, requestType: StoreUserDataType.EMAIL_UPDATE}
+              )
             );
           }),
           map(response => new authFeatureActions.UpdateEmailComplete()),

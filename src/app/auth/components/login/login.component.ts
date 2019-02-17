@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { ResetPasswordDialogueComponent } from '../reset-password-dialogue/reset-password-dialogue.component';
+import { AuthenticateUserType } from 'src/app/shared/models/authenticate-user-type.model';
 
 @Component({
   selector: 'app-login',
@@ -33,12 +34,21 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  onGoogleLogin() {
+    console.log('Google login');
+    this.store$.dispatch(new AuthStoreActions.AuthenticationRequested(
+      {requestType: AuthenticateUserType.GOOGLE_AUTH}
+    ));
+  }
+
   onSubmit() {
     const userAuthData: AuthData = {
       email: this.email.value,
       password: this.password.value
     };
-    this.store$.dispatch(new AuthStoreActions.AuthenticationRequested({authData: userAuthData}));
+    this.store$.dispatch(new AuthStoreActions.AuthenticationRequested(
+      {authData: userAuthData, requestType: AuthenticateUserType.EMAIL_AUTH}
+    ));
   }
 
   onResetPassword() {

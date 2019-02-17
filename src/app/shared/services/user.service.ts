@@ -6,6 +6,7 @@ import { map, takeUntil, catchError } from 'rxjs/operators';
 import { UiService } from './ui.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { StoreUserDataType } from '../models/store-user-data-type.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,11 +45,16 @@ export class UserService {
       );
   }
 
-  storeUserData(userData: AppUser, userId: string, userRegistration?: boolean, userEmailUpdate?: boolean): Observable<AppUser> {
+  storeUserData(userData: AppUser, userId: string, requestType: StoreUserDataType): Observable<AppUser> {
     const userCollection = this.db.collection<AppUser>('users');
-    const fbResponse = userCollection.doc(userId).set(userData)
+    console.log('Storing user data with request type', requestType);
+    const fbResponse = userCollection.doc(userId).set(userData, {merge: true})
       .then(() => {
-        if (!userRegistration && !userEmailUpdate) {
+        if (
+          requestType !== StoreUserDataType.REGISTER_USER &&
+          requestType !== StoreUserDataType.EMAIL_UPDATE &&
+          requestType !== StoreUserDataType.GOOGLE_LOGIN
+        ) {
           this.uiService.showSnackBar('User info updated', null, 3000);
         }
         return userData;

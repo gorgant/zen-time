@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
+import { RootStoreState, UserStoreSelectors, AuthStoreActions } from 'src/app/root-store';
 import { take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { EditPasswordDialogueComponent } from '../edit-password-dialogue/edit-password-dialogue.component';
@@ -61,6 +61,8 @@ export class ProfileComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+    console.log('Dispatching logout');
+    this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
   }
 
 }

@@ -9,6 +9,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { RootStoreState } from '..';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { MessagingService } from 'src/app/shared/services/messaging.service';
+import { StoreUserDataType } from 'src/app/shared/models/store-user-data-type.model';
 
 @Injectable()
 export class UserStoreEffects {
@@ -42,11 +43,11 @@ export class UserStoreEffects {
     ),
     switchMap(action =>
       this.userService.storeUserData(
-        action.payload.userData, action.payload.userId, action.payload.userRegistration, action.payload.userEmailUpdate
+        action.payload.userData, action.payload.userId, action.payload.requestType
       )
       .pipe(
         tap(appUser => {
-          if (action.payload.userRegistration) {
+          if (action.payload.requestType === StoreUserDataType.REGISTER_USER) {
             // Create a demo timer for the user after user registration is complete
             this.store$.dispatch(
               new timerFeatureActions.CreateDemoTimerRequested()

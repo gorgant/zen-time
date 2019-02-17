@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { PushSubTokenSw } from 'src/app/shared/models/push-sub-token-sw.model';
 import { PushSubTokenFcm } from 'src/app/shared/models/push-sub-token-fcm.model';
+import { StoreUserDataType } from 'src/app/shared/models/store-user-data-type.model';
 
 export enum ActionTypes {
   USER_DATA_REQUESTED = '[User] User Data Requested',
@@ -34,7 +35,7 @@ export class UserDataLoaded implements Action {
 export class StoreUserDataRequested implements Action {
   readonly type = ActionTypes.STORE_USER_DATA_REQUESTED;
 
-  constructor(public payload: { userData: AppUser, userId: string, userRegistration?: boolean, userEmailUpdate?: boolean }) {}
+  constructor(public payload: { userData: AppUser, userId: string, requestType?: StoreUserDataType}) {}
 }
 
 export class StoreUserDataComplete implements Action {
