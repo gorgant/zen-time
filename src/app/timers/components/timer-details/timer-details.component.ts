@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Timer } from '../../models/timer.model';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-timer-details',
@@ -13,9 +14,15 @@ export class TimerDetailsComponent implements OnInit {
   @Input()
   set timer(timer: Timer) {
     this._timer = timer;
+    // Set timer type once timer is available
     if (timer && !this.timerLoaded) {
       this.setTimerType();
       this.timerLoaded = true; // This prevents additional tickers from firing when edit dialogue is closed
+    }
+    // If timer is deleted on separate client, navigate away from the timer details
+    if (!timer && this.timerLoaded) {
+      console.log('Timer no longer available, redirect');
+      this.exitTimerDetails();
     }
   }
   private _timer: Timer;
@@ -27,13 +34,19 @@ export class TimerDetailsComponent implements OnInit {
   completedTimer: boolean;
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
   }
 
-  private setTimerType (): void {
+  private setTimerType(): void {
     this.completedTimer = !!this.timer.completedDate;
+  }
+
+  private exitTimerDetails() {
+    this.router.navigate(['../'], {relativeTo: this.route});
   }
 
 }
