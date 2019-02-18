@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   LOGIN_FORM_VALIDATION_MESSAGES = loginValidationMessages;
   LOGO_URL = imageUrls.ZEN_TIMER_LOGO;
   loginForm: FormGroup;
+  useEmailLogin: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +39,10 @@ export class LoginComponent implements OnInit {
     this.store$.dispatch(new AuthStoreActions.AuthenticationRequested(
       {requestType: AuthenticateUserType.GOOGLE_AUTH}
     ));
+  }
+
+  onUseEmail() {
+    this.useEmailLogin = true;
   }
 
   onSubmit() {
