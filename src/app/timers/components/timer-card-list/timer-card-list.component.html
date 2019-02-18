@@ -18,7 +18,8 @@
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
   <div *ngIf="!loading && timers">
-    <div @todoAnimation
+    <div 
+      @todoAnimation
       *ngFor="let timer of timers | timerFilter : search?.value"
       class="card-container">
       <app-timer-card-item
@@ -44,9 +45,11 @@
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
   <div *ngIf="!loading && timers">
-    <div @todoAnimation class="card-container">
+    <div 
+      @todoAnimation 
+      *ngFor="let timer of timers | timerFilter : search?.value"
+      class="card-container">
       <app-timer-card-item
-        *ngFor="let timer of timers | timerFilter : search?.value" 
         [timer]="timer"
         [routerLink]="[ './', timer.id ]"
         >

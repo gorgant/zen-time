@@ -61,7 +61,6 @@ export class ProfileComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
-    console.log('Dispatching logout');
     this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
   }
 

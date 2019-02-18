@@ -82,13 +82,11 @@ export class DoneStoreEffects {
               if (serverDone.length > storeDone.length) {
                 // Create array timers that are on server but not in store
                 const noIdMatchArray = serverDone.filter(timer => !storeDone.some(storeT => timer.id === storeT.id));
-                console.log('On server, not in store', noIdMatchArray);
                 // Create new array to update store with
                 let updatedStoreTimers = [...storeDone];
                 if (noIdMatchArray.length > 0) {
                   noIdMatchArray.forEach((timer, index, array) => {
                     // Add to store directly (don't dispatch action, which would add a circular loop to server)
-                    console.log('Adding single timer', timer);
                     this.store$.dispatch(new doneFeatureActions.AddDoneComplete({timer}));
                     updatedStoreTimers = [
                       ...updatedStoreTimers,
@@ -101,18 +99,15 @@ export class DoneStoreEffects {
               } else if (serverDone.length < storeDone.length) {
               // If deletion occurs on server (e.g., deleted in another window), update those specific items in store
                 const noMatchArray = storeDone.filter(timer => !serverDone.some(serverT => timer.id === serverT.id));
-                console.log('In store, not in server', noMatchArray);
                 let updatedStoreTimers = [...storeDone];
                 noMatchArray.forEach((timer, index, array) => {
                   // Remove from store directly (don't dispatch action, which would add a circular loop to server)
-                  console.log('Deleting single timer', timer);
                   this.store$.dispatch(new doneFeatureActions.DeleteDoneComplete({timerId: timer.id}));
                   updatedStoreTimers = updatedStoreTimers.filter(tmr => tmr.id !== timer.id);
                 });
               }
             } else {
             // If server change is detected, but lengths match, scan timer attributes for changes
-              console.log('Timer update detected on server, checking for possible timer details changes');
               const noTitleMatchArray = serverDone.filter(timer => !storeDone.some(storeT => timer.title === storeT.title));
               const noCategoryMatchArray = serverDone.filter(timer => !storeDone.some(storeT => timer.category === storeT.category));
               const noNotesMatchArray = serverDone.filter(timer => !storeDone.some(storeT => timer.notes === storeT.notes));
@@ -137,10 +132,8 @@ export class DoneStoreEffects {
 
               // If modified timers found, update them in the store
               if (combArrayDeduped.length > 0) {
-                console.log('Timer changes detected', combArrayDeduped);
                 combArrayDeduped.forEach((timer, index, array) => {
                   const modifedTimer = serverDone.filter(svrTimer => svrTimer.id === timer.id)[0];
-                  console.log('Updating single timer', modifedTimer);
                   const updatedTimer: Update<Timer> = {
                     id: modifedTimer.id,
                     changes: modifedTimer

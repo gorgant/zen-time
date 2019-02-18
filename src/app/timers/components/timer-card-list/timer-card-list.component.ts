@@ -65,8 +65,4 @@ export class TimerCardListComponent implements OnInit {
     // Clear search contents
     this.renderer.setProperty(this.search.nativeElement, 'value', '');
   }
-
-  animationStarted($event) { console.log('animation started', $event); }
-  animationDone($event) { console.log('animation ended', $event); }
-
 }

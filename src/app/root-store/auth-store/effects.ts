@@ -49,7 +49,6 @@ export class AuthStoreEffects {
 
       // If email auth, retrieve additional user data from FB
       if (action.payload.requestType === AuthenticateUserType.EMAIL_AUTH) {
-        console.log('Email login request detected', action.payload.requestType);
         return this.authService.login(action.payload.authData)
           .pipe(
             // Load user data into the store
@@ -66,12 +65,10 @@ export class AuthStoreEffects {
 
       // If Google login, treat like user registration
       if (action.payload.requestType === AuthenticateUserType.GOOGLE_AUTH) {
-        console.log('Google login request detected', action.payload.requestType);
         return this.authService.googleLogin()
           .pipe(
             // Store or update user data
             tap(appUser => {
-              console.log('Storing Google profile data');
               this.store$.dispatch(
                 new userFeatureActions.StoreUserDataRequested(
                   {userData: appUser, userId: appUser.id, requestType: StoreUserDataType.GOOGLE_LOGIN}

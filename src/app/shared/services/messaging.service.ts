@@ -39,7 +39,6 @@ export class MessagingService {
         return pushSub;
       })
       .catch(error => {
-        console.log(error);
         this.uiService.showSnackBar(error, null, 5000);
         return throwError(error).toPromise();
       });

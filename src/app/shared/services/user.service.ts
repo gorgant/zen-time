@@ -47,7 +47,6 @@ export class UserService {
 
   storeUserData(userData: AppUser, userId: string, requestType: StoreUserDataType): Observable<AppUser> {
     const userCollection = this.db.collection<AppUser>('users');
-    console.log('Storing user data with request type', requestType);
     const fbResponse = userCollection.doc(userId).set(userData, {merge: true})
       .then(() => {
         if (

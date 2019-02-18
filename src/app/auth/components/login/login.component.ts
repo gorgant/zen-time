@@ -35,7 +35,6 @@ export class LoginComponent implements OnInit {
   }
 
   onGoogleLogin() {
-    console.log('Google login');
     this.store$.dispatch(new AuthStoreActions.AuthenticationRequested(
       {requestType: AuthenticateUserType.GOOGLE_AUTH}
     ));
