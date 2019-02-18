@@ -1,6 +1,6 @@
 <section fxLayout="column" fxLayoutAlign="center start">
   <h1 fxFlexAlign="center" class="mat-headline">Edit Profile</h1>
-  <div fxFlexAlign="center" *ngIf="loading$ | async">
+  <div fxFlexAlign="center" *ngIf="(userLoading$ | async) && !(profileImageLoading$ | async)">
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
   <div *ngIf="(appUser$ | async) as user" class="profile-content">
@@ -42,12 +42,11 @@
         (loadImageFailed)="loadImageFailed()"
         [style.display]="showCropper ? null : 'none'"
     ></image-cropper>
-    <div *ngIf="(imageUploadProgress$ | async) as uploadPercentage" fxLayout="column" fxLayoutAlign="center center">
-      <div *ngIf="uploadPercentage < 100">Upload Progress</div>
-      <mat-progress-spinner *ngIf="uploadPercentage < 100" [value]="uploadPercentage">
+    <div *ngIf="(profileImageLoading$ | async) as imageLoading" fxLayout="column" fxLayoutAlign="center center" class="image-loading-spinner">
+      <mat-progress-spinner mode="determinate" [value]="imageUploadProgress$ | async">
       </mat-progress-spinner>
     </div>
-    <img *ngIf="!showCropper" class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
+    <img *ngIf="!showCropper && !(profileImageLoading$ | async)" class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
   </div>
 </section>
 

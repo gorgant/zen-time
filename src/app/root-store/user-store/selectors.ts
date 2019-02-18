@@ -3,7 +3,8 @@ import { MemoizedSelector, createFeatureSelector, createSelector } from '@ngrx/s
 import { AppUser } from 'src/app/shared/models/app-user.model';
 
 export const getError = (state: State): any => state.error;
-export const getIsLoading = (state: State): boolean => state.isLoading;
+export const getUserIsLoading = (state: State): boolean => state.isLoading;
+export const getProfileImageIsLoading = (state: State): boolean => state.profileImageLoading;
 export const getUserLoaded = (state: State): boolean => state.userLoaded;
 export const getUser = (state: State): any => state.user;
 
@@ -16,7 +17,10 @@ export const selectAppUser: MemoizedSelector<object, AppUser> = createSelector(
 );
 
 export const selectUserIsLoading: MemoizedSelector<object, boolean>
-= createSelector(selectUserState, getIsLoading);
+= createSelector(selectUserState, getUserIsLoading);
+
+export const selectProfileImageIsLoading: MemoizedSelector<object, boolean>
+= createSelector(selectUserState, getProfileImageIsLoading);
 
 export const selectUserLoaded: MemoizedSelector<object, boolean>
 = createSelector(selectUserState, getUserLoaded);

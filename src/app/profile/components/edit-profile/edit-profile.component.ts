@@ -19,22 +19,19 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 })
 export class EditProfileComponent implements OnInit {
 
-  loading$: Observable<boolean>;
+  userLoading$: Observable<boolean>;
   appUser$: Observable<AppUser>;
-  defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
+
   @ViewChild('matButton') matButton;
   @ViewChild('matButton2') matButton2;
-  @ViewChild('fileInput') fileInput: ElementRef;
+
+  defaultProfileImage = imageUrls.PROFILE_DEFAULT_IMAGE;
   @ViewChild('cropperInput') cropperInput: ElementRef;
-
-  profileImage: File;
   imageUploadProgress$: Observable<number>;
-  imageUploadUrl$: Observable<string>;
-
   imageChangedEvent: any = '';
-  croppedImage: any = '';
+  croppedImage: any = null;
   showCropper = false;
-
+  profileImageLoading$: Observable<boolean>;
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -49,8 +46,12 @@ export class EditProfileComponent implements OnInit {
       UserStoreSelectors.selectAppUser
     );
 
-    this.loading$ = this.store$.select(
+    this.userLoading$ = this.store$.select(
       UserStoreSelectors.selectUserIsLoading
+    );
+
+    this.profileImageLoading$ = this.store$.select(
+      UserStoreSelectors.selectProfileImageIsLoading
     );
   }
 
@@ -102,7 +103,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   imageLoaded() {
-      // show cropper
+      // show cropper tool
       this.showCropper = true;
   }
 
@@ -116,14 +117,18 @@ export class EditProfileComponent implements OnInit {
       this.appUser$
         .pipe(take(1))
         .subscribe(user => {
+          // Dispatch the image to the store
           this.store$.dispatch(new UserStoreActions.UpdateProfileImageRequested({imageFile: this.croppedImage, user: user }));
+          // Track the image upload progress
           this.imageUploadProgress$ = this.userService.imageUploadPercentage;
-          this.profileImage = null;
+          // Clear the input file once the image has been dispatched to server
           this.renderer.setProperty(this.cropperInput.nativeElement, 'value', '');
         });
     } else {
       this.uiService.showSnackBar('You must first choose a file to upload.', null, 3000);
     }
+
+    // Once operation is done, hide cropper tool and clear temp image store
     this.showCropper = false;
     this.croppedImage = null;
   }
