@@ -26,6 +26,8 @@
 @media (min-width: 660px) {
   .search-icon-container {
     top: 12px;
+    margin-right: -webkit-calc((100vw - 600px)/2);
+    margin-right: -moz-calc((100vw - 600px)/2);
     margin-right: calc((100vw - 600px)/2);
   }
 }
