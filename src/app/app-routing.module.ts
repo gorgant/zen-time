@@ -3,18 +3,21 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './auth/route-guards/auth.guard';
 
 const routes: Routes = [
+  // Include both canLoad and canActivate, former for lazy loading at start, latter for when app is already loaded
   {
     path: 'timers',
     loadChildren: './timers/timers.module#TimersModule',
-    canLoad: [AuthGuard]
+    canLoad: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'profile',
     loadChildren: './profile/profile.module#ProfileModule',
-    canLoad: [AuthGuard]
+    canLoad: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
-    path: '',
+    path: '**',
     redirectTo: 'timers',
     pathMatch: 'full'
   },

@@ -54,6 +54,7 @@ export class AppComponent implements OnInit {
       )
     )
     .subscribe(([userId, userIsLoading, isAuth]) => {
+      console.log('Auth change detected');
       // These if statements determine how to load user data
       if (userId && !userIsLoading && !isAuth) {
         // Fires only when app is loaded and user is already logged in
@@ -62,6 +63,11 @@ export class AppComponent implements OnInit {
       } else if (userId && !userIsLoading && isAuth) {
         // Fires only when user logged in via Google Auth
         this.store$.dispatch( new UserStoreActions.UserDataRequested({userId}));
+      } else if (!userId && isAuth) {
+        console.log('Auto logging out user');
+        // Fires only when logout detected on separate client, logs out user automatically
+        this.authService.logout();
+        this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
       }
     });
 

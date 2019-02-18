@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { CanActivate, CanLoad, Router, ActivatedRouteSnapshot, RouterStateSnapshot, Route, UrlSegment } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
-import { take, tap } from 'rxjs/operators';
+import { take, tap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,29 +15,35 @@ export class AuthGuard implements CanActivate, CanLoad {
     private store$: Store<RootStoreState.State>
   ) { }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.store$.select(
         AuthStoreSelectors.selectIsAuth
       ).pipe(
         take(1),
-        tap(authStatus => {
+        map(authStatus => {
           if (!authStatus) {
+            console.log('No user detected, routing to login');
             this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+            return false;
           }
+          return true;
         })
     );
   }
 
-  canLoad(route: Route, segments: UrlSegment[]) {
+  canLoad(route: Route, segments: UrlSegment[]):  Observable<boolean> {
     return this.store$.select(
       AuthStoreSelectors.selectIsAuth)
     .pipe(
       take(1),
-      tap(authStatus => {
+      map(authStatus => {
         if (!authStatus) {
+          console.log('No user detected, routing to login');
           const returnUrl = this.covertSegmentsToReturnUrl(segments);
           this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
+          return false;
         }
+        return true;
       })
     );
   }

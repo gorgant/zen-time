@@ -6,10 +6,18 @@ import { DoneTimersComponent } from './containers/done-timers/done-timers.compon
 import { DoneTimerComponent } from './containers/done-timer/done-timer.component';
 
 const routes: Routes = [
-  {path: 'active', component: ActiveTimersComponent},
-  {path: 'active/:id', component: ActiveTimerComponent},
-  {path: 'completed', component: DoneTimersComponent},
-  {path: 'completed/:id', component: DoneTimerComponent},
+  {
+    path: 'active', component: ActiveTimersComponent
+  },
+  {
+    path: 'active/:id', component: ActiveTimerComponent
+  },
+  {
+    path: 'completed', component: DoneTimersComponent
+  },
+  {
+    path: 'completed/:id', component: DoneTimerComponent
+  },
   {
     path: '',
     redirectTo: 'active',

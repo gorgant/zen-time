@@ -26,7 +26,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
@@ -37,6 +36,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
     AuthModule,
     RootStoreModule,
     ServiceWorkerModule.register('/sw-master.js', { enabled: environment.production }),
+    // Must be after all other modules that have routes (due to wildcard route)
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
