@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" fxLayoutAlign="center center">
-  <div *ngIf="(activeUrl$ | async) === '/timers/active' || (activeUrl$ | async) === '/timers/completed' " class="nav-contents" fxLayoutAlign="space-between center">
+  <div *ngIf="(activeUrl$ | async) === appRoutes.ACTIVE_TIMERS || (activeUrl$ | async) === appRoutes.COMPLETED_TIMERS " class="nav-contents" fxLayoutAlign="space-between center">
     <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
@@ -17,14 +17,27 @@
       </button>
     </div>
   </div>
-  <div *ngIf="(activeUrl$ | async) === '/profile' " class="nav-contents" fxLayoutAlign="start center">
+  <div *ngIf="(activeUrl$ | async) === appRoutes.PROFILE " class="nav-contents" fxLayoutAlign="start center">
     <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
   </div>
-  <div *ngIf="(activeUrl$ | async) === '/profile/edit' " class="nav-contents" fxLayoutAlign="start center">
-    <button class="menu-button" [routerLink]="['/profile']" #matButton mat-icon-button>
+  <div *ngIf="(activeUrl$ | async) === appRoutes.EDIT_PROFILE " class="nav-contents" fxLayoutAlign="start center">
+    <button class="back-button" [routerLink]="['/profile']" #matButton mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
+  <div *ngIf="timerDetailsPage === appRoutes.ACTIVE_TIMER_DETAILS" class="nav-contents" fxLayoutAlign="space-between center">
+    <button class="back-button" [routerLink]="['../']" #matButton mat-icon-button>
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button class="edit-button" (click)="onEditTimer()" #matButton mat-icon-button>
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="timerDetailsPage === appRoutes.COMPLETED_TIMER_DETAILS" class="nav-contents" fxLayoutAlign="start center">
+      <button class="back-button" [routerLink]="['../']" #matButton mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
 </mat-toolbar>

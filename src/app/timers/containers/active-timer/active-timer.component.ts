@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-
 import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { SetReminderDialogueComponent } from '../../components/set-reminder-dialogue/set-reminder-dialogue.component';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-active-timer',
@@ -22,7 +23,6 @@ export class ActiveTimerComponent implements OnInit {
   timer$: Observable<Timer>;
   error$: Observable<any>;
   isLoading$: Observable<boolean>;
-  @ViewChild('matButton') matButton;
   timerId: string;
   reminderUrl: string;
   coundownClock: CountDownClock;
@@ -33,11 +33,13 @@ export class ActiveTimerComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private dialog: MatDialog,
     private router: Router,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
     this.timerId = this.route.snapshot.params['id'];
 
+    // Load timer
     this.timer$ = this.store$.select(
       TimerStoreSelectors.selectTimerById(this.timerId)
     ).pipe(
@@ -65,6 +67,11 @@ export class ActiveTimerComponent implements OnInit {
     this.isLoading$ = this.store$.select(
       TimerStoreSelectors.selectTimerIsLoading
     );
+
+    // Listen for clicks to edit button in header
+    this.uiService.editTimerSignal$.subscribe(onClick =>
+      this.editTimer()
+    );
   }
 
   onSetReminder() {
@@ -81,10 +88,7 @@ export class ActiveTimerComponent implements OnInit {
       });
   }
 
-  onEditTimer() {
-    // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
-    this.matButton._elementRef.nativeElement.blur();
-
+  editTimer() {
     this.timer$
       .pipe(take(1))
       .subscribe(timer => {

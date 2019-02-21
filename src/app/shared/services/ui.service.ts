@@ -12,6 +12,7 @@ export class UiService {
   undoTransporter = new Subject<string>();
   sideNavSignal$ = new Subject<void>();
   searchContents$ = new Subject<string>();
+  editTimerSignal$ = new Subject<void>();
 
   constructor(
     private snackbar: MatSnackBar,
@@ -45,6 +46,10 @@ export class UiService {
 
   transmitSearchContents(searchContents: string) {
     this.searchContents$.next(searchContents);
+  }
+
+  dispatchEditTimerClick() {
+    this.editTimerSignal$.next();
   }
 
 }
