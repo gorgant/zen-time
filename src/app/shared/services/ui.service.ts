@@ -10,7 +10,8 @@ import { take } from 'rxjs/operators';
 export class UiService {
 
   undoTransporter = new Subject<string>();
-  sideNavSignal = new Subject<void>();
+  sideNavSignal$ = new Subject<void>();
+  searchContents$ = new Subject<string>();
 
   constructor(
     private snackbar: MatSnackBar,
@@ -39,8 +40,11 @@ export class UiService {
   }
 
   dispatchSideNavClick() {
-    this.sideNavSignal.next();
+    this.sideNavSignal$.next();
   }
 
+  transmitSearchContents(searchContents: string) {
+    this.searchContents$.next(searchContents);
+  }
 
 }

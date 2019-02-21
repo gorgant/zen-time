@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
     });
 
     // Handles sideNav clicks
-    this.uiService.sideNavSignal.subscribe(signal => {
+    this.uiService.sideNavSignal$.subscribe(signal => {
       this.toggleSideNav();
     });
 

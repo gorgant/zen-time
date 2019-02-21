@@ -1,15 +1,3 @@
-<div class="search-icon-container" fxLayoutAlign="end center">
-  <div [style.visibility]="searchClicked ? 'visible' : 'hidden'" >
-      <input id="search-field" class="search-field" matInput placeholder="Search timers" #search>
-  </div>
-  <button *ngIf="!searchClicked" (click)="onSearch()" mat-icon-button >
-    <mat-icon class="search-icon">search</mat-icon>
-  </button>
-  <button *ngIf="searchClicked" (click)="onCloseSearch()" mat-icon-button >
-    <mat-icon class="search-icon">close</mat-icon>
-  </button>
-</div>
-
 <!-- ACTIVE TIMERS -->
 <section  *ngIf="!doneList" fxLayout="column" fxLayoutAlign="center center" >
   <h1 class="mat-headline">Active Timers</h1>
@@ -20,7 +8,7 @@
   <div *ngIf="!loading && timers">
     <div 
       @todoAnimation
-      *ngFor="let timer of timers | timerFilter : search?.value"
+      *ngFor="let timer of timers | timerFilter : (searchContents$ | async)"
       class="card-container">
       <app-timer-card-item
         [timer]="timer"
@@ -47,7 +35,7 @@
   <div *ngIf="!loading && timers">
     <div 
       @todoAnimation 
-      *ngFor="let timer of timers | timerFilter : search?.value"
+      *ngFor="let timer of timers | timerFilter : (searchContents$ | async)"
       class="card-container">
       <app-timer-card-item
         [timer]="timer"

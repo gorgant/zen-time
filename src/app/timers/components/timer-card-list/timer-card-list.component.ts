@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Timer } from '../../models/timer.model';
 import { bounceOutLeftAnimation, bounceInLeftAnimation } from 'src/app/shared/animations/timer-animations';
 import { trigger, transition, style, animate, useAnimation } from '@angular/animations';
+import { UiService } from 'src/app/shared/services/ui.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-timer-card-list',
@@ -31,38 +33,13 @@ export class TimerCardListComponent implements OnInit {
   @Input() loading: boolean;
   @Input() error: any;
 
-  @ViewChild('search') search: ElementRef;
-  searchClicked = false;
-
-  onElement;
-
-  testItems: any[] = [
-    'Wash the dishes',
-    'Call the accountant',
-    'Apply for a car insurance'
-  ];
-
-  timeoutComplete: boolean;
+  searchContents$: Observable<string>;
 
   constructor(
-    private renderer: Renderer2
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
-  }
-
-  onSearch() {
-    this.searchClicked = true;
-    // Because the div is initially hidden, this timeout is required to allow time for it to be revealed before focusing
-    setTimeout(() => {
-      const onElement = this.renderer.selectRootElement(this.search.nativeElement);
-      onElement.focus();
-    });
-  }
-
-  onCloseSearch() {
-    this.searchClicked = false;
-    // Clear search contents
-    this.renderer.setProperty(this.search.nativeElement, 'value', '');
+    this.searchContents$ = this.uiService.searchContents$;
   }
 }

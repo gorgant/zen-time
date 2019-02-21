@@ -1,13 +1,21 @@
 <mat-toolbar color="primary" fxLayoutAlign="center center">
-  <div *ngIf="(activeUrl$ | async) === '/timers/active' " class="nav-contents" fxLayoutAlign="space-between center">
+  <div *ngIf="(activeUrl$ | async) === '/timers/active' || (activeUrl$ | async) === '/timers/completed' " class="nav-contents" fxLayoutAlign="space-between center">
     <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
-  </div>
-  <div *ngIf="(activeUrl$ | async) === '/timers/completed' " class="nav-contents" fxLayoutAlign="space-between center">
-    <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
-      <mat-icon>menu</mat-icon>
-    </button>
+    <div [style.visibility]="searchActive ? 'visible' : 'hidden'" >
+        <input id="search-field" class="search-field" matInput placeholder="Search timers" #search (keyup)="transmitSearchContents(search.value)">
+    </div>
+    <div *ngIf="!searchActive">
+      <button class="search-button" (click)="onToggleSearch()" #matButton mat-icon-button>
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="searchActive">
+      <button class="search-button" (click)="onToggleSearch()" #matButton mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
   <div *ngIf="(activeUrl$ | async) === '/profile' " class="nav-contents" fxLayoutAlign="start center">
     <button class="menu-button" (click)="onToggleSidenav()" #matButton mat-icon-button>
