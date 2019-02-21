@@ -1,10 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
 import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
+import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
   selector: 'app-header',
@@ -14,13 +15,12 @@ import { RootStoreState, UserStoreSelectors } from 'src/app/root-store';
 export class HeaderComponent implements OnInit {
 
   activeUrl$: Observable<string>;
-  @Output() toggleSidenav = new EventEmitter<void>();
-  @ViewChild('matButton') matButton;
   appUser$: Observable<AppUser>;
 
   constructor(
     private router: Router,
     private store$: Store<RootStoreState.State>,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -39,10 +39,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onToggleSidenav() {
-    this.toggleSidenav.emit();
-
-    // This hacky solution is required to remove ripple effect from icon after clicking it
-    this.matButton._elementRef.nativeElement.blur();
+    this.uiService.dispatchSideNavClick();
   }
 
 }

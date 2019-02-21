@@ -52,14 +52,19 @@ export class ActiveTimersComponent implements OnInit {
       TimerStoreSelectors.selectTimerIsLoading
     );
 
-    if (Notification.permission === 'granted') {
+    // Check for notification settings on browser
+    if (!('Notification' in window)) {
+      // Browser doesn't support standard notifications
+      this.pushPermissionsSet = true;
+    } else if (Notification.permission === 'granted') {
+      // Browser accepts notifications
       this.pushPermissionsSet = true;
     } else if (Notification.permission === 'denied') {
+      // Browser blocks notifications
       this.pushPermissionsSet = true;
     } else {
       this.pushPermissionsSet = false;
     }
-
   }
 
   onPushSubResponse() {
@@ -82,3 +87,4 @@ export class ActiveTimersComponent implements OnInit {
   }
 
 }
+

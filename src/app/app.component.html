@@ -1,8 +1,8 @@
 <div class="master-container" fxLayout="column">
-  <app-header class="app-header" (toggleSidenav)="sidenav.toggle()"></app-header>
+  <app-header class="app-header"></app-header>
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav class="sidenav" #sidenav mode="push" [fixedInViewport]="true">
-      <app-sidenav (closeSidenav)="sidenav.toggle()"></app-sidenav>
+    <mat-sidenav class="sidenav" #sidenav mode="push" [fixedInViewport]="false">
+      <app-sidenav></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content>
       <router-outlet></router-outlet>

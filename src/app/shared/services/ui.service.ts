@@ -10,6 +10,7 @@ import { take } from 'rxjs/operators';
 export class UiService {
 
   undoTransporter = new Subject<string>();
+  sideNavSignal = new Subject<void>();
 
   constructor(
     private snackbar: MatSnackBar,
@@ -36,4 +37,10 @@ export class UiService {
       this.undoTransporter.next(snackBarInfo.actionId);
     });
   }
+
+  dispatchSideNavClick() {
+    this.sideNavSignal.next();
+  }
+
+
 }

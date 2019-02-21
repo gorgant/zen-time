@@ -1,49 +1,43 @@
-<mat-nav-list no-focus-trap="true">
-  
-  <button mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the auto-focus behavior -->
-  </button>
-  
-  <div 
-    id="avatar-container" 
-    *ngIf="(appUser$ | async) as user" 
-    fxLayoutAlign="start center"
-    routerLink="/profile" 
-    (click)="onCloseSidenav()"
-    >
-    <img [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage" class="avatar">
-    <span class="avatar-caption">{{ user.displayName }}</span>
-  </div>
-  
-  <mat-list-item 
-    routerLinkActive
-    routerLinkActive="active-list-item"
-    routerLink="/timers/active"
-    (click)="onCloseSidenav()">
-    <mat-icon mat-list-icon>timer</mat-icon>
-    <p mat-line>Active Timers</p>
-  </mat-list-item>
-  
-  <mat-list-item
-    routerLinkActive
-    routerLinkActive="active-list-item"
-    routerLink="/timers/completed" 
-    (click)="onCloseSidenav()">
-    <mat-icon mat-list-icon>timer_off</mat-icon>
-    <p mat-line>Completed Timers</p>
-  </mat-list-item>
-  
-  <mat-list-item 
-    routerLinkActive
-    routerLinkActive="active-list-item"
-    routerLink="/profile" 
-    (click)="onCloseSidenav()">
-    <mat-icon mat-list-icon>person</mat-icon>
-    <p class="nav-item-caption" mat-line>Profile</p>
-</mat-list-item>
-<!--   
-  <mat-list-item>
-    <mat-icon mat-list-icon>exit_to_app</mat-icon>
-    <p mat-line (click)="onLogout()">Logout</p>
-  </mat-list-item> -->
-
-</mat-nav-list>
+  <mat-nav-list no-focus-trap="true">
+    
+    <button mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the auto-focus behavior -->
+    </button>
+    
+    <div 
+      id="avatar-container" 
+      *ngIf="(appUser$ | async) as user" 
+      fxLayoutAlign="start center"
+      routerLink="/profile" 
+      (click)="onToggleSideNav()"
+      >
+      <img [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage" class="avatar">
+      <span class="avatar-caption">{{ user.displayName }}</span>
+    </div>
+    
+    <mat-list-item 
+      routerLinkActive
+      routerLinkActive="active-list-item"
+      routerLink="/timers/active"
+      (click)="onToggleSideNav()">
+      <mat-icon mat-list-icon>timer</mat-icon>
+      <p mat-line>Active Timers</p>
+    </mat-list-item>
+    
+    <mat-list-item
+      routerLinkActive
+      routerLinkActive="active-list-item"
+      routerLink="/timers/completed" 
+      (click)="onToggleSideNav()">
+      <mat-icon mat-list-icon>timer_off</mat-icon>
+      <p mat-line>Completed Timers</p>
+    </mat-list-item>
+    
+    <mat-list-item 
+      routerLinkActive
+      routerLinkActive="active-list-item"
+      routerLink="/profile" 
+      (click)="onToggleSideNav()">
+      <mat-icon mat-list-icon>person</mat-icon>
+      <p class="nav-item-caption" mat-line>Profile</p>
+    </mat-list-item>
+  </mat-nav-list>

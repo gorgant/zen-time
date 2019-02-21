@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from './auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import {
@@ -18,6 +18,7 @@ import { Timer } from './timers/models/timer.model';
 import { ActionTypes as TimerActionTypes } from './root-store/timer-store/actions';
 import { ActionTypes as DoneActionTypes } from './root-store/done-store/actions';
 import { SwUpdate } from '@angular/service-worker';
+import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class AppComponent implements OnInit {
   title = 'zen-time';
+  @ViewChild('sidenav') sidenav: MatSidenav;
 
   constructor(
     private authService: AuthService,
@@ -39,7 +41,7 @@ export class AppComponent implements OnInit {
     // Prompts user to update interface when app has been updated (and downloaded in their cache)
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe(() => {
-        if (confirm('New version available. Load New Version?')) {
+        if (confirm('New version of ZenTimer available. Load New Version?')) {
           window.location.reload();
         }
       });
@@ -54,7 +56,6 @@ export class AppComponent implements OnInit {
       )
     )
     .subscribe(([userId, userIsLoading, isAuth]) => {
-      console.log('Auth change detected');
       // These if statements determine how to load user data
       if (userId && !userIsLoading && !isAuth) {
         // Fires only when app is loaded and user is already logged in
@@ -64,11 +65,15 @@ export class AppComponent implements OnInit {
         // Fires only when user logged in via Google Auth
         this.store$.dispatch( new UserStoreActions.UserDataRequested({userId}));
       } else if (!userId && isAuth) {
-        console.log('Auto logging out user');
         // Fires only when logout detected on separate client, logs out user automatically
         this.authService.logout();
         this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
       }
+    });
+
+    // Handles sideNav clicks
+    this.uiService.sideNavSignal.subscribe(signal => {
+      this.toggleSideNav();
     });
 
     // This handles Undo requests (can't do it in timer service b/c circular dependencies)
@@ -111,5 +116,13 @@ export class AppComponent implements OnInit {
             }
           });
       });
+  }
+
+  toggleSideNav() {
+    if (this.sidenav.opened) {
+      this.sidenav.close();
+    } else {
+      this.sidenav.open();
+    }
   }
 }

@@ -22,7 +22,6 @@ export class AuthGuard implements CanActivate, CanLoad {
         take(1),
         map(authStatus => {
           if (!authStatus) {
-            console.log('No user detected, routing to login');
             this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
             return false;
           }
@@ -38,7 +37,6 @@ export class AuthGuard implements CanActivate, CanLoad {
       take(1),
       map(authStatus => {
         if (!authStatus) {
-          console.log('No user detected, routing to login');
           const returnUrl = this.covertSegmentsToReturnUrl(segments);
           this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
           return false;
