@@ -53,12 +53,18 @@ export function featureReducer(state = initialState, action: Actions): State {
         ...state,
         error: null,
       };
+    case ActionTypes.SET_PUSH_PERMISSION:
+      return {
+        ...state,
+        pushPermissionSet: true
+      };
     case ActionTypes.USER_DATA_LOAD_ERROR:
       return {
         ...state,
         isLoading: false,
         error: action.payload.error
       };
+
     default: {
       return state;
     }

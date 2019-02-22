@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
+import { RootStoreState, TimerStoreSelectors, TimerStoreActions, UserStoreActions, UserStoreSelectors } from 'src/app/root-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
@@ -20,7 +20,8 @@ export class ActiveTimersComponent implements OnInit {
   error$: Observable<any>;
   isLoading$: Observable<boolean>;
   readonly VAPID_PUBLIC_KEY = VAPID_PUBLIC_KEY;
-  pushPermissionsSet: boolean;
+
+  pushPermissionStatus$: Observable<boolean>;
 
   constructor(
     private store$: Store<RootStoreState.State>,
@@ -52,23 +53,27 @@ export class ActiveTimersComponent implements OnInit {
       TimerStoreSelectors.selectTimerIsLoading
     );
 
+    this.pushPermissionStatus$ = this.store$.select(
+      UserStoreSelectors.selectPushPermissionSet
+    );
+
     // Check for notification settings on browser
     if (!('Notification' in window)) {
+      console.log('Browser doesnt support notifications');
       // Browser doesn't support standard notifications
-      this.pushPermissionsSet = true;
+      this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else if (Notification.permission === 'granted') {
+      console.log('Notifications allowed');
       // Browser accepts notifications
-      this.pushPermissionsSet = true;
+      this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else if (Notification.permission === 'denied') {
+      console.log('Notifications denied');
       // Browser blocks notifications
-      this.pushPermissionsSet = true;
+      this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else {
-      this.pushPermissionsSet = false;
+      console.log('Notifications not yet set');
+      // Do not modify push permissions
     }
-  }
-
-  onPushSubResponse() {
-    this.pushPermissionsSet = true;
   }
 
   onCreateTimer() {

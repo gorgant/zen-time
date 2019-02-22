@@ -100,6 +100,7 @@ export class UserStoreEffects {
         .pipe(
           tap(pushSubToken => {
             this.store$.dispatch(new userFeatureActions.StorePushSubTokenRequested({pushSub: pushSubToken}));
+            this.store$.dispatch(new userFeatureActions.SetPushPermission());
           }),
           map(pushSubToken => new userFeatureActions.PushSubComplete()),
           catchError(error => {

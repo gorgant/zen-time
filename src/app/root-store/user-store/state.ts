@@ -6,6 +6,7 @@ export interface State {
   profileImageLoading: boolean;
   error?: any;
   userLoaded: boolean;
+  pushPermissionSet: boolean;
 }
 
 export const initialState: State = {
@@ -14,4 +15,5 @@ export const initialState: State = {
   profileImageLoading: false,
   error: null,
   userLoaded: false,
+  pushPermissionSet: false
 };

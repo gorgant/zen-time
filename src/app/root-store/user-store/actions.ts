@@ -17,7 +17,8 @@ export enum ActionTypes {
   PUSH_SUB_COMPLETE = '[User] Subscribe Push Complete',
   STORE_PUSH_SUB_TOKEN_REQUESTED = '[User] Store Push Sub Requested',
   STORE_PUSH_SUB_TOKEN_COMPLETE = '[User] Store Push Sub Complete',
-  USER_DATA_LOAD_ERROR = '[User] Load Failure'
+  USER_DATA_LOAD_ERROR = '[User] Load Failure',
+  SET_PUSH_PERMISSION = '[User] Push Permission Set'
 }
 
 export class UserDataRequested implements Action {
@@ -82,11 +83,14 @@ export class StorePushSubTokenComplete implements Action {
   readonly type = ActionTypes.STORE_PUSH_SUB_TOKEN_COMPLETE;
 }
 
+export class SetPushPermission implements Action {
+  readonly type = ActionTypes.SET_PUSH_PERMISSION;
+}
+
 export class LoadErrorDetected implements Action {
   readonly type = ActionTypes.USER_DATA_LOAD_ERROR;
   constructor(public payload: { error: string }) {}
 }
-
 
 export type Actions =
 UserDataRequested |
@@ -101,5 +105,6 @@ PushSubRequested |
 PushSubComplete |
 StorePushSubTokenRequested |
 StorePushSubTokenComplete |
-LoadErrorDetected
+LoadErrorDetected |
+SetPushPermission
 ;

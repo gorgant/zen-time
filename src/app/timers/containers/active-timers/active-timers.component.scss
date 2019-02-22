@@ -22,12 +22,13 @@
     #button-holder {
       position: -webkit-sticky;
       position: sticky;
+      right: 32px;
       bottom: 32px;
       max-width: 600px;
       margin: auto;
     }
-}
-
-#add-timer {
-  margin-right: 32px;
+    
+    #add-timer {
+      margin-right: 32px;
+    }
 }

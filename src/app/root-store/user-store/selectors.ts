@@ -6,7 +6,8 @@ export const getError = (state: State): any => state.error;
 export const getUserIsLoading = (state: State): boolean => state.isLoading;
 export const getProfileImageIsLoading = (state: State): boolean => state.profileImageLoading;
 export const getUserLoaded = (state: State): boolean => state.userLoaded;
-export const getUser = (state: State): any => state.user;
+export const getUser = (state: State): AppUser => state.user;
+export const getPushPermissionSet = (state: State): boolean => state.pushPermissionSet;
 
 export const selectUserState: MemoizedSelector<object, State>
 = createFeatureSelector<State>('user');
@@ -24,3 +25,6 @@ export const selectProfileImageIsLoading: MemoizedSelector<object, boolean>
 
 export const selectUserLoaded: MemoizedSelector<object, boolean>
 = createSelector(selectUserState, getUserLoaded);
+
+export const selectPushPermissionSet: MemoizedSelector<object, boolean>
+= createSelector(selectUserState, getPushPermissionSet);
