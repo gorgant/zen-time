@@ -1,8 +1,31 @@
 #button-holder {
-  position: sticky;
+  position: fixed;
+  right: -webkit-calc((100vw - 600px)/2);	
+  right: -moz-calc((100vw - 600px)/2);	
+  right: calc((100vw - 600px)/2);
   bottom: 32px;
-  max-width: 600px;
-  margin: auto;
+}
+
+@media (max-width: 599px) {
+  #button-holder {
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    max-width: 600px;
+    margin: auto;
+  }
+}
+
+// Target Chrome only
+// Courtesy of https://jeffclayton.wordpress.com/2015/08/10/1279/
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    #button-holder {
+      position: -webkit-sticky;
+      position: sticky;
+      bottom: 32px;
+      max-width: 600px;
+      margin: auto;
+    }
 }
 
 #add-timer {
