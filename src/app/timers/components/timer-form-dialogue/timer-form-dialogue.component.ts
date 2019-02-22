@@ -10,16 +10,20 @@ import { Store } from '@ngrx/store';
 import { RootStoreState, TimerStoreActions } from 'src/app/root-store';
 import { TimerService } from '../../services/timer.service';
 import { now } from 'moment';
+import { EditTimerType } from '../../models/edit-timer-type.model';
 
 @Component({
   selector: 'app-timer-form',
   templateUrl: './timer-form-dialogue.component.html',
   styleUrls: ['./timer-form-dialogue.component.scss']
 })
+
 export class TimerFormDialogueComponent implements OnInit {
 
   timerForm: FormGroup;
   newTimer: boolean;
+  duplicateTimer: boolean;
+  timerType: EditTimerType;
   TIMER_FORM_VALIDATION_MESSAGES = timerFormValidationMessages;
 
   constructor(
@@ -33,9 +37,16 @@ export class TimerFormDialogueComponent implements OnInit {
   ngOnInit() {
 
     if (this.timer) {
-      this.newTimer = false;
+      if (!this.timer.completedDate) {
+        this.timerType = EditTimerType.EXISTING_TIMER;
+        console.log('Timer identified as', this.timerType);
+      } else {
+        this.timerType = EditTimerType.DUPLICATE_TIMER;
+        console.log('Timer identified as', this.timerType);
+      }
     } else {
-      this.newTimer = true;
+      this.timerType = EditTimerType.NEW_TIMER;
+      console.log('Timer identified as', this.timerType);
     }
 
     this.timerForm = this.fb.group({
@@ -50,7 +61,7 @@ export class TimerFormDialogueComponent implements OnInit {
       }, {validator: durationValidator()})
     });
 
-    if (!this.newTimer) {
+    if (this.timerType === EditTimerType.EXISTING_TIMER) {
       const countDownClock: CountDownClock = new Countdown(this.timer).getCountDownClock();
       this.timerForm.patchValue({
         title: this.timer.title,
@@ -62,6 +73,14 @@ export class TimerFormDialogueComponent implements OnInit {
           hours: countDownClock.hours,
           minutes: countDownClock.minutes
         },
+      });
+    }
+
+    if (this.timerType === EditTimerType.DUPLICATE_TIMER) {
+      this.timerForm.patchValue({
+        title: this.timer.title,
+        category: this.timer.category,
+        notes: this.timer.notes,
       });
     }
   }
@@ -89,21 +108,36 @@ export class TimerFormDialogueComponent implements OnInit {
       dueDate: dueDate
     };
 
-    if (!this.newTimer) {
+    if (this.timerType === EditTimerType.EXISTING_TIMER) {
       const updatedTimer: Timer = {
         ...timerData,
         id: this.timer.id,
       };
       this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer: updatedTimer}));
-    } else {
+      this.dialogRef.close(updatedTimer);
+    }
+
+    if (this.timerType === EditTimerType.NEW_TIMER) {
       const autoTimerId: string = this.timerService.generateTimerId();
       const newTimer: Timer = {
         ...timerData,
         id: autoTimerId,
       };
       this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
+      this.dialogRef.close(newTimer);
     }
-    this.dialogRef.close(timerData.title);
+
+    if (this.timerType === EditTimerType.DUPLICATE_TIMER) {
+      const autoTimerId: string = this.timerService.generateTimerId();
+      const newTimer: Timer = {
+        ...timerData,
+        id: autoTimerId,
+        completedDate: null
+      };
+      this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
+      this.dialogRef.close(newTimer);
+    }
+
   }
 
   onClose() {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -18,7 +18,7 @@ import { UiService } from 'src/app/shared/services/ui.service';
   templateUrl: './active-timer.component.html',
   styleUrls: ['./active-timer.component.scss']
 })
-export class ActiveTimerComponent implements OnInit {
+export class ActiveTimerComponent implements OnInit, OnDestroy {
 
   timer$: Observable<Timer>;
   error$: Observable<any>;
@@ -27,6 +27,8 @@ export class ActiveTimerComponent implements OnInit {
   reminderUrl: string;
   coundownClock: CountDownClock;
   timerLoaded: boolean;
+
+  editTimerSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,9 +71,10 @@ export class ActiveTimerComponent implements OnInit {
     );
 
     // Listen for clicks to edit button in header
-    this.uiService.editTimerSignal$.subscribe(onClick =>
-      this.editTimer()
-    );
+    this.editTimerSubscription = this.uiService.editTimerSignal$
+      .subscribe(onClick =>
+        this.editTimer()
+      );
   }
 
   onSetReminder() {
@@ -130,5 +133,11 @@ export class ActiveTimerComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.editTimerSubscription) {
+      this.editTimerSubscription.unsubscribe();
+    }
   }
 }

@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { Store } from '@ngrx/store';
 import { RootStoreState, DoneStoreSelectors, DoneStoreActions } from 'src/app/root-store';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { withLatestFrom, map, take } from 'rxjs/operators';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
+import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 
 @Component({
   selector: 'app-done-timer',
@@ -53,6 +54,31 @@ export class DoneTimerComponent implements OnInit {
     this.isLoading$ = this.store$.select(
       DoneStoreSelectors.selectDoneIsLoading
     );
+  }
+
+  onDuplicateTimer() {
+    this.timer$
+      .pipe(take(1))
+      .subscribe(timer => {
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = '400px';
+
+        dialogConfig.data = timer;
+
+        const dialogRef = this.dialog.open(TimerFormDialogueComponent, dialogConfig);
+
+        dialogRef.afterClosed()
+          .pipe(take(1))
+          .subscribe(dupTimer => {
+            // If duplicate was created, take user to that new timer
+            if (dupTimer) {
+              this.router.navigate([`timers/active/${dupTimer.id}`]);
+            }
+          });
+      });
   }
 
   onDeleteTimer() {
