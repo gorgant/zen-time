@@ -66,7 +66,7 @@ export class UpdateProfileImageComplete implements Action {
 export class PushSubRequested implements Action {
   readonly type = ActionTypes.PUSH_SUB_REQUESTED;
 
-  constructor(public payload: { publicKey: string }) {}
+  constructor(public payload: {userId: string, publicKey: string }) {}
 }
 
 export class PushSubComplete implements Action {
@@ -76,7 +76,7 @@ export class PushSubComplete implements Action {
 export class StorePushSubTokenRequested implements Action {
   readonly type = ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED;
 
-  constructor(public payload: { pushSub: PushSubTokenSw | PushSubTokenFcm }) {}
+  constructor(public payload: {userId: string, pushSub: PushSubTokenSw | PushSubTokenFcm }) {}
 }
 
 export class StorePushSubTokenComplete implements Action {

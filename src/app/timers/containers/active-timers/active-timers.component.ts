@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { TimerImporterService } from 'src/app/shared/utils/timer-importer';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
 import { VAPID_PUBLIC_KEY } from 'src/app/shared/utils/vapid-key';
@@ -33,12 +33,15 @@ export class ActiveTimersComponent implements OnInit {
     this.timers$ = this.store$.select(
       TimerStoreSelectors.selectAllTimers
     ).pipe(
-      withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
-      map(([timers, timersLoaded]) => {
+      withLatestFrom(
+        this.store$.select(UserStoreSelectors.selectAppUser),
+        this.store$.select(TimerStoreSelectors.selectTimersLoaded),
+      ),
+      map(([timers, appUser, timersLoaded]) => {
         // Fetch timer if store hasn't been initialized
         if (!timersLoaded) {
           this.store$.dispatch(
-            new TimerStoreActions.AllTimersRequested()
+            new TimerStoreActions.AllTimersRequested({userId: appUser.id})
           );
         }
         return timers;
@@ -88,7 +91,11 @@ export class ActiveTimersComponent implements OnInit {
   }
 
   onImport() {
-    this.timerImporterService.launchImport();
+    this.store$.select(UserStoreSelectors.selectAppUser)
+      .pipe(take(1))
+      .subscribe(appUser => {
+        this.timerImporterService.launchImport(appUser.id);
+      });
   }
 
 }

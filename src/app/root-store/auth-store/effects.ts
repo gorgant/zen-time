@@ -27,11 +27,14 @@ export class AuthStoreEffects {
       this.authService.registerUser(action.payload.authData)
         .pipe(
           // Store registered user data in the database (not just the user records)
-          tap(response => this.store$.dispatch(
-            new userFeatureActions.StoreUserDataRequested(
-              {userData: response.userData, userId: response.userId, requestType: StoreUserDataType.REGISTER_USER})
-            )
-          ),
+          tap(response => {
+            console.log('Dispatching new user data to store', response);
+            this.store$.dispatch(
+              new userFeatureActions.StoreUserDataRequested(
+                {userData: response.userData, userId: response.userId, requestType: StoreUserDataType.REGISTER_USER}
+              )
+            );
+          }),
           map(response => new authFeatureActions.RegisterUserComplete()),
           catchError(error => {
             return of(new authFeatureActions.LoadErrorDetected({ error }));
@@ -49,6 +52,7 @@ export class AuthStoreEffects {
 
       // If email auth, retrieve additional user data from FB
       if (action.payload.requestType === AuthenticateUserType.EMAIL_AUTH) {
+        console.log('Email auth detected');
         return this.authService.login(action.payload.authData)
           .pipe(
             // Load user data into the store
@@ -65,10 +69,13 @@ export class AuthStoreEffects {
 
       // If Google login, treat like user registration
       if (action.payload.requestType === AuthenticateUserType.GOOGLE_AUTH) {
+        console.log('Google auth detected');
         return this.authService.googleLogin()
           .pipe(
-            // Store or update user data
             tap(appUser => {
+              console.log('User recieved from auth database', appUser);
+              // Store (or overwrite) user data
+              // User data fetched in User Store after the storing process is complete
               this.store$.dispatch(
                 new userFeatureActions.StoreUserDataRequested(
                   {userData: appUser, userId: appUser.id, requestType: StoreUserDataType.GOOGLE_LOGIN}

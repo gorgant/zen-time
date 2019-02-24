@@ -28,7 +28,7 @@ export class TimerStoreEffects {
       timerFeatureActions.ActionTypes.SINGLE_TIMER_REQUESTED
     ),
     mergeMap(action =>
-      this.timerService.fetchSingleTimer(action.payload.timerId)
+      this.timerService.fetchSingleTimer(action.payload.userId, action.payload.timerId)
         .pipe(
           map(timer => new timerFeatureActions.SingleTimerLoaded({timer})),
           catchError(error => {
@@ -45,7 +45,7 @@ export class TimerStoreEffects {
       timerFeatureActions.ActionTypes.ALL_TIMERS_REQUESTED
     ),
     switchMap( action =>
-      this.timerService.fetchAllTimers()
+      this.timerService.fetchAllTimers(action.payload.userId)
         .pipe(
           withLatestFrom(
             this.store$.select(timerFeatureSelectors.selectAllTimers),
@@ -57,6 +57,7 @@ export class TimerStoreEffects {
           map(([serverTimers, storeTimers, timersLoaded, proccesingClientRequest, isOnline]) => {
             // If timers haven't loaded yet, pull from server
             if (!timersLoaded) {
+              console.log('Timers not yet loaded, grabbing all of them', serverTimers);
               return this.store$.dispatch(new timerFeatureActions.AllTimersLoaded({timers: serverTimers}));
             }
 
@@ -84,8 +85,6 @@ export class TimerStoreEffects {
                       ];
                     });
                   }
-                  // // Return the updated timer array to the effect (I guess this doesn't fire until the forEach above is complete)
-                  // return new timerFeatureActions.AllTimersLoaded({timers: updatedStoreTimers});
                 } else if (serverTimers.length < storeTimers.length) {
                   console.log('Server timers < store timers', serverTimers);
                 // If deletion occurs on server (e.g., deleted in another window), update those specific items in store
@@ -164,7 +163,7 @@ export class TimerStoreEffects {
           });
       }
     }),
-    mergeMap(action => this.timerService.updateTimer(action.payload.timer, action.payload.undoAction).pipe(
+    mergeMap(action => this.timerService.updateTimer(action.payload.userId, action.payload.timer, action.payload.undoAction).pipe(
       map(timer => {
         const timerUp: Update<Timer> = {
           id: timer.id,
@@ -183,7 +182,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.AddTimerRequested>(
       timerFeatureActions.ActionTypes.ADD_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.createTimer(action.payload.timer, action.payload.undoAction).pipe(
+    mergeMap(action => this.timerService.createTimer(action.payload.userId, action.payload.timer, action.payload.undoAction).pipe(
       map(timerWithId => {
         return new timerFeatureActions.AddTimerComplete({timer: timerWithId});
       }),
@@ -198,7 +197,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.DeleteTimerRequested>(
       timerFeatureActions.ActionTypes.DELETE_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteTimer(action.payload.timer, action.payload.markDone).pipe(
+    mergeMap(action => this.timerService.deleteTimer(action.payload.userId, action.payload.timer, action.payload.markDone).pipe(
       map(timerId => {
         console.log('Deleting timer');
         return new timerFeatureActions.DeleteTimerComplete({timerId});
@@ -228,7 +227,7 @@ export class TimerStoreEffects {
     ),
     map(action => {
       console.log('Dispatching "Add Done" as a part of "Mark Done"');
-      this.store$.dispatch(new doneFeatureActions.AddDoneRequested({timer: action.payload.timer}));
+      this.store$.dispatch(new doneFeatureActions.AddDoneRequested({userId: action.payload.userId, timer: action.payload.timer}));
       return action.payload.timer;
     }),
     tap((timer) => {
@@ -247,7 +246,7 @@ export class TimerStoreEffects {
     ofType<timerFeatureActions.CreateDemoTimerRequested>(
       timerFeatureActions.ActionTypes.CREATE_DEMO_TIMER_REQUESTED
     ),
-    mergeMap(action => this.timerService.createDemoTimer().pipe(
+    mergeMap(action => this.timerService.createDemoTimer(action.payload.userId).pipe(
       map(timerWithId => {
         return new timerFeatureActions.CreateDemoTimerComplete({timer: timerWithId});
       }),

@@ -13,7 +13,7 @@ import {
   AuthStoreSelectors,
   UiStoreActions
 } from './root-store';
-import { withLatestFrom, take } from 'rxjs/operators';
+import { withLatestFrom, take, map } from 'rxjs/operators';
 import { UiService } from './shared/services/ui.service';
 import { Timer } from './timers/models/timer.model';
 import { ActionTypes as TimerActionTypes } from './root-store/timer-store/actions';
@@ -21,7 +21,8 @@ import { ActionTypes as DoneActionTypes } from './root-store/done-store/actions'
 import { SwUpdate } from '@angular/service-worker';
 import { MatSidenav } from '@angular/material';
 import { ConnectionService } from './shared/services/connection.service';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,9 @@ export class AppComponent implements OnInit {
     private store$: Store<RootStoreState.State>,
     private uiService: UiService,
     private swUpdate: SwUpdate,
-    private connectionService: ConnectionService
+    private connectionService: ConnectionService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -100,31 +103,34 @@ export class AppComponent implements OnInit {
       .subscribe(actionId => {
         const undoableAction$ = this.store$.select(UndoStoreSelectors.selectUndoById(actionId));
         undoableAction$
-          .pipe(take(1))
-          .subscribe(undoableAction => {
+          .pipe(
+            take(1),
+            withLatestFrom(this.store$.select(UserStoreSelectors.selectAppUser))
+          )
+          .subscribe(([undoableAction, appUser]) => {
             switch (undoableAction.actionType) {
               case TimerActionTypes.DELETE_TIMER_REQUESTED: {
                 const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer, undoAction: true}));
+                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
                 this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
                 return true;
               }
               case TimerActionTypes.UPDATE_TIMER_REQUESTED: {
                 const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer, undoAction: true}));
+                this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({userId: appUser.id, timer, undoAction: true}));
                 this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
                 return true;
               }
               case TimerActionTypes.MARK_TIMER_DONE: {
                 const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({timer, undoAction: true}));
-                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer, undoAction: true}));
+                this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({userId: appUser.id, timer, undoAction: true}));
+                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
                 this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
                 return true;
               }
               case DoneActionTypes.DELETE_DONE_REQUESTED: {
                 const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new DoneStoreActions.AddDoneRequested({timer, undoAction: true}));
+                this.store$.dispatch(new DoneStoreActions.AddDoneRequested({userId: appUser.id, timer, undoAction: true}));
                 this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
                 return true;
               }

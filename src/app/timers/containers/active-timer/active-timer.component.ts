@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RootStoreState, TimerStoreSelectors, TimerStoreActions } from 'src/app/root-store';
+import { RootStoreState, TimerStoreSelectors, TimerStoreActions, UserStoreSelectors } from 'src/app/root-store';
 import { withLatestFrom, map, take } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { TimerFormDialogueComponent } from '../../components/timer-form-dialogue/timer-form-dialogue.component';
@@ -45,12 +45,15 @@ export class ActiveTimerComponent implements OnInit, OnDestroy {
     this.timer$ = this.store$.select(
       TimerStoreSelectors.selectTimerById(this.timerId)
     ).pipe(
-      withLatestFrom(this.store$.select(TimerStoreSelectors.selectTimersLoaded)),
-      map(([timer, timersLoaded]) => {
+      withLatestFrom(
+        this.store$.select(UserStoreSelectors.selectAppUser),
+        this.store$.select(TimerStoreSelectors.selectTimersLoaded),
+      ),
+      map(([timer, appUser, timersLoaded]) => {
         // Fetch timers if store hasn't been initialized
         if (!timersLoaded && !this.timerLoaded) {
           this.store$.dispatch(
-            new TimerStoreActions.SingleTimerRequested({timerId: this.timerId})
+            new TimerStoreActions.SingleTimerRequested({userId: appUser.id, timerId: this.timerId})
           );
           // Prevents this from firing a bunch of extra times
           this.timerLoaded = true;
@@ -109,9 +112,14 @@ export class ActiveTimerComponent implements OnInit, OnDestroy {
 
   onCompleteTimer() {
     this.timer$
-      .pipe(take(1))
-      .subscribe(timer => {
-        this.store$.dispatch(new TimerStoreActions.MarkTimerDone({timer: timer}));
+      .pipe(
+        take(1),
+        withLatestFrom(
+          this.store$.select(UserStoreSelectors.selectAppUser)
+        )
+      )
+      .subscribe(([timer, appUser]) => {
+        this.store$.dispatch(new TimerStoreActions.MarkTimerDone({userId: appUser.id, timer: timer}));
         this.router.navigate(['../'], {relativeTo: this.route});
       });
   }
@@ -123,10 +131,15 @@ export class ActiveTimerComponent implements OnInit, OnDestroy {
     .pipe(take(1))
     .subscribe(userConfirmed => {
       this.timer$
-      .pipe(take(1))
-      .subscribe(timer => {
+      .pipe(
+        take(1),
+        withLatestFrom(
+          this.store$.select(UserStoreSelectors.selectAppUser)
+        )
+      )
+      .subscribe(([timer, appUser]) => {
         if (userConfirmed) {
-          this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({timer}));
+          this.store$.dispatch(new TimerStoreActions.DeleteTimerRequested({userId: appUser.id, timer}));
           this.router.navigate(['../'], {relativeTo: this.route});
         } else {
           // Do nothing

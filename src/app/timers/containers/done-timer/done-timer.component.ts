@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Timer } from '../../models/timer.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, DoneStoreSelectors, DoneStoreActions } from 'src/app/root-store';
+import { RootStoreState, DoneStoreSelectors, DoneStoreActions, UserStoreSelectors } from 'src/app/root-store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { withLatestFrom, map, take } from 'rxjs/operators';
 import { DeleteConfirmDialogueComponent } from '../../components/delete-confirm-dialogue/delete-confirm-dialogue.component';
@@ -35,12 +35,15 @@ export class DoneTimerComponent implements OnInit {
     this.timer$ = this.store$.select(
       DoneStoreSelectors.selectDoneById(this.timerId)
     ).pipe(
-      withLatestFrom(this.store$.select(DoneStoreSelectors.selectDoneLoaded)),
-      map(([timer, timersLoaded]) => {
+      withLatestFrom(
+        this.store$.select(UserStoreSelectors.selectAppUser),
+        this.store$.select(DoneStoreSelectors.selectDoneLoaded),
+      ),
+      map(([timer, appUser, timersLoaded]) => {
         // Fetch timers if store hasn't been initialized
         if (!timersLoaded) {
           this.store$.dispatch(
-            new DoneStoreActions.SingleDoneRequested({timerId: this.timerId})
+            new DoneStoreActions.SingleDoneRequested({userId: appUser.id, timerId: this.timerId})
           );
         }
         return timer;
@@ -84,13 +87,18 @@ export class DoneTimerComponent implements OnInit {
   onDeleteTimer() {
     const dialogRef = this.dialog.open(DeleteConfirmDialogueComponent);
     dialogRef.afterClosed()
-    .pipe(take(1))
-    .subscribe(userConfirmed => {
+    .pipe(
+      take(1),
+      withLatestFrom(
+        this.store$.select(UserStoreSelectors.selectAppUser),
+      ),
+    )
+    .subscribe(([userConfirmed, appUser]) => {
       if (userConfirmed) {
         this.timer$
         .pipe(take(1))
         .subscribe(timer => {
-          this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({timer}));
+          this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({userId: appUser.id, timer}));
           this.router.navigate(['../'], {relativeTo: this.route});
         });
       } else {

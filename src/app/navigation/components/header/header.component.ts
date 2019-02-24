@@ -65,6 +65,8 @@ export class HeaderComponent implements OnInit {
   // Open/close side nav
   onToggleSidenav() {
     this.uiService.dispatchSideNavClick();
+    // Clears sticky focus bug on menu icon
+    this.matButton._elementRef.nativeElement.blur();
   }
 
   // Determing whether or not to show search bar

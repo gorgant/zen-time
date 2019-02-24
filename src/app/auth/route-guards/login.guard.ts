@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { map, take, tap } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
@@ -16,6 +15,7 @@ export class LoginGuard {
     private store$: Store<RootStoreState.State>
   ) { }
 
+  // Prevents user from getting to login screen if already logged in
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.store$.select(
         AuthStoreSelectors.selectIsAuth

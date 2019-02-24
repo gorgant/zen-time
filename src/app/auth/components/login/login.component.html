@@ -54,11 +54,11 @@
             <mat-error *ngIf="password.hasError(validation.type) && password.invalid && (password.dirty || password.touched)">{{ validation.message }}</mat-error>
           </mat-error>
         </mat-form-field>
-        <caption fxFlexAlign="start" class="mat-small">
-          <button type="button" class="reset-password-button" mat-button color="primary" (click)="onResetPassword()"> 
+        <div fxFlexAlign="start" class="mat-small" fxLayoutAlign="start center">
+          <button type="button" class="reset-password-button" mat-button color="primary" (click)="onResetPassword()" > 
             Forgot password?
           </button>
-        </caption>
+        </div>
       </div>
 
       <button 

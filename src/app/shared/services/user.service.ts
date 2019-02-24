@@ -13,7 +13,7 @@ import { StoreUserDataType } from '../models/store-user-data-type.model';
 })
 export class UserService {
 
-  private currentUserDoc: AngularFirestoreDocument<AppUser>;
+  // private currentUserDoc: AngularFirestoreDocument<AppUser>;
   private imageUploadPercentage$: Observable<number>;
   downloadUrlSubject = new Subject<string>();
 
@@ -25,7 +25,7 @@ export class UserService {
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
-    this.currentUserDoc = this.db.doc<AppUser>(`users/${userId}`);
+    // this.currentUserDoc = this.db.doc<AppUser>(`users/${userId}`);
     return this.db.doc<AppUser>(`users/${userId}`)
       .snapshotChanges()
       .pipe(
@@ -45,9 +45,15 @@ export class UserService {
       );
   }
 
-  storeUserData(userData: AppUser, userId: string, requestType: StoreUserDataType): Observable<AppUser> {
+  storeUserData(appUser: AppUser, userId: string, requestType: StoreUserDataType): Observable<AppUser> {
+    console.log('About to store data in database', appUser, userId);
+    const userData: AppUser = appUser;
+    if (requestType === StoreUserDataType.REGISTER_USER) {
+      console.log('Setting user id for new registered user');
+      userData.id = userId;
+    }
     const userCollection = this.db.collection<AppUser>('users');
-    const fbResponse = userCollection.doc(userId).set(userData, {merge: true})
+    const fbResponse = userCollection.doc(userId).set(appUser, {merge: true})
       .then(() => {
         if (
           requestType !== StoreUserDataType.REGISTER_USER &&
@@ -56,7 +62,8 @@ export class UserService {
         ) {
           this.uiService.showSnackBar('User info updated', null, 3000);
         }
-        return userData;
+        console.log('User data stored in database', appUser);
+        return appUser;
       } )
       .catch(error => {
         this.uiService.showSnackBar(error, null, 5000);
@@ -100,8 +107,8 @@ export class UserService {
 
 
   // Provides easy access to user doc throughout the app
-  get userDoc() {
-    return this.currentUserDoc;
+  fetchUserDoc(userId: string) {
+    return this.db.doc<AppUser>(`users/${userId}`);
   }
 
   get imageUploadPercentage() {

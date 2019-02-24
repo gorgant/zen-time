@@ -22,8 +22,8 @@ export class TimerService {
     private authService: AuthService
   ) { }
 
-  fetchAllTimers(): Observable<Timer[]> {
-    return this.getTimerCollection()
+  fetchAllTimers(userId: string): Observable<Timer[]> {
+    return this.getTimerCollection(userId)
       .snapshotChanges()
       .pipe(
         // If logged out, this triggers unsub of this observable
@@ -45,8 +45,8 @@ export class TimerService {
       );
   }
 
-  fetchAllDone(): Observable<Timer[]> {
-    return this.getDoneCollection()
+  fetchAllDone(userId: string): Observable<Timer[]> {
+    return this.getDoneCollection(userId)
       .snapshotChanges()
       .pipe(
         // If logged out, this triggers unsub of this observable
@@ -68,8 +68,8 @@ export class TimerService {
       );
   }
 
-  fetchSingleTimer(timerId: string): Observable<Timer> {
-    return this.getTimerDoc(timerId)
+  fetchSingleTimer(userId: string, timerId: string): Observable<Timer> {
+    return this.getTimerDoc(userId, timerId)
       .snapshotChanges()
       .pipe(
         // If logged out, this triggers unsub of this observable
@@ -88,8 +88,8 @@ export class TimerService {
       );
   }
 
-  fetchSingleDone(timerId: string): Observable<Timer> {
-    return this.getDoneDoc(timerId)
+  fetchSingleDone(userId: string, timerId: string): Observable<Timer> {
+    return this.getDoneDoc(userId, timerId)
       .snapshotChanges()
       .pipe(
         // If logged out, this triggers unsub of this observable
@@ -108,8 +108,8 @@ export class TimerService {
       );
   }
 
-  updateTimer(timer: Timer, undoAction: boolean): Observable<Timer> {
-    const timerDoc = this.getTimerDoc(timer.id);
+  updateTimer(userId: string, timer: Timer, undoAction: boolean): Observable<Timer> {
+    const timerDoc = this.getTimerDoc(userId, timer.id);
     const fbResponse = timerDoc.update(timer)
       .then(empty => {
         if (!undoAction) {
@@ -128,8 +128,8 @@ export class TimerService {
     return from(fbResponse);
   }
 
-  createTimer(timer: Timer, undoAction?: boolean): Observable<Timer> {
-    const timerDoc = this.getTimerDoc(timer.id);
+  createTimer(userId: string, timer: Timer, undoAction?: boolean): Observable<Timer> {
+    const timerDoc = this.getTimerDoc(userId, timer.id);
     const fbResponse = timerDoc.set(timer)
       .then(empty => {
         if (!undoAction) {
@@ -145,14 +145,14 @@ export class TimerService {
     return from(fbResponse);
   }
 
-  createDone(timer: Timer, undoAction?: boolean): Observable<Timer> {
+  createDone(userId: string, timer: Timer, undoAction?: boolean): Observable<Timer> {
     const convertedTimer: Timer = {
       ...timer
     };
     if (!undoAction) {
       convertedTimer.completedDate = now();
     }
-    const timerDoc = this.getDoneDoc(convertedTimer.id);
+    const timerDoc = this.getDoneDoc(userId, convertedTimer.id);
     const fbResponse = timerDoc.set(convertedTimer)
       .then(empty => {
         if (!undoAction) {
@@ -172,8 +172,8 @@ export class TimerService {
     return from(fbResponse);
   }
 
-  deleteTimer(timer: Timer, completeTimer?: boolean): Observable<string> {
-    const timerDoc = this.getTimerDoc(timer.id);
+  deleteTimer(userId: string, timer: Timer, completeTimer?: boolean): Observable<string> {
+    const timerDoc = this.getTimerDoc(userId, timer.id);
     const fbResponse = timerDoc.delete()
       .then(empty => {
         if (!completeTimer) {
@@ -193,8 +193,8 @@ export class TimerService {
     return from(fbResponse);
   }
 
-  deleteDone(timer: Timer, undoAction?: boolean): Observable<string> {
-    const timerDoc = this.getDoneDoc(timer.id);
+  deleteDone(userId: string, timer: Timer, undoAction?: boolean): Observable<string> {
+    const timerDoc = this.getDoneDoc(userId, timer.id);
     const fbResponse = timerDoc.delete()
       .then(empty => {
         if (!undoAction) {
@@ -218,9 +218,10 @@ export class TimerService {
     return this.db.createId();
   }
 
-  createDemoTimer(): Observable<Timer> {
+  createDemoTimer(userId: string): Observable<Timer> {
+    console.log('Creating demo timer for id', userId);
     const timerId = this.generateTimerId();
-    const timerDoc = this.getTimerDoc(timerId);
+    const timerDoc = this.getTimerDoc(userId, timerId);
     const demoTimer: Timer = {
       setOnDate: now(),
       title: 'Demo Timer (Click Me!)',
@@ -242,24 +243,26 @@ export class TimerService {
     return from(fbResponse);
   }
 
-  private getTimerCollection(): AngularFirestoreCollection<Timer> {
-    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+
+  private getTimerCollection(userId: string): AngularFirestoreCollection<Timer> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
+    console.log('Fetched user doc from user service', userDoc);
     const timerCollection = userDoc.collection<Timer>('timers');
     return timerCollection;
   }
 
-  private getDoneCollection(): AngularFirestoreCollection<Timer> {
-    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+  private getDoneCollection(userId: string): AngularFirestoreCollection<Timer> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
     const timerCollection = userDoc.collection<Timer>('done');
     return timerCollection;
   }
 
-  private getTimerDoc(timerId: string): AngularFirestoreDocument<Timer> {
-    return this.getTimerCollection().doc<Timer>(`${timerId}`);
+  private getTimerDoc(userId: string, timerId: string): AngularFirestoreDocument<Timer> {
+    return this.getTimerCollection(userId).doc<Timer>(`${timerId}`);
   }
 
-  private getDoneDoc(timerId: string): AngularFirestoreDocument<Timer> {
-    return this.getDoneCollection().doc<Timer>(`${timerId}`);
+  private getDoneDoc(userId: string, timerId: string): AngularFirestoreDocument<Timer> {
+    return this.getDoneCollection(userId).doc<Timer>(`${timerId}`);
   }
 
 }

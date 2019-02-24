@@ -18,7 +18,7 @@ export enum ActionTypes {
 
 export class SingleDoneRequested implements Action {
   readonly type = ActionTypes.SINGLE_DONE_REQUESTED;
-  constructor (public payload: { timerId: string }) {}
+  constructor (public payload: { userId: string, timerId: string }) {}
 }
 
 export class SingleDoneLoaded implements Action {
@@ -28,6 +28,8 @@ export class SingleDoneLoaded implements Action {
 
 export class AllDoneRequested implements Action {
   readonly type = ActionTypes.ALL_DONE_REQUESTED;
+
+  constructor (public payload: { userId: string }) {}
 }
 
 export class AllDoneLoaded implements Action {
@@ -43,7 +45,7 @@ export class LoadErrorDetected implements Action {
 export class UpdateDoneRequested implements Action {
   readonly type = ActionTypes.UPDATE_DONE_REQUESTED;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: { userId: string, timer: Timer}) {}
 }
 
 export class UpdateDoneComplete implements Action {
@@ -55,19 +57,19 @@ export class UpdateDoneComplete implements Action {
 export class AddDoneRequested implements Action {
   readonly type = ActionTypes.ADD_DONE_REQUESTED;
 
-  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
+  constructor(public payload: { userId: string, timer: Timer, undoAction?: boolean}) {}
 }
 
 export class AddDoneComplete implements Action {
   readonly type = ActionTypes.ADD_DONE_COMPLETE;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: { timer: Timer}) {}
 }
 
 export class DeleteDoneRequested implements Action {
   readonly type = ActionTypes.DELETE_DONE_REQUESTED;
 
-  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
+  constructor(public payload: { userId: string, timer: Timer, undoAction?: boolean}) {}
 }
 
 export class DeleteDoneComplete implements Action {

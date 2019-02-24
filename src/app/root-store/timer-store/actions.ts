@@ -21,7 +21,7 @@ export enum ActionTypes {
 
 export class SingleTimerRequested implements Action {
   readonly type = ActionTypes.SINGLE_TIMER_REQUESTED;
-  constructor (public payload: { timerId: string }) {}
+  constructor (public payload: { userId: string, timerId: string }) {}
 }
 
 export class SingleTimerLoaded implements Action {
@@ -31,6 +31,8 @@ export class SingleTimerLoaded implements Action {
 
 export class AllTimersRequested implements Action {
   readonly type = ActionTypes.ALL_TIMERS_REQUESTED;
+
+  constructor (public payload: { userId: string }) {}
 }
 
 export class AllTimersLoaded implements Action {
@@ -46,7 +48,7 @@ export class LoadErrorDetected implements Action {
 export class UpdateTimerRequested implements Action {
   readonly type = ActionTypes.UPDATE_TIMER_REQUESTED;
 
-  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
+  constructor(public payload: {userId: string, timer: Timer, undoAction?: boolean}) {}
 }
 
 export class UpdateTimerComplete implements Action {
@@ -58,7 +60,7 @@ export class UpdateTimerComplete implements Action {
 export class AddTimerRequested implements Action {
   readonly type = ActionTypes.ADD_TIMER_REQUESTED;
 
-  constructor(public payload: {timer: Timer, undoAction?: boolean}) {}
+  constructor(public payload: {userId: string, timer: Timer, undoAction?: boolean}) {}
 }
 
 export class AddTimerComplete implements Action {
@@ -70,7 +72,7 @@ export class AddTimerComplete implements Action {
 export class DeleteTimerRequested implements Action {
   readonly type = ActionTypes.DELETE_TIMER_REQUESTED;
 
-  constructor(public payload: {timer: Timer, markDone?: boolean}) {}
+  constructor(public payload: {userId: string, timer: Timer, markDone?: boolean}) {}
 }
 
 export class DeleteTimerComplete implements Action {
@@ -82,11 +84,13 @@ export class DeleteTimerComplete implements Action {
 export class MarkTimerDone implements Action {
   readonly type = ActionTypes.MARK_TIMER_DONE;
 
-  constructor(public payload: {timer: Timer}) {}
+  constructor(public payload: {userId: string, timer: Timer}) {}
 }
 
 export class CreateDemoTimerRequested implements Action {
   readonly type = ActionTypes.CREATE_DEMO_TIMER_REQUESTED;
+
+  constructor (public payload: { userId: string }) {}
 }
 
 export class CreateDemoTimerComplete implements Action {

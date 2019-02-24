@@ -91,22 +91,22 @@ export class TimerImporterService {
 
   constructor(
     private afs: AngularFirestore,
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
-  launchImport() {
-    this.populateList();
+  launchImport(userId: string) {
+    this.populateList(userId);
     console.log('list populated', this.listWithIds);
   }
 
   // Batch import to database
-  private populateList() {
+  private populateList(userId: string) {
 
     // Optionally add new IDs to items
     this.addIdToItems();
 
     const batch = this.afs.firestore.batch();
-    const dataCollection = this.getItemCollection();
+    const dataCollection = this.getItemCollection(userId);
 
     if (this.listWithIds) {
       this.listWithIds.map(item => {
@@ -136,8 +136,8 @@ export class TimerImporterService {
     });
   }
 
-  private getItemCollection(): AngularFirestoreCollection<Timer> {
-    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+  private getItemCollection(userId: string): AngularFirestoreCollection<Timer> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
     const timerCollection = userDoc.collection<Timer>('timers');
     return timerCollection;
   }

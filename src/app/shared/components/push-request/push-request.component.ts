@@ -24,7 +24,7 @@ export class PushRequestComponent implements OnInit {
     this.store$.select(UserStoreSelectors.selectAppUser)
     .pipe(take(1))
     .subscribe(user => {
-      this.store$.dispatch(new UserStoreActions.PushSubRequested({ publicKey: this.VAPID_PUBLIC_KEY }));
+      this.store$.dispatch(new UserStoreActions.PushSubRequested({ userId: user.id, publicKey: this.VAPID_PUBLIC_KEY }));
     });
   }
 

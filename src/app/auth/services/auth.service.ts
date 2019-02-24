@@ -6,7 +6,7 @@ import { UiService } from 'src/app/shared/services/ui.service';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import { from, Observable, Subject, throwError, of } from 'rxjs';
+import { from, Observable, Subject, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData): Observable<{userData: AppUser, userId: string}> {
-    const authResponse = from(this.afAuth.auth.createUserWithEmailAndPassword(
+    const authResponse = this.afAuth.auth.createUserWithEmailAndPassword(
       authData.email,
       authData.password
     ).then(creds => {
@@ -44,12 +44,13 @@ export class AuthService {
         email: authData.email,
       };
       const userId = creds.user.uid;
+      console.log('Registering user with id', userId);
       return {userData: appUser, userId: userId};
     })
     .catch(error => {
       this.uiService.showSnackBar(error, null, 5000);
       return throwError(error).toPromise();
-    }));
+    });
 
     return from(authResponse);
   }
@@ -64,6 +65,8 @@ export class AuthService {
         avatarUrl: creds.user.photoURL,
         id: creds.user.uid,
       };
+      const bob = creds.additionalUserInfo.isNewUser;
+      console.log('Is new user?', bob);
       return appUser;
     })
     .catch(error => {
@@ -183,6 +186,7 @@ export class AuthService {
   private authSuccess(user: firebase.User): void {
     this.authStatus.next(user.uid);
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+    console.log('Auth successful, routing to url', returnUrl);
     if (returnUrl && returnUrl !== '/') {
       this.router.navigate([returnUrl]);
     } else {

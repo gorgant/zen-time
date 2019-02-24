@@ -1,9 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { Observable, fromEvent, merge, empty, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, fromEvent, BehaviorSubject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { mapTo } from 'rxjs/operators';
 
-// Courtesty of https://stackoverflow.com/questions/46915717/how-can-you-detect-network-connectivity-in-angular-2
 @Injectable({
   providedIn: 'root'
 })

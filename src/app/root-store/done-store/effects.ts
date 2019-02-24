@@ -28,7 +28,7 @@ export class DoneStoreEffects {
       doneFeatureActions.ActionTypes.SINGLE_DONE_REQUESTED
     ),
     mergeMap(action =>
-      this.timerService.fetchSingleDone(action.payload.timerId)
+      this.timerService.fetchSingleDone(action.payload.userId, action.payload.timerId)
         .pipe(
           map(timer => new doneFeatureActions.SingleDoneLoaded({timer})),
           catchError(error => {
@@ -45,7 +45,7 @@ export class DoneStoreEffects {
       doneFeatureActions.ActionTypes.ALL_DONE_REQUESTED
     ),
     switchMap( action =>
-      this.timerService.fetchAllDone()
+      this.timerService.fetchAllDone(action.payload.userId)
         .pipe(
           withLatestFrom(
             this.store$.select(doneFeatureSelectors.selectAllDone),
@@ -151,10 +151,12 @@ export class DoneStoreEffects {
     // This has to happen before the server call in order for offline functionality to work
     tap(action => {
       if (!action.payload.undoAction) {
-        this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
+        this.store$.dispatch(
+          new timerFeatureActions.DeleteTimerRequested({userId: action.payload.userId, timer: action.payload.timer, markDone: true})
+        );
       }
     }),
-    mergeMap(action => this.timerService.createDone(action.payload.timer, action.payload.undoAction).pipe(
+    mergeMap(action => this.timerService.createDone(action.payload.userId, action.payload.timer, action.payload.undoAction).pipe(
       map(completedTimer => {
         return new doneFeatureActions.AddDoneComplete({timer: completedTimer});
       }),
@@ -169,7 +171,7 @@ export class DoneStoreEffects {
     ofType<doneFeatureActions.DeleteDoneRequested>(
       doneFeatureActions.ActionTypes.DELETE_DONE_REQUESTED
     ),
-    mergeMap(action => this.timerService.deleteDone(action.payload.timer, action.payload.undoAction).pipe(
+    mergeMap(action => this.timerService.deleteDone(action.payload.userId, action.payload.timer, action.payload.undoAction).pipe(
       map(timerId => {
         return new doneFeatureActions.DeleteDoneComplete({timerId});
       }),

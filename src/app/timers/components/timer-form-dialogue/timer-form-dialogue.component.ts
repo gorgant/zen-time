@@ -7,10 +7,11 @@ import { Countdown } from 'src/app/shared/models/countdown.model';
 import { CountDownClock } from 'src/app/shared/models/count-down-clock.model';
 import { durationValidator } from '../../validators/duration-validator.directive';
 import { Store } from '@ngrx/store';
-import { RootStoreState, TimerStoreActions } from 'src/app/root-store';
+import { RootStoreState, TimerStoreActions, UserStoreSelectors } from 'src/app/root-store';
 import { TimerService } from '../../services/timer.service';
 import { now } from 'moment';
 import { EditTimerType } from '../../models/edit-timer-type.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-timer-form',
@@ -108,36 +109,39 @@ export class TimerFormDialogueComponent implements OnInit {
       dueDate: dueDate
     };
 
-    if (this.timerType === EditTimerType.EXISTING_TIMER) {
-      const updatedTimer: Timer = {
-        ...timerData,
-        id: this.timer.id,
-      };
-      this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({timer: updatedTimer}));
-      this.dialogRef.close(updatedTimer);
-    }
+    this.store$.select(UserStoreSelectors.selectAppUser)
+      .pipe(take(1))
+      .subscribe(appUser => {
+        if (this.timerType === EditTimerType.EXISTING_TIMER) {
+          const updatedTimer: Timer = {
+            ...timerData,
+            id: this.timer.id,
+          };
+          this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({userId: appUser.id, timer: updatedTimer}));
+          this.dialogRef.close(updatedTimer);
+        }
 
-    if (this.timerType === EditTimerType.NEW_TIMER) {
-      const autoTimerId: string = this.timerService.generateTimerId();
-      const newTimer: Timer = {
-        ...timerData,
-        id: autoTimerId,
-      };
-      this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
-      this.dialogRef.close(newTimer);
-    }
+        if (this.timerType === EditTimerType.NEW_TIMER) {
+          const autoTimerId: string = this.timerService.generateTimerId();
+          const newTimer: Timer = {
+            ...timerData,
+            id: autoTimerId,
+          };
+          this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer: newTimer}));
+          this.dialogRef.close(newTimer);
+        }
 
-    if (this.timerType === EditTimerType.DUPLICATE_TIMER) {
-      const autoTimerId: string = this.timerService.generateTimerId();
-      const newTimer: Timer = {
-        ...timerData,
-        id: autoTimerId,
-        completedDate: null
-      };
-      this.store$.dispatch(new TimerStoreActions.AddTimerRequested({timer: newTimer}));
-      this.dialogRef.close(newTimer);
-    }
-
+        if (this.timerType === EditTimerType.DUPLICATE_TIMER) {
+          const autoTimerId: string = this.timerService.generateTimerId();
+          const newTimer: Timer = {
+            ...timerData,
+            id: autoTimerId,
+            completedDate: null
+          };
+          this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer: newTimer}));
+          this.dialogRef.close(newTimer);
+        }
+      });
   }
 
   onClose() {

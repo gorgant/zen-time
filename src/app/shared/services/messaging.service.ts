@@ -46,14 +46,14 @@ export class MessagingService {
     return from(swResponse);
   }
 
-  storePushSubToken(pushSub: PushSubTokenSw | PushSubTokenFcm): Observable<PushSubTokenSw | PushSubTokenFcm> {
+  storePushSubToken(userId: string, pushSub: PushSubTokenSw | PushSubTokenFcm): Observable<PushSubTokenSw | PushSubTokenFcm> {
     const tokenId = this.db.createId();
     let tokenDoc: AngularFirestoreDocument;
     if ('keys' in pushSub) {
       // Generate token with the auth as the ID (so if user adds multiple times, it doesn't add duplicates)
-      tokenDoc = this.getSwPushSubTokenCollection().doc(pushSub.keys.auth);
+      tokenDoc = this.getSwPushSubTokenCollection(userId).doc(pushSub.keys.auth);
     } else {
-      tokenDoc = this.getFcmPushSubTokenCollection().doc(tokenId);
+      tokenDoc = this.getFcmPushSubTokenCollection(userId).doc(tokenId);
     }
     const fbResponse = tokenDoc.set(pushSub)
       .then(() => {
@@ -66,14 +66,14 @@ export class MessagingService {
     return from(fbResponse);
   }
 
-  private getSwPushSubTokenCollection(): AngularFirestoreCollection<PushSubTokenSw> {
-    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+  private getSwPushSubTokenCollection(userId: string): AngularFirestoreCollection<PushSubTokenSw> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
     const pushSubTokenCollection = userDoc.collection<PushSubTokenSw>('pushSubTokensSw');
     return pushSubTokenCollection;
   }
 
-  private getFcmPushSubTokenCollection(): AngularFirestoreCollection<PushSubTokenFcm> {
-    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+  private getFcmPushSubTokenCollection(userId: string): AngularFirestoreCollection<PushSubTokenFcm> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
     const pushSubTokenCollection = userDoc.collection<PushSubTokenFcm>('pushSubTokensFcm');
     return pushSubTokenCollection;
   }

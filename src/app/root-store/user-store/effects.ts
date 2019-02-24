@@ -47,10 +47,22 @@ export class UserStoreEffects {
       )
       .pipe(
         tap(appUser => {
+          console.log('User data stored in database', appUser);
           if (action.payload.requestType === StoreUserDataType.REGISTER_USER) {
+            console.log('New user, creating demo timer');
+            // Load new user data into store
+            this.store$.dispatch(
+              new userFeatureActions.UserDataRequested({userId: appUser.id})
+            );
             // Create a demo timer for the user after user registration is complete
             this.store$.dispatch(
-              new timerFeatureActions.CreateDemoTimerRequested()
+              new timerFeatureActions.CreateDemoTimerRequested({userId: appUser.id})
+            );
+          }
+          if (action.payload.requestType === StoreUserDataType.GOOGLE_LOGIN) {
+            console.log('Google store detected, fetching user data from database');
+            this.store$.dispatch(
+              new userFeatureActions.UserDataRequested({userId: appUser.id})
             );
           }
         }),
@@ -99,7 +111,7 @@ export class UserStoreEffects {
       this.messagingService.requestSwPushSubscription(action.payload.publicKey)
         .pipe(
           tap(pushSubToken => {
-            this.store$.dispatch(new userFeatureActions.StorePushSubTokenRequested({pushSub: pushSubToken}));
+            this.store$.dispatch(new userFeatureActions.StorePushSubTokenRequested({userId: action.payload.userId, pushSub: pushSubToken}));
             this.store$.dispatch(new userFeatureActions.SetPushPermission());
           }),
           map(pushSubToken => new userFeatureActions.PushSubComplete()),
@@ -116,7 +128,7 @@ export class UserStoreEffects {
       userFeatureActions.ActionTypes.STORE_PUSH_SUB_TOKEN_REQUESTED
     ),
     switchMap(action =>
-      this.messagingService.storePushSubToken(action.payload.pushSub)
+      this.messagingService.storePushSubToken(action.payload.userId, action.payload.pushSub)
         .pipe(
           map(pushSubToken => new userFeatureActions.StorePushSubTokenComplete()),
           catchError(error => {
