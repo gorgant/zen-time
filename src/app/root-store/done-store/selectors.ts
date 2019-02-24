@@ -6,6 +6,7 @@ import { Timer } from 'src/app/timers/models/timer.model';
 export const getError = (state: State): any => state.error;
 export const getIsLoading = (state: State): boolean => state.isLoading;
 export const getDoneLoaded = (state: State): boolean => state.doneLoaded;
+export const getProcessingClientRequest = (state: State): boolean => state.processingClientRequest;
 
 export const selectDoneState: MemoizedSelector<object, State>
 = createFeatureSelector<State>('done');
@@ -31,3 +32,6 @@ export const selectDoneIsLoading: MemoizedSelector<object, boolean>
 
 export const selectDoneLoaded: MemoizedSelector<object, boolean>
 = createSelector(selectDoneState, getDoneLoaded);
+
+export const selectProcessingClientRequest: MemoizedSelector<object, boolean>
+= createSelector(selectDoneState, getProcessingClientRequest);

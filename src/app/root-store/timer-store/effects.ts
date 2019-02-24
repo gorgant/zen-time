@@ -7,6 +7,7 @@ import * as timerFeatureActions from './actions';
 import * as doneFeatureActions from '../done-store/actions';
 import * as undoFeatureActions from '../undo-store/actions';
 import * as timerFeatureSelectors from './selectors';
+import * as uiFeatureSelectors from '../ui-store/selectors';
 import { switchMap, map, catchError, mergeMap, tap, take, withLatestFrom } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
 import { Timer } from 'src/app/timers/models/timer.model';
@@ -47,13 +48,13 @@ export class TimerStoreEffects {
       this.timerService.fetchAllTimers()
         .pipe(
           withLatestFrom(
-            // TODO: ADD SOMETHING TO DETECT IF OFFLINE, IF SO, RUN THE "IF" OPERATIONS (WHICH CAUSES UI TO UPDATE W/OUT SERVER) (AND SOMEHOW GET MARKDONE TO BE DETECTED AS WELL (NOT JUST CREATE/DELETE))
             this.store$.select(timerFeatureSelectors.selectAllTimers),
             this.store$.select(timerFeatureSelectors.selectTimersLoaded),
-            this.store$.select(timerFeatureSelectors.selectProcessingClientRequest)
+            this.store$.select(timerFeatureSelectors.selectProcessingClientRequest),
+            this.store$.select(uiFeatureSelectors.selectIsOnline)
           ),
           // take(1),
-          map(([serverTimers, storeTimers, timersLoaded, proccesingClientRequest]) => {
+          map(([serverTimers, storeTimers, timersLoaded, proccesingClientRequest, isOnline]) => {
             // If timers haven't loaded yet, pull from server
             if (!timersLoaded) {
               return this.store$.dispatch(new timerFeatureActions.AllTimersLoaded({timers: serverTimers}));
@@ -61,8 +62,8 @@ export class TimerStoreEffects {
 
             // This epic set of if statements prevents mass refresh of timers which screws up animations
             // ...instead allowing for individual fixes where possible
-            if (!proccesingClientRequest) {
-              console.log('Processing client request detected');
+            if (!proccesingClientRequest || !isOnline) {
+              console.log('non-client request or offline request detected');
               // If timers have already loaded, check for inconsistencies
               if (serverTimers.length !== storeTimers.length) {
                 // If addition occurs on server (e.g., added in another window), update those specific items in store

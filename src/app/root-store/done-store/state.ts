@@ -18,6 +18,7 @@ export interface State extends EntityState<Timer> {
   isLoading?: boolean;
   error?: any;
   doneLoaded?: boolean;
+  processingClientRequest: boolean;
 }
 
 export const initialState: State = featureAdapter.getInitialState(
@@ -25,5 +26,6 @@ export const initialState: State = featureAdapter.getInitialState(
     isLoading: false,
     error: null,
     doneLoaded: false,
+    processingClientRequest: false,
   }
 );

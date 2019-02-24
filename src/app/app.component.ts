@@ -10,7 +10,8 @@ import {
   TimerStoreActions,
   UndoStoreActions,
   DoneStoreActions,
-  AuthStoreSelectors
+  AuthStoreSelectors,
+  UiStoreActions
 } from './root-store';
 import { withLatestFrom, take } from 'rxjs/operators';
 import { UiService } from './shared/services/ui.service';
@@ -49,7 +50,10 @@ export class AppComponent implements OnInit {
     this.connectionStatus$ = this.connectionService.monitorConnectionStatus();
     this.connectionService.monitorConnectionStatus().subscribe(online => {
       if (!online) {
+        this.store$.dispatch(new UiStoreActions.AppOffline());
         this.uiService.showOfflineSnackBar();
+      } else {
+        this.store$.dispatch(new UiStoreActions.AppOnline());
       }
     });
 

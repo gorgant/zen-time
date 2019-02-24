@@ -12,6 +12,7 @@ import { metaReducers } from './meta-reducers';
 import { DoneStoreModule } from './done-store';
 import { UserStoreModule } from './user-store';
 import { UndoStoreModule } from './undo-store';
+import { UiStoreModule } from './ui-store';
 
 @NgModule({
   declarations: [],
@@ -22,6 +23,7 @@ import { UndoStoreModule } from './undo-store';
     DoneStoreModule,
     UserStoreModule,
     UndoStoreModule,
+    UiStoreModule,
     StoreModule.forRoot({}, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     // StoreDevtoolsModule.instrument({

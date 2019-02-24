@@ -3,6 +3,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { UndoSnackbarConfig } from '../models/undoSnackbarConfig.model';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { ConnectionService } from './connection.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class UiService {
 
   constructor(
     private snackbar: MatSnackBar,
+    private connectionService: ConnectionService
     ) { }
 
   showSnackBar(message, action, duration: number) {
@@ -48,10 +50,25 @@ export class UiService {
 
     const snackBarRef = this.snackbar.open(message, action, config);
 
+    // Close snackbar if dismissed
     snackBarRef.onAction()
       .pipe(take(1))
       .subscribe(() => {
         snackBarRef.dismiss();
+      });
+
+    // Automatically close snackbar if back online
+    snackBarRef.afterOpened()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.connectionService.monitorConnectionStatus()
+          // This fires when offline, then again when online
+          .pipe(take(2))
+          .subscribe(isOnline => {
+            if (isOnline) {
+              snackBarRef.dismiss();
+            }
+          });
       });
   }
 
