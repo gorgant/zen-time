@@ -1,3 +1,6 @@
+// Must import to use the custom theme classes
+@import "./variables";
+
 // Based on Angular Material template
 .app-header {
   position: fixed;
@@ -14,8 +17,32 @@
   right: 0;
 }
 
+.offline-warning {
+  background-color: $accent !important;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
 @media (max-width: 599px) {
   .sidenav-container {
     top: 56px;
+  }
+  .offline-warning {
+    top: 56px;
+  }
+
+  // Target Chrome only
+  // Courtesy of https://jeffclayton.wordpress.com/2015/08/10/1279/
+  @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .offline-warning {
+      position: sticky;
+      top: 0px;
+      left: 0;
+      right: 0;
+      z-index: 2;
+    }
   }
 }

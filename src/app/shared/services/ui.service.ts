@@ -40,6 +40,21 @@ export class UiService {
     });
   }
 
+  showOfflineSnackBar() {
+    const message = 'Device is offline. Timers will sync when connection has been restored.';
+    const action = 'Dismiss';
+    const config = new MatSnackBarConfig();
+    config.panelClass = ['custom-snack-bar']; // CSS managed in global styles.css
+
+    const snackBarRef = this.snackbar.open(message, action, config);
+
+    snackBarRef.onAction()
+      .pipe(take(1))
+      .subscribe(() => {
+        snackBarRef.dismiss();
+      });
+  }
+
   dispatchSideNavClick() {
     this.sideNavSignal$.next();
   }

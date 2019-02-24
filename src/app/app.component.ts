@@ -19,6 +19,8 @@ import { ActionTypes as TimerActionTypes } from './root-store/timer-store/action
 import { ActionTypes as DoneActionTypes } from './root-store/done-store/actions';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSidenav } from '@angular/material';
+import { ConnectionService } from './shared/services/connection.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -28,15 +30,28 @@ import { MatSidenav } from '@angular/material';
 export class AppComponent implements OnInit {
   title = 'zen-time';
   @ViewChild('sidenav') sidenav: MatSidenav;
+  connectionStatus$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
     private store$: Store<RootStoreState.State>,
     private uiService: UiService,
-    private swUpdate: SwUpdate
+    private swUpdate: SwUpdate,
+    private connectionService: ConnectionService
   ) {}
 
   ngOnInit() {
+
+    // This checks if app starts offline
+    setTimeout(() => {
+      this.connectionService.checkConnectionStatus();
+    });
+    this.connectionStatus$ = this.connectionService.monitorConnectionStatus();
+    this.connectionService.monitorConnectionStatus().subscribe(online => {
+      if (!online) {
+        this.uiService.showOfflineSnackBar();
+      }
+    });
 
     // Prompts user to update interface when app has been updated (and downloaded in their cache)
     if (this.swUpdate.isEnabled) {

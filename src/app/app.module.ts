@@ -30,7 +30,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
     MaterialModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence(),
     AngularFireStorageModule,
     AngularFireMessagingModule,
     AuthModule,

@@ -158,15 +158,59 @@ export class DoneStoreEffects {
     mergeMap(action => this.timerService.createDone(action.payload.timer, action.payload.undoAction).pipe(
       tap(completedTimer => {
         if (!action.payload.undoAction) {
+          console.log('Dispatching "Delete Timer" as a part of "Mark Done"');
           this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
         }
       }),
-      map(completedTimer => new doneFeatureActions.AddDoneComplete({timer: completedTimer})),
+      map(completedTimer => {
+        console.log('Adding Done to store');
+        return new doneFeatureActions.AddDoneComplete({timer: completedTimer});
+      }),
       catchError(error => {
         return of(new doneFeatureActions.LoadErrorDetected({ error }));
       })
     )),
   );
+
+  // @Effect()
+  // addDoneEffect$ = this.actions$.pipe(
+  //   ofType<doneFeatureActions.AddDoneRequested>(
+  //     doneFeatureActions.ActionTypes.ADD_DONE_REQUESTED
+  //   ),
+  //   mergeMap(action => this.timerService.createDone(action.payload.timer, action.payload.undoAction).pipe(
+  //     map(completedTimer => {
+  //       console.log('Adding Done to store');
+  //       return new doneFeatureActions.AddDoneComplete({timer: completedTimer});
+  //     }),
+  //     tap(completedTimer => {
+  //       if (!action.payload.undoAction) {
+  //         console.log('Dispatching "Delete Timer" as a part of "Mark Done"');
+  //         this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
+  //       }
+  //     }),
+  //     catchError(error => {
+  //       return of(new doneFeatureActions.LoadErrorDetected({ error }));
+  //     })
+  //   )),
+  // );
+
+  // @Effect({ dispatch: false})
+  // addDoneEffect$ = this.actions$.pipe(
+  //   ofType<doneFeatureActions.AddDoneRequested>(
+  //     doneFeatureActions.ActionTypes.ADD_DONE_REQUESTED
+  //   ),
+  //   tap(action => {
+  //     if (!action.payload.undoAction) {
+  //       this.store$.dispatch(new timerFeatureActions.DeleteTimerRequested({timer: action.payload.timer, markDone: true}));
+  //     }
+  //     this.store$.dispatch(new doneFeatureActions.AddDoneComplete({timer: action.payload.timer}));
+  //   }),
+  //   mergeMap(action => this.timerService.createDone(action.payload.timer, action.payload.undoAction).pipe(
+  //     catchError(error => {
+  //       return of(new doneFeatureActions.LoadErrorDetected({ error }));
+  //     })
+  //   )),
+  // );
 
   @Effect()
   deleteDoneEffect$ = this.actions$.pipe(

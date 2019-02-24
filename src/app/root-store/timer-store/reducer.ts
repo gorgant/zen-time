@@ -55,16 +55,36 @@ export function featureReducer(state = initialState, action: Actions): State {
         state
       );
 
+    case ActionTypes.ADD_TIMER_REQUESTED: {
+      return {
+        ...state,
+        processingClientRequest: true
+      };
+    }
+
     case ActionTypes.ADD_TIMER_COMPLETE:
       return featureAdapter.addOne(
         action.payload.timer,
-        state
+        {
+          ...state,
+          processingClientRequest: false
+        }
       );
+
+    case ActionTypes.DELETE_TIMER_REQUESTED: {
+      return {
+        ...state,
+        processingClientRequest: true
+      };
+    }
 
     case ActionTypes.DELETE_TIMER_COMPLETE:
       return featureAdapter.removeOne(
         action.payload.timerId,
-        state
+        {
+          ...state,
+          processingClientRequest: false
+        }
       );
 
     case ActionTypes.CREATE_DEMO_TIMER_COMPLETE:
