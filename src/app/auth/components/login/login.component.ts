@@ -4,10 +4,11 @@ import { AuthData } from '../../models/auth-data.model';
 import { loginValidationMessages } from 'src/app/shared/models/validation-messages.model';
 import { imageUrls } from 'src/app/shared/assets/imageUrls';
 import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
+import { RootStoreState, AuthStoreActions, AuthStoreSelectors, UserStoreSelectors } from 'src/app/root-store';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { ResetPasswordDialogueComponent } from '../reset-password-dialogue/reset-password-dialogue.component';
 import { AuthenticateUserType } from 'src/app/shared/models/authenticate-user-type.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,8 @@ export class LoginComponent implements OnInit {
   LOGO_URL = imageUrls.ZEN_TIMER_LOGO;
   loginForm: FormGroup;
   useEmailLogin: boolean;
+  userAuth$: Observable<boolean>;
+  userLoaded$: Observable<boolean>;
 
   constructor(
     private fb: FormBuilder,
@@ -29,10 +32,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    // These power the user-loading-spinner
+    this.userAuth$ = this.store$.select(AuthStoreSelectors.selectIsAuth);
+    this.userLoaded$ = this.store$.select(UserStoreSelectors.selectUserLoaded);
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
   }
 
   onGoogleLogin() {

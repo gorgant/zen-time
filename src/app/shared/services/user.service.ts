@@ -64,6 +64,7 @@ export class UserService {
         if (
           requestType !== StoreUserDataType.REGISTER_USER &&
           requestType !== StoreUserDataType.GOOGLE_LOGIN &&
+          requestType !== StoreUserDataType.EMAIL_UPDATE &&
           requestType !== StoreUserDataType.TOGGLE_NEW_USER_OFF
         ) {
           this.uiService.showSnackBar('User info updated', null, 3000);
@@ -78,8 +79,9 @@ export class UserService {
     return from(fbResponse);
   }
 
-  uploadProfileImage(imageFile: File, appUser: AppUser): Observable<string> {
+  uploadProfileImage(imageFile: Blob, appUser: AppUser): Observable<string> {
     const file = imageFile;
+    console.log('File to upload', file);
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
     // Metadata used in cloud function (marked true by cloud function after resized)

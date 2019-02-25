@@ -56,7 +56,7 @@ export class UpdatePasswordComplete implements Action {
 export class UpdateProfileImageRequested implements Action {
   readonly type = ActionTypes.UPDATE_PROFILE_IMAGE_REQUESTED;
 
-  constructor(public payload: { imageFile: File, user: AppUser }) {}
+  constructor(public payload: { imageFile: Blob, user: AppUser }) {}
 }
 
 export class UpdateProfileImageComplete implements Action {

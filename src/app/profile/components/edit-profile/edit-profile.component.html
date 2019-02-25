@@ -1,5 +1,8 @@
 <section fxLayout="column" fxLayoutAlign="center start">
+  
   <h1 fxFlexAlign="center" class="mat-headline">Edit Profile</h1>
+  
+  <!-- Profile Details -->
   <div fxFlexAlign="center" *ngIf="(userLoading$ | async) && !(profileImageLoading$ | async)">
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
@@ -21,32 +24,33 @@
       </button>
     </div>
   </div>
+
+  <!-- Image Upload Tool -->
   <div *ngIf="(appUser$ | async) as user" class="cropper-container" fxLayout="column" fxLayoutAlign="center center">
     <div class="cropper-buttons" fxLayout="row" fxLayoutAlign="center center">
-      <input #cropperInput style="display: none" type="file" (change)="fileChangeEvent($event)" />
+      <!-- Hidden input is connected to button  -->
+      <input #cropperInput style="display: none" type="file" (change)="fileChangeListener($event)" />
       <button mat-raised-button (click)="cropperInput.click()">Choose Image</button>
       <mat-icon>arrow_right_alt</mat-icon>
       <button (click)="onUploadImage()" mat-raised-button color="primary" [disabled]="!croppedImage">Upload Image</button>
     </div>
-    <image-cropper
-        [imageChangedEvent]="imageChangedEvent"
-        [maintainAspectRatio]="true"
-        [aspectRatio]="1 / 1"
-        [resizeToWidth]="100"
-        [cropperMinWidth]="100"
-        [onlyScaleDown]="true"
-        [roundCropper]="true"
-        format="png"
-        (imageCropped)="imageCropped($event)"
-        (imageLoaded)="imageLoaded()"
+    <div>
+      <img-cropper
+        #cropper 
+        [image]="croppedImageContainer" 
+        [settings]="cropperSettings1" 
+        (onCrop)="onCropEvent($event)"
         (loadImageFailed)="loadImageFailed()"
         [style.display]="showCropper ? null : 'none'"
-    ></image-cropper>
+        >
+      </img-cropper>
+    </div>
     <div *ngIf="(profileImageLoading$ | async) as imageLoading" fxLayout="column" fxLayoutAlign="center center" class="image-loading-spinner">
       <mat-progress-spinner mode="determinate" [value]="imageUploadProgress$ | async">
       </mat-progress-spinner>
     </div>
     <img *ngIf="!showCropper && !(profileImageLoading$ | async)" class="avatar" [src]="user.avatarUrl ? user.avatarUrl : defaultProfileImage">
   </div>
+
 </section>
 
