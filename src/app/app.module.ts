@@ -30,7 +30,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
     MaterialModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule.enablePersistence({experimentalTabSynchronization: true}),
     AngularFireStorageModule,
     AngularFireMessagingModule,
     AuthModule,

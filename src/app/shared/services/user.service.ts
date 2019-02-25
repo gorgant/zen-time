@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, from, Subject, throwError } from 'rxjs';
 import { AppUser } from '../models/app-user.model';
 import { map, takeUntil, catchError } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { StoreUserDataType } from '../models/store-user-data-type.model';
 })
 export class UserService {
 
-  // private currentUserDoc: AngularFirestoreDocument<AppUser>;
   private imageUploadPercentage$: Observable<number>;
   downloadUrlSubject = new Subject<string>();
 
@@ -25,7 +24,6 @@ export class UserService {
   ) { }
 
   fetchUserData(userId: string): Observable<AppUser> {
-    // this.currentUserDoc = this.db.doc<AppUser>(`users/${userId}`);
     return this.db.doc<AppUser>(`users/${userId}`)
       .snapshotChanges()
       .pipe(
@@ -36,6 +34,10 @@ export class UserService {
             id: docSnapshot.payload.id,
             ...docSnapshot.payload.data()
           };
+          // Mark new user false bc at this point demo timer request should have already been fired
+          if (appUser.isNewUser) {
+            this.storeUserData(appUser, appUser.id, StoreUserDataType.TOGGLE_NEW_USER_OFF);
+          }
           return appUser;
         }),
         catchError(error => {
@@ -52,13 +54,17 @@ export class UserService {
       console.log('Setting user id for new registered user');
       userData.id = userId;
     }
+    if (requestType === StoreUserDataType.TOGGLE_NEW_USER_OFF) {
+      console.log('Toggling new user false');
+      userData.isNewUser = false;
+    }
     const userCollection = this.db.collection<AppUser>('users');
     const fbResponse = userCollection.doc(userId).set(appUser, {merge: true})
       .then(() => {
         if (
           requestType !== StoreUserDataType.REGISTER_USER &&
-          requestType !== StoreUserDataType.EMAIL_UPDATE &&
-          requestType !== StoreUserDataType.GOOGLE_LOGIN
+          requestType !== StoreUserDataType.GOOGLE_LOGIN &&
+          requestType !== StoreUserDataType.TOGGLE_NEW_USER_OFF
         ) {
           this.uiService.showSnackBar('User info updated', null, 3000);
         }
@@ -97,8 +103,7 @@ export class UserService {
      return from(fbResponse);
   }
 
-  fetchDownloadUrl(imageFile: File, appUser: AppUser): Observable<string> {
-    const file = imageFile;
+  fetchDownloadUrl(appUser: AppUser): Observable<string> {
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
     return fileRef.getDownloadURL();

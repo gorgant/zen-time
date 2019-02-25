@@ -47,22 +47,21 @@ export class UserStoreEffects {
       )
       .pipe(
         tap(appUser => {
-          console.log('User data stored in database', appUser);
-          if (action.payload.requestType === StoreUserDataType.REGISTER_USER) {
-            console.log('New user, creating demo timer');
+          // Update user data in store
+          this.store$.dispatch(
+            new userFeatureActions.UserDataRequested({userId: appUser.id})
+          );
+          // If new user registration (via email or Google), create demo timer
+          // Important: use action.payload userData for isNewUser (vs appUser from storeUserData database request)
+          // because after store in db request, isNewUser will be false)
+          if (
+            action.payload.requestType === StoreUserDataType.REGISTER_USER ||
+            (action.payload.requestType === StoreUserDataType.GOOGLE_LOGIN && action.payload.userData.isNewUser)
+            ) {
             // Load new user data into store
-            this.store$.dispatch(
-              new userFeatureActions.UserDataRequested({userId: appUser.id})
-            );
             // Create a demo timer for the user after user registration is complete
             this.store$.dispatch(
               new timerFeatureActions.CreateDemoTimerRequested({userId: appUser.id})
-            );
-          }
-          if (action.payload.requestType === StoreUserDataType.GOOGLE_LOGIN) {
-            console.log('Google store detected, fetching user data from database');
-            this.store$.dispatch(
-              new userFeatureActions.UserDataRequested({userId: appUser.id})
             );
           }
         }),
@@ -84,7 +83,7 @@ export class UserStoreEffects {
         .pipe(
           tap(emptySubject => {
             // Fetch the latest download URL (which isn't what comes from the initial upload)
-            this.userService.fetchDownloadUrl(action.payload.imageFile, action.payload.user)
+            this.userService.fetchDownloadUrl(action.payload.user)
               .pipe(take(1))
               .subscribe(newImgUrl => {
                 const updatedAppUser: AppUser = {

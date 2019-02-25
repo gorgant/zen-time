@@ -16,7 +16,6 @@ export class AuthService {
   authStatus = new Subject<string>();
   private ngUnsubscribe$: Subject<void> = new Subject();
 
-  // Cannot inject store$ here otherwise circular dependencies
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
@@ -44,7 +43,6 @@ export class AuthService {
         email: authData.email,
       };
       const userId = creds.user.uid;
-      console.log('Registering user with id', userId);
       return {userData: appUser, userId: userId};
     })
     .catch(error => {
@@ -59,14 +57,14 @@ export class AuthService {
     const authResponse = this.afAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(creds => {
+      const newAppUser = creds.additionalUserInfo.isNewUser; // Check if this is a new user
       const appUser: AppUser = {
         displayName: creds.user.displayName,
         email: creds.user.email,
         avatarUrl: creds.user.photoURL,
         id: creds.user.uid,
+        isNewUser: newAppUser,
       };
-      const bob = creds.additionalUserInfo.isNewUser;
-      console.log('Is new user?', bob);
       return appUser;
     })
     .catch(error => {
@@ -186,7 +184,6 @@ export class AuthService {
   private authSuccess(user: firebase.User): void {
     this.authStatus.next(user.uid);
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
-    console.log('Auth successful, routing to url', returnUrl);
     if (returnUrl && returnUrl !== '/') {
       this.router.navigate([returnUrl]);
     } else {
