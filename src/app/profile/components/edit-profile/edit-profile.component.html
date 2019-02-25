@@ -34,13 +34,12 @@
       <mat-icon>arrow_right_alt</mat-icon>
       <button (click)="onUploadImage()" mat-raised-button color="primary" [disabled]="!croppedImage">Upload Image</button>
     </div>
-    <div>
+    <div class="cropper-tool">
       <img-cropper
         #cropper 
         [image]="croppedImageContainer" 
         [settings]="cropperSettings1" 
         (onCrop)="onCropEvent($event)"
-        (loadImageFailed)="loadImageFailed()"
         [style.display]="showCropper ? null : 'none'"
         >
       </img-cropper>

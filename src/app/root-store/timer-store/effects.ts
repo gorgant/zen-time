@@ -57,26 +57,22 @@ export class TimerStoreEffects {
           map(([serverTimers, storeTimers, timersLoaded, proccesingClientRequest, isOnline]) => {
             // If timers haven't loaded yet, pull from server
             if (!timersLoaded) {
-              console.log('Timers not yet loaded, grabbing all of them', serverTimers);
               return this.store$.dispatch(new timerFeatureActions.AllTimersLoaded({timers: serverTimers}));
             }
 
             // This epic set of if statements prevents mass refresh of timers which screws up animations
             // ...instead allowing for individual fixes where possible
             if (!proccesingClientRequest || !isOnline) {
-              console.log('non-client request or offline request detected');
               // If timers have already loaded, check for inconsistencies
               if (serverTimers.length !== storeTimers.length) {
                 // If addition occurs on server (e.g., added in another window), update those specific items in store
                 if (serverTimers.length > storeTimers.length) {
-                  console.log('Server timers > store timers', serverTimers);
                   // Create array timers that are on server but not in store
                   const noIdMatchArray = serverTimers.filter(timer => !storeTimers.some(storeT => timer.id === storeT.id));
                   // Create new array to update store with
                   let updatedStoreTimers = [...storeTimers];
                   if (noIdMatchArray.length > 0) {
                     noIdMatchArray.forEach((timer, index, array) => {
-                      console.log('Adding timer to store', timer);
                       // Add to store directly (don't dispatch action, which would add a circular loop to server)
                       this.store$.dispatch(new timerFeatureActions.AddTimerComplete({timer}));
                       updatedStoreTimers = [
@@ -86,12 +82,10 @@ export class TimerStoreEffects {
                     });
                   }
                 } else if (serverTimers.length < storeTimers.length) {
-                  console.log('Server timers < store timers', serverTimers);
                 // If deletion occurs on server (e.g., deleted in another window), update those specific items in store
                   const noMatchArray = storeTimers.filter(timer => !serverTimers.some(serverT => timer.id === serverT.id));
                   let updatedStoreTimers = [...storeTimers];
                   noMatchArray.forEach((timer, index, array) => {
-                    console.log('Removing timer from store', timer);
                     // Remove from store directly (don't dispatch action, which would add a circular loop to server)
                     this.store$.dispatch(new timerFeatureActions.DeleteTimerComplete({timerId: timer.id}));
                     updatedStoreTimers = updatedStoreTimers.filter(tmr => tmr.id !== timer.id);
@@ -199,7 +193,6 @@ export class TimerStoreEffects {
     ),
     mergeMap(action => this.timerService.deleteTimer(action.payload.userId, action.payload.timer, action.payload.markDone).pipe(
       map(timerId => {
-        console.log('Deleting timer');
         return new timerFeatureActions.DeleteTimerComplete({timerId});
       } ),
       tap(() => {
@@ -226,7 +219,6 @@ export class TimerStoreEffects {
       timerFeatureActions.ActionTypes.MARK_TIMER_DONE
     ),
     map(action => {
-      console.log('Dispatching "Add Done" as a part of "Mark Done"');
       this.store$.dispatch(new doneFeatureActions.AddDoneRequested({userId: action.payload.userId, timer: action.payload.timer}));
       return action.payload.timer;
     }),

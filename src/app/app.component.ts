@@ -33,6 +33,10 @@ export class AppComponent implements OnInit {
   title = 'zen-time';
   @ViewChild('sidenav') sidenav: MatSidenav;
   connectionStatus$: Observable<boolean>;
+  deferredAddToHomePrompt;
+
+  userAuth$: Observable<boolean>;
+  userLoaded$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
@@ -46,29 +50,23 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    // This checks if app starts offline
-    setTimeout(() => {
-      this.connectionService.checkConnectionStatus();
-    });
-    this.connectionStatus$ = this.connectionService.monitorConnectionStatus();
-    this.connectionService.monitorConnectionStatus().subscribe(online => {
-      if (!online) {
-        this.store$.dispatch(new UiStoreActions.AppOffline());
-        this.uiService.showOfflineSnackBar();
-      } else {
-        this.store$.dispatch(new UiStoreActions.AppOnline());
-      }
-    });
+    // // Trigger the PWA install (not sure if this works)
+    // this.promptInstallPwa();
 
-    // Prompts user to update interface when app has been updated (and downloaded in their cache)
-    if (this.swUpdate.isEnabled) {
-      this.swUpdate.available.subscribe(() => {
-        if (confirm('New version of ZenTimer available. Load New Version?')) {
-          window.location.reload();
-        }
-      });
-    }
+    this.promptUpdateApp();
 
+    this.configureOnlineDetection();
+
+    this.configureUndoFunctionality();
+
+    this.configureAuthDetection();
+
+    this.configureSideNav();
+
+
+  }
+
+  private configureAuthDetection() {
     this.authService.initAuthListener();
     this.authService.authStatus
     .pipe(
@@ -92,58 +90,121 @@ export class AppComponent implements OnInit {
         this.store$.dispatch(new AuthStoreActions.SetUnauthenticated());
       }
     });
+  }
 
-    // Handles sideNav clicks
-    this.uiService.sideNavSignal$.subscribe(signal => {
-      this.toggleSideNav();
+  private promptInstallPwa() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      this.deferredAddToHomePrompt = e;
     });
+    this.userAuth$ = this.store$.select(AuthStoreSelectors.selectIsAuth);
+    this.userLoaded$ = this.store$.select(UserStoreSelectors.selectUserLoaded);
 
-    // This handles Undo requests (can't do it in timer service b/c circular dependencies)
-    this.uiService.undoTransporter
-      .subscribe(actionId => {
-        const undoableAction$ = this.store$.select(UndoStoreSelectors.selectUndoById(actionId));
-        undoableAction$
-          .pipe(
-            take(1),
-            withLatestFrom(this.store$.select(UserStoreSelectors.selectAppUser))
-          )
-          .subscribe(([undoableAction, appUser]) => {
-            switch (undoableAction.actionType) {
-              case TimerActionTypes.DELETE_TIMER_REQUESTED: {
-                const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
-                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
-                return true;
-              }
-              case TimerActionTypes.UPDATE_TIMER_REQUESTED: {
-                const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({userId: appUser.id, timer, undoAction: true}));
-                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
-                return true;
-              }
-              case TimerActionTypes.MARK_TIMER_DONE: {
-                const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({userId: appUser.id, timer, undoAction: true}));
-                this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
-                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
-                return true;
-              }
-              case DoneActionTypes.DELETE_DONE_REQUESTED: {
-                const timer: Timer = undoableAction.payload;
-                this.store$.dispatch(new DoneStoreActions.AddDoneRequested({userId: appUser.id, timer, undoAction: true}));
-                this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
-                return true;
-              }
-
-              default: {
-                return true;
-              }
-            }
-          });
+    combineLatest(this.userAuth$, this.userLoaded$)
+      .subscribe(([isAuth, userLoaded]) => {
+        if (isAuth && userLoaded && this.deferredAddToHomePrompt) {
+          // Show prompt after 5 seconds of being fully logged in
+          setTimeout(() => {
+            this.deferredAddToHomePrompt.prompt();
+            this.deferredAddToHomePrompt.userChoice
+              .then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                } else {
+                }
+                this.deferredAddToHomePrompt = null;
+              })
+              .catch(error => {
+                this.uiService.showSnackBar(error, null, 5000);
+              });
+          }, 5000);
+        }
       });
   }
 
-  toggleSideNav() {
+  // This handles Undo requests (can't do it in timer service b/c circular dependencies)
+  private configureUndoFunctionality() {
+    this.uiService.undoTransporter
+    .subscribe(actionId => {
+      const undoableAction$ = this.store$.select(UndoStoreSelectors.selectUndoById(actionId));
+      undoableAction$
+        .pipe(
+          take(1),
+          withLatestFrom(this.store$.select(UserStoreSelectors.selectAppUser))
+        )
+        .subscribe(([undoableAction, appUser]) => {
+          switch (undoableAction.actionType) {
+            case TimerActionTypes.DELETE_TIMER_REQUESTED: {
+              const timer: Timer = undoableAction.payload;
+              this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
+              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+              return true;
+            }
+            case TimerActionTypes.UPDATE_TIMER_REQUESTED: {
+              const timer: Timer = undoableAction.payload;
+              this.store$.dispatch(new TimerStoreActions.UpdateTimerRequested({userId: appUser.id, timer, undoAction: true}));
+              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+              return true;
+            }
+            case TimerActionTypes.MARK_TIMER_DONE: {
+              const timer: Timer = undoableAction.payload;
+              this.store$.dispatch(new DoneStoreActions.DeleteDoneRequested({userId: appUser.id, timer, undoAction: true}));
+              this.store$.dispatch(new TimerStoreActions.AddTimerRequested({userId: appUser.id, timer, undoAction: true}));
+              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+              return true;
+            }
+            case DoneActionTypes.DELETE_DONE_REQUESTED: {
+              const timer: Timer = undoableAction.payload;
+              this.store$.dispatch(new DoneStoreActions.AddDoneRequested({userId: appUser.id, timer, undoAction: true}));
+              this.store$.dispatch(new UndoStoreActions.PurgeUndoableAction({undoableAction}));
+              return true;
+            }
+
+            default: {
+              return true;
+            }
+          }
+        });
+    });
+  }
+
+  // Prompts user to update interface when app has been updated (and downloaded in their cache)
+  private promptUpdateApp() {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe(() => {
+        if (confirm('New version of ZenTimer available. Load New Version?')) {
+          window.location.reload();
+        }
+      });
+    }
+  }
+
+  // This checks if app starts offline
+  private configureOnlineDetection() {
+    setTimeout(() => {
+      this.connectionService.checkConnectionStatus();
+    });
+    this.connectionStatus$ = this.connectionService.monitorConnectionStatus();
+    this.connectionService.monitorConnectionStatus().subscribe(online => {
+      if (!online) {
+        this.store$.dispatch(new UiStoreActions.AppOffline());
+        this.uiService.showOfflineSnackBar();
+      } else {
+        this.store$.dispatch(new UiStoreActions.AppOnline());
+      }
+    });
+  }
+
+  // Handles sideNav clicks
+  private configureSideNav() {
+    this.uiService.sideNavSignal$.subscribe(signal => {
+      this.toggleSideNav();
+    });
+  }
+
+  // Opens and closes sidenav
+  private toggleSideNav() {
     if (this.sidenav.opened) {
       this.sidenav.close();
     } else {

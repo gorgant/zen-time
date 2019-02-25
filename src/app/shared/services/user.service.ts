@@ -48,14 +48,11 @@ export class UserService {
   }
 
   storeUserData(appUser: AppUser, userId: string, requestType: StoreUserDataType): Observable<AppUser> {
-    console.log('About to store data in database', appUser, userId);
     const userData: AppUser = appUser;
     if (requestType === StoreUserDataType.REGISTER_USER) {
-      console.log('Setting user id for new registered user');
       userData.id = userId;
     }
     if (requestType === StoreUserDataType.TOGGLE_NEW_USER_OFF) {
-      console.log('Toggling new user false');
       userData.isNewUser = false;
     }
     const userCollection = this.db.collection<AppUser>('users');
@@ -69,7 +66,6 @@ export class UserService {
         ) {
           this.uiService.showSnackBar('User info updated', null, 3000);
         }
-        console.log('User data stored in database', appUser);
         return appUser;
       } )
       .catch(error => {
@@ -81,7 +77,6 @@ export class UserService {
 
   uploadProfileImage(imageFile: Blob, appUser: AppUser): Observable<string> {
     const file = imageFile;
-    console.log('File to upload', file);
     const filePath = `graphics/user-profile-images/${appUser.id}/profileImage`;
     const fileRef = this.storage.ref(filePath);
     // Metadata used in cloud function (marked true by cloud function after resized)

@@ -135,7 +135,6 @@ export class TimerService {
         if (!undoAction) {
           this.uiService.showSnackBar(`Timer created: ${timer.title}`, null, 3000);
         }
-        console.log('Timer created on server');
         return timer;
       })
       .catch(error => {
@@ -162,7 +161,6 @@ export class TimerService {
           };
           this.uiService.showUndoSnackBar(`Timer Marked Complete: ${convertedTimer.title}`, 'Undo', undoSnackbarConfig);
         }
-        console.log('Done created on server');
         return convertedTimer;
       })
       .catch(error => {
@@ -183,7 +181,6 @@ export class TimerService {
           };
           this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
         }
-        console.log('Timer deleted on server');
         return timer.id;
       })
       .catch(error => {
@@ -204,7 +201,6 @@ export class TimerService {
           };
           this.uiService.showUndoSnackBar(`Timer deleted`, 'Undo', undoSnackbarConfig);
         }
-        console.log('Done deleted on server');
         return timer.id;
       })
       .catch(error => {
@@ -219,7 +215,6 @@ export class TimerService {
   }
 
   createDemoTimer(userId: string): Observable<Timer> {
-    console.log('Creating demo timer for id', userId);
     const timerId = this.generateTimerId();
     const timerDoc = this.getTimerDoc(userId, timerId);
     const demoTimer: Timer = {
@@ -246,7 +241,6 @@ export class TimerService {
 
   private getTimerCollection(userId: string): AngularFirestoreCollection<Timer> {
     const userDoc: AngularFirestoreDocument<AppUser> = this.userService.fetchUserDoc(userId);
-    console.log('Fetched user doc from user service', userDoc);
     const timerCollection = userDoc.collection<Timer>('timers');
     return timerCollection;
   }

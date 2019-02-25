@@ -19,6 +19,7 @@
     class="action-button" 
     type="button" 
     mat-raised-button 
+    [disabled]="!(isOnline$ | async)"
     color="primary">
       Edit Details
   </button>
@@ -28,6 +29,7 @@
     class="action-button" 
     type="button" 
     mat-stroked-button 
+    [disabled]="!(isOnline$ | async)"
     color="primary">
       Change Password
   </button>

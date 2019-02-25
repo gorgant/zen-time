@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import { AppUser } from 'src/app/shared/models/app-user.model';
 import { Store } from '@ngrx/store';
-import { RootStoreState, UserStoreSelectors, AuthStoreActions } from 'src/app/root-store';
+import { RootStoreState, UserStoreSelectors, AuthStoreActions, UiStoreSelectors } from 'src/app/root-store';
 import { take } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { EditPasswordDialogueComponent } from '../edit-password-dialogue/edit-password-dialogue.component';
@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit {
   appUser$: Observable<AppUser>;
   loading$: Observable<boolean>;
   @ViewChild('matButton') matButton;
+  isOnline$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
@@ -36,11 +37,12 @@ export class ProfileComponent implements OnInit {
       UserStoreSelectors.selectUserIsLoading
     );
 
+    this.isOnline$ = this.store$.select(UiStoreSelectors.selectIsOnline);
+
   }
 
   onEditPassword() {
     // This hacky solution is required to remove ripple effect from menu icon after closing sidenav
-    // Must be 'matButton' and #matButton
     this.matButton._elementRef.nativeElement.blur();
 
     this.appUser$

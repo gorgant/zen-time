@@ -37,18 +37,7 @@ export class TimerFormDialogueComponent implements OnInit {
 
   ngOnInit() {
 
-    if (this.timer) {
-      if (!this.timer.completedDate) {
-        this.timerType = EditTimerType.EXISTING_TIMER;
-        console.log('Timer identified as', this.timerType);
-      } else {
-        this.timerType = EditTimerType.DUPLICATE_TIMER;
-        console.log('Timer identified as', this.timerType);
-      }
-    } else {
-      this.timerType = EditTimerType.NEW_TIMER;
-      console.log('Timer identified as', this.timerType);
-    }
+    this.determineTimerType();
 
     this.timerForm = this.fb.group({
       title: ['', Validators.required],
@@ -146,6 +135,19 @@ export class TimerFormDialogueComponent implements OnInit {
 
   onClose() {
     this.dialogRef.close(false);
+  }
+
+  // Determine the type of timer
+  private determineTimerType() {
+    if (this.timer) {
+      if (!this.timer.completedDate) {
+        this.timerType = EditTimerType.EXISTING_TIMER;
+      } else {
+        this.timerType = EditTimerType.DUPLICATE_TIMER;
+      }
+    } else {
+      this.timerType = EditTimerType.NEW_TIMER;
+    }
   }
 
   // These getters are used for easy access in the HTML template

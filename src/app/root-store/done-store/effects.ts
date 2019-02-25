@@ -63,19 +63,16 @@ export class DoneStoreEffects {
             // ...instead allowing for individual fixes where possible
 
             if (!processingClientRequest || !isOnline) {
-              console.log('non-client request or offline request detected');
               // If timers have already loaded, check for inconsistencies
               if (serverDone.length !== storeDone.length) {
                 // If addition occurs on server (e.g., added in another window), update those specific items in store
                 if (serverDone.length > storeDone.length) {
-                  console.log('Server done > store done', serverDone);
                   // Create array timers that are on server but not in store
                   const noIdMatchArray = serverDone.filter(timer => !storeDone.some(storeT => timer.id === storeT.id));
                   // Create new array to update store with
                   let updatedStoreTimers = [...storeDone];
                   if (noIdMatchArray.length > 0) {
                     noIdMatchArray.forEach((timer, index, array) => {
-                      console.log('Adding done to store', timer);
                       // Add to store directly (don't dispatch action, which would add a circular loop to server)
                       this.store$.dispatch(new doneFeatureActions.AddDoneComplete({timer}));
                       updatedStoreTimers = [
@@ -87,12 +84,10 @@ export class DoneStoreEffects {
                   // // Return the updated timer array to the effect (I guess this doesn't fire until the forEach above is complete)
                   // return new doneFeatureActions.AllDoneLoaded({timers: updatedStoreTimers});
                 } else if (serverDone.length < storeDone.length) {
-                  console.log('Server timers < store timers', serverDone);
                 // If deletion occurs on server (e.g., deleted in another window), update those specific items in store
                   const noMatchArray = storeDone.filter(timer => !serverDone.some(serverT => timer.id === serverT.id));
                   let updatedStoreTimers = [...storeDone];
                   noMatchArray.forEach((timer, index, array) => {
-                    console.log('Removing done from store', timer);
                     // Remove from store directly (don't dispatch action, which would add a circular loop to server)
                     this.store$.dispatch(new doneFeatureActions.DeleteDoneComplete({timerId: timer.id}));
                     updatedStoreTimers = updatedStoreTimers.filter(tmr => tmr.id !== timer.id);

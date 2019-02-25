@@ -62,19 +62,15 @@ export class ActiveTimersComponent implements OnInit {
 
     // Check for notification settings on browser
     if (!('Notification' in window)) {
-      console.log('Browser doesnt support notifications');
       // Browser doesn't support standard notifications
       this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else if (Notification.permission === 'granted') {
-      console.log('Notifications allowed');
       // Browser accepts notifications
       this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else if (Notification.permission === 'denied') {
-      console.log('Notifications denied');
       // Browser blocks notifications
       this.store$.dispatch(new UserStoreActions.SetPushPermission());
     } else {
-      console.log('Notifications not yet set');
       // Do not modify push permissions
     }
   }

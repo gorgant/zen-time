@@ -25,13 +25,11 @@ export class AuthGuard implements CanActivate, CanLoad {
         switchMap(isAuth => {
           // If user is authenticated, wait for user data to load into store, then open up route guard
           if (isAuth) {
-            console.log('Auth detected, triggering observable to pull userLoaded');
             // Inspired by https://stackoverflow.com/a/46386082/6572208
             return new Observable<boolean>((observer) => {
               this.store$.select(UserStoreSelectors.selectUserLoaded)
                 .subscribe(userLoaded => {
                   if (userLoaded) {
-                    console.log('User loaded, opening route');
                     observer.next(true);
                     observer.complete();
                   }
@@ -39,7 +37,6 @@ export class AuthGuard implements CanActivate, CanLoad {
             });
           } else {
           // If user not authenticated, route to login
-            console.log('No auth detected, routing to login');
             this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
             return of(false);
           }
@@ -60,13 +57,11 @@ export class AuthGuard implements CanActivate, CanLoad {
         switchMap(isAuth => {
           // If user is authenticated, wait for user data to load into store, then open up route guard
           if (isAuth) {
-            console.log('Auth detected, triggering observable to pull userLoaded');
             // Inspired by https://stackoverflow.com/a/46386082/6572208
             return new Observable<boolean>((observer) => {
               this.store$.select(UserStoreSelectors.selectUserLoaded)
                 .subscribe(userLoaded => {
                   if (userLoaded) {
-                    console.log('User loaded, opening route');
                     observer.next(true);
                     observer.complete();
                   }
@@ -74,7 +69,6 @@ export class AuthGuard implements CanActivate, CanLoad {
             });
           } else {
           // If user not authenticated, route to login
-            console.log('No auth detected, routing to login');
             const returnUrl = this.covertSegmentsToReturnUrl(segments);
             this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
             return of(false);

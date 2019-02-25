@@ -21,7 +21,6 @@ export class TimerDetailsComponent implements OnInit {
     }
     // If timer is deleted on separate client, navigate away from the timer details
     if (!timer && this.timerLoaded) {
-      console.log('Timer no longer available, redirect');
       this.exitTimerDetails();
     }
   }
