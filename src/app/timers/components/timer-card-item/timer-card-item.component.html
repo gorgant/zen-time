@@ -5,7 +5,7 @@
       <mat-card-subtitle *ngIf="countDownClock.total >= 0 && countDownClock.days >= 1"> 
         Time Remaining: {{ countDownClock.weeks }} Weeks, {{ countDownClock.days }} Days
       </mat-card-subtitle>
-      <mat-card-subtitle class="due-today-time-text" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due today!</mat-card-subtitle>
+      <mat-card-subtitle class="due-today-time-text" *ngIf="countDownClock.days < 1 && countDownClock.total > 0">Due soon!</mat-card-subtitle>
       <mat-card-subtitle  class="expired-time-text" *ngIf="countDownClock.total < 0">Timer Expired!</mat-card-subtitle>
     </div>
     <div *ngIf="completedTimer">
