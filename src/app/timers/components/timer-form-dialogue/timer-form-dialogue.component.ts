@@ -61,7 +61,7 @@ export class TimerFormDialogueComponent implements OnInit {
           weeks: countDownClock.weeks,
           days: countDownClock.days,
           hours: countDownClock.hours,
-          minutes: countDownClock.minutes
+          minutes: 0 // Set minutes to zero bc we aren't providing an option to edit minutes right now and if expired it will be negative
         },
       });
     }
@@ -80,7 +80,7 @@ export class TimerFormDialogueComponent implements OnInit {
     let weeks: number = this.weeks.value;
     let days: number = this.days.value;
     let hours: number = this.hours.value;
-    let minutes: number = this.minutes.value;
+    let minutes = 0; // Set minutes to zero bc we aren't providing an option to edit minutes right now
     weeks = weeks * 1000 * 60 * 60 * 24 * 7;
     days = days * 1000 * 60 * 60 * 24;
     hours = hours * 1000 * 60 * 60;

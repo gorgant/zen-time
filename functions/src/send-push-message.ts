@@ -34,7 +34,7 @@ const pushMessage = {
       'data': {
           'dateOfArrival': now(),
           'primaryKey': 1,
-          'url': 'https://zentime.me/timers'
+          'url': 'https://zentimer.app/timers'
       },
       'actions': [{
           'action': 'See Now',
@@ -65,6 +65,7 @@ export const sendPushMessage = functions.https.onRequest(async (req, res) => {
     .then(response => {
       // Delete any invalid tokens if they exist
       if (invalidTokens.length > 0) {
+        console.log(`Removing ${invalidTokens.length} invalid tokens`)
         batchRemoveInvalidTokens(invalidTokens);
       }
       // If no push messages, log that and exit
@@ -73,7 +74,7 @@ export const sendPushMessage = functions.https.onRequest(async (req, res) => {
         return res.status(200).json({message: 'No push messages to send.'})
       }
       console.log('Push messages successfully sent.', res)
-      return res.status(200).json({message: 'Newsletter sent successfully.'})
+      return res.status(200).json({message: 'Push messages sent successfully.'})
     })
     .catch(err => {
       console.error("Error sending push notifications, reason: ", err);
@@ -163,6 +164,7 @@ async function sendSwPushMessageToUsers(pushSubTokens: PushSubTokenSw[]): Promis
   );
   
   if (pushSubTokens.length > 0) {
+      console.log(`Queing ${pushSubTokens.length} messages to send (some may be invalid)`)
       return Promise.all(pushSubTokens.map(
         sub => webpush.sendNotification(
           sub, JSON.stringify(pushMessage)
