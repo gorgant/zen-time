@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     this.useEmailLogin = true;
   }
 
-  onSubmit() {
+  onEmailLogin() {
     const userAuthData: AuthData = {
       email: this.email.value,
       password: this.password.value

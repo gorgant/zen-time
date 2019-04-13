@@ -91,13 +91,9 @@ export class AuthService {
   }
 
   logout(): void {
-    // Note the postLogoutActions as well, triggered by authstate change
-    this.ngUnsubscribe$.next();
-    this.ngUnsubscribe$.complete();
-    // Reinitialize the unsubscribe subject in case page isn't refreshed before logout (which means auth wouldn't reset)
-    this.ngUnsubscribe$ = new Subject<void>();
-    this.router.navigate(['/login']);
+    this.preLogoutActions();
     this.afAuth.auth.signOut();
+    // Post logout actions carried out by auth listener once logout detected
   }
 
   updateEmail(appUser: AppUser, password: string, newEmail: string): Observable<{userData: AppUser, userId: string}> {
@@ -189,6 +185,14 @@ export class AuthService {
     } else {
       this.router.navigate(['']);
     }
+  }
+
+  private preLogoutActions(): void {
+    this.ngUnsubscribe$.next(); // Send signal to Firebase subscriptions to unsubscribe
+    this.ngUnsubscribe$.complete(); // Send signal to Firebase subscriptions to unsubscribe
+    // Reinitialize the unsubscribe subject in case page isn't refreshed after logout (which means auth wouldn't reset)
+    this.ngUnsubscribe$ = new Subject<void>();
+    this.router.navigate(['/login']);
   }
 
   private postLogoutActions(): void {
